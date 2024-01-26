@@ -1,10 +1,5 @@
 plugins {
-    id 'java-library'
-}
-
-ext {
-    lombokVersion = '1.18.30'
-    mapstructVersion = '1.5.5.Final'
+    id 'java'
 }
 
 group 'ru.ylab'
@@ -15,10 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation project(":di-container")
-
-    compileOnly "org.projectlombok:lombok:$lombokVersion"
-    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    implementation 'org.reflections:reflections:0.10.2'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
