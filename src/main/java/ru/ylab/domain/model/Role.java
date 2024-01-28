@@ -6,6 +6,7 @@ package ru.ylab.domain.model;
  * @author Pesternikov Danil
  */
 public enum Role {
+
     /**
      * Роль администратора. Пользователь с этой ролью обладает
      * полными правами доступа и контроля в системе.

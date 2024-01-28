@@ -5,10 +5,7 @@ import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.out.MeterRepository;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -39,7 +36,7 @@ public class MeterRepositoryImpl implements MeterRepository {
                     .filter(meter -> meter.getUsername().equals(username) && meter.getReadingsDate() == date)
                     .collect(Collectors.toList());
         } else {
-            return List.of();
+            return Collections.emptyList();
         }
     }
 

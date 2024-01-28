@@ -6,8 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Класс, представляющий тип счетчика.
- * Каждый объект этого класса хранит информацию о имени типа счетчика.
+ * Класс, представляющий тип счётчика.
+ *
+ * <p>Данный класс использует аннотации Lombok для автоматической генерации
+ * кода. Он содержит поле для хранения имени типа счётчика.</p>
+ *
+ * @author Pesternikov Danil
  */
 @Data
 @Builder
@@ -16,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class MeterType {
 
     /**
-     * Название счетчика.
+     * имя типа счётчика.
      */
     private String name;
 }
