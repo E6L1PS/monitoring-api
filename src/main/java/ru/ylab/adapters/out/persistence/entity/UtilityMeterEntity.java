@@ -1,23 +1,20 @@
-package ru.ylab.domain.model;
+package ru.ylab.adapters.out.persistence.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.ylab.domain.model.MeterType;
 
 import java.time.LocalDate;
 
-/**
- * Класс, представляющий утилитарный счетчик.
- * Каждый объект этого класса содержит информацию о показаниях счетчика,
- * его типе и дате считывания.
- */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UtilityMeter {
+public class UtilityMeterEntity {
 
+    private String username;
     /** Показания счетчика.*/
     private Double counter;
 

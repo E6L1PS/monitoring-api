@@ -1,6 +1,6 @@
 package ru.ylab;
 
-import ru.ylab.adapters.input.view.MenuView;
+import ru.ylab.adapters.in.view.MenuView;
 
 import java.util.HashMap;
 

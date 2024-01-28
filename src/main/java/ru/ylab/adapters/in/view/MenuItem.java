@@ -1,4 +1,4 @@
-package ru.ylab.adapters.input.view;
+package ru.ylab.adapters.in.view;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,11 +1,21 @@
 plugins {
+    id 'java'
     id 'java-library'
 }
+
+apply plugin: "java"
 
 ext {
     lombokVersion = '1.18.30'
     mapstructVersion = '1.5.5.Final'
+    lombokMapstructBindingVersion = "0.2.0"
+
+    //sourceSets.main.java.srcDirs = ['src']
+    javaMainClass = "ru.ylab.App"
 }
+
+sourceCompatibility = 1.17
+targetCompatibility = 1.17
 
 group 'ru.ylab'
 version '1.0-SNAPSHOT'
@@ -14,11 +24,25 @@ repositories {
     mavenCentral()
 }
 
+tasks.register('runApplication', JavaExec) {
+    mainClass = javaMainClass
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+
+    systemProperty 'file.encoding', 'UTF-8'
+    jvmArgs('-Dfile.encoding=UTF-8')
+}
+
 dependencies {
     implementation project(":di-container")
 
+    implementation "org.mapstruct:mapstruct:$mapstructVersion"
+    annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
+
     compileOnly "org.projectlombok:lombok:$lombokVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
