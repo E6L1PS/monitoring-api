@@ -153,7 +153,7 @@ public class Menu {
                             System.out.println("Введите месяц");
                             var month = scanner.nextInt();
                             if (month >= 1 && month <= 12) {
-                                System.out.println(getUtilityMeterByMonth.execute(month));
+                                getUtilityMeterByMonth.execute(month).forEach(System.out::println);
                             }
                         })
                         .build(),
@@ -183,6 +183,12 @@ public class Menu {
                 MenuItem.builder()
                         .title("2. <--- Просмотреть все показания")
                         .action(() -> {
+                            Map<String, List<UtilityMeterModel>> groupedByDate = getAllUtilityMeter.execute().stream()
+                                    .collect(Collectors.groupingBy(UtilityMeterModel::username));
+                            groupedByDate.forEach((username, models) -> {
+                                System.out.println("Username: " + username);
+                                models.forEach(System.out::println);
+                            });
                         })
                         .build(),
                 MenuItem.builder()

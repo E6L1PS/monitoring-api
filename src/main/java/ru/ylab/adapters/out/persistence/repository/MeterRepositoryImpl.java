@@ -29,11 +29,12 @@ public class MeterRepositoryImpl implements MeterRepository {
     @Override
     public List<UtilityMeterEntity> findLastByUsername(String username) {
         var optionalUtilityMeterEntity = utilityMeterEntities.stream()
+                .filter(meter -> meter.getUsername().equals(username))
                 .min(Comparator.comparing(UtilityMeterEntity::getReadingsDate));
         if (optionalUtilityMeterEntity.isPresent()) {
             var date = optionalUtilityMeterEntity.get().getReadingsDate();
             return utilityMeterEntities.stream()
-                    .filter(meter -> meter.getUsername().equals(username) && meter.getReadingsDate() == date)
+                    .filter(meter -> meter.getReadingsDate() == date)
                     .collect(Collectors.toList());
         } else {
             return Collections.emptyList();
@@ -41,9 +42,9 @@ public class MeterRepositoryImpl implements MeterRepository {
     }
 
     @Override
-    public List<UtilityMeterEntity> findByMonth(Integer month) {
+    public List<UtilityMeterEntity> findByMonth(Integer month, String username) {
         return utilityMeterEntities.stream()
-                .filter(meter -> meter.getReadingsDate().getMonthValue() == month)
+                .filter(meter -> meter.getReadingsDate().getMonthValue() == month && Objects.equals(meter.getUsername(), username))
                 .collect(Collectors.toList());
     }
 

@@ -14,9 +14,6 @@ public interface UserMapper {
 
     User toUser(UserEntity userEntity);
 
-    //User toUser(LoginModel loginModel);
-
-
     @Mapping(target = "role", constant = "USER")
     User toUser(RegisterModel registerUser);
 

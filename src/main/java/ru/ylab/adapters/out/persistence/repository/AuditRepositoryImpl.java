@@ -6,7 +6,9 @@ import ru.ylab.annotations.Singleton;
 import ru.ylab.application.out.AuditRepository;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 @NoArgsConstructor
@@ -16,7 +18,9 @@ public class AuditRepositoryImpl implements AuditRepository {
 
     @Override
     public List<AuditEntity> findAll() {
-        return logs;
+        return logs.stream()
+                .sorted(Comparator.comparing(AuditEntity::getDateTime))
+                .collect(Collectors.toList());
     }
 
     @Override

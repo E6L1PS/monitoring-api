@@ -7,6 +7,8 @@ import java.util.List;
 public interface MeterTypeRepository {
 
     List<MeterTypeEntity> findAll();
+
     Boolean isValid(MeterTypeEntity meterTypeEntity);
+
     MeterTypeEntity createType(String typeName);
 }

@@ -37,7 +37,7 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
     public void execute(Map<String, Double> utilityMeters) {
         var username = userRepository.getCurrentUsername();
         var readingsDate = LocalDate.now();
-        if (meterRepository.findByMonth(readingsDate.getMonthValue()).isEmpty()) {
+        if (meterRepository.findByMonth(readingsDate.getMonthValue(), username).isEmpty()) {
             utilityMeters.forEach((type, counter) -> {
                 var meterType = MeterTypeEntity.builder().name(type).build();
                 if (meterTypeRepository.isValid(meterType)) {
@@ -49,16 +49,17 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
                                     .readingsDate(readingsDate)
                                     .build()
                     );
+
+                    auditRepository.saveAudit(
+                            AuditEntity.builder()
+                                    .info("Показания поданы")
+                                    .dateTime(LocalDateTime.now())
+                                    .username(username)
+                                    .build());
                 } else {
-                    throw new NotValidMeterTypeException("Not valid type");
+                    throw new NotValidMeterTypeException("Not valid type!");
                 }
             });
-            auditRepository.saveAudit(
-                    AuditEntity.builder()
-                            .info("Показания поданы")
-                            .dateTime(LocalDateTime.now())
-                            .username(username)
-                            .build());
         } else {
             throw new MonthlySubmitLimitException("В этом месяце вы уже подали!");
         }

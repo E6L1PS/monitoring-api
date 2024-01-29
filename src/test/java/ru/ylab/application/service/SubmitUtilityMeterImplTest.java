@@ -5,18 +5,21 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
+import ru.ylab.application.exception.MonthlySubmitLimitException;
 import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.MeterRepository;
 import ru.ylab.application.out.MeterTypeRepository;
 import ru.ylab.application.out.UserRepository;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 class SubmitUtilityMeterImplTest {
@@ -50,10 +53,11 @@ class SubmitUtilityMeterImplTest {
 
     @Test
     void testExecuteWhenMonthlyLimitNotExceeded() {
+        int month = LocalDate.now().getMonthValue();
         String username = "testUser";
         when(userRepository.getCurrentUsername()).thenReturn(username);
         when(meterTypeRepository.isValid(any())).thenReturn(true);
-        when(meterRepository.findByMonth(anyInt())).thenReturn(Collections.emptyList());
+        when(meterRepository.findByMonth(month, username)).thenReturn(Collections.emptyList());
 
         submitUtilityMeter.execute(utilityMeters);
 
@@ -61,4 +65,11 @@ class SubmitUtilityMeterImplTest {
         verify(auditRepository, times(1)).saveAudit(any());
     }
 
+    @Test
+    void testExecuteWhenMonthlyLimitExceeded() {
+        when(meterTypeRepository.isValid(any())).thenReturn(true);
+        when(meterRepository.findByMonth(any(), any())).thenReturn(List.of(UtilityMeterEntity.builder().build()));
+
+        assertThrows(MonthlySubmitLimitException.class, () -> submitUtilityMeter.execute(utilityMeters));
+    }
 }
