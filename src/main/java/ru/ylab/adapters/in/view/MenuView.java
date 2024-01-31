@@ -8,13 +8,26 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * Класс MenuView представляет визуальный компонент для отображения и взаимодействия с меню приложения.
+ * Он использует Navigator для навигации по меню и выполнения действий, связанных с выбранными пунктами меню.
+ *
+ * @author Pesternikov Danil
+ */
 @Singleton
 @NoArgsConstructor
 public class MenuView {
 
+    /**
+     * Компонент навигатора для взаимодействия с меню.
+     */
     @Autowired
     private Navigator navigator;
 
+    /**
+     * Метод run() запускает цикл взаимодействия с меню до момента выбора выхода из приложения.
+     * Выводит текущее меню, ожидает ввода пользователя, обрабатывает введенные данные и выполняет соответствующее действие.
+     */
     public void run() {
         boolean exit = false;
 

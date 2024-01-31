@@ -26,17 +26,22 @@ public class LoginUserImpl implements LoginUser {
     @Override
     public void execute(LoginModel loginModel) {
         UserEntity userEntity = userRepository.getByUsername(loginModel.username());
-        if (userEntity != null) {
-            if (Objects.equals(userEntity.getPassword(), loginModel.password())) {
-                userRepository.setupCurrentUser(userEntity);
-                auditRepository.saveAudit(
-                        AuditEntity.builder()
-                                .info("Авторизация выполнена")
-                                .dateTime(LocalDateTime.now())
-                                .username(userEntity.getUsername())
-                                .build()
-                );
-            } else throw new IncorrectPasswordException("Пароль неверный!");
-        } else throw new UserNotFoundException("Пользователь с таким username не найден!");
+
+        if (userEntity == null) {
+            throw new UserNotFoundException("Пользователь с таким username не найден!");
+        }
+
+        if (Objects.equals(userEntity.getPassword(), loginModel.password())) {
+            userRepository.setupCurrentUser(userEntity);
+            auditRepository.saveAudit(
+                    AuditEntity.builder()
+                            .info("Авторизация выполнена")
+                            .dateTime(LocalDateTime.now())
+                            .username(userEntity.getUsername())
+                            .build()
+            );
+        } else {
+            throw new IncorrectPasswordException("Пароль неверный!");
+        }
     }
 }

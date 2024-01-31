@@ -55,6 +55,9 @@ public class Menu {
     @Autowired
     private AddNewMeterType addNewMeterType;
 
+    @Autowired
+    private LogoutUser logoutUser;
+
     private Menu roleMenu;
 
     public Menu(String name) {
@@ -123,7 +126,7 @@ public class Menu {
         roleMenu.menuItems = List.of(
                 MenuItem.builder()
                         .title("0. <--- Выход")
-                        .action(() -> System.out.println("Программа завершена"))
+                        .action(() -> logoutUser.execute())
                         .build(),
                 MenuItem.builder()
                         .title("1. <--- Получить актуальные показания")
@@ -174,7 +177,7 @@ public class Menu {
         roleMenu.menuItems = List.of(
                 MenuItem.builder()
                         .title("0. <--- Выход")
-                        .action(() -> System.out.println("Программа завершена"))
+                        .action(() -> logoutUser.execute())
                         .build(),
                 MenuItem.builder()
                         .title("1. <--- Просмотр аудита действий")

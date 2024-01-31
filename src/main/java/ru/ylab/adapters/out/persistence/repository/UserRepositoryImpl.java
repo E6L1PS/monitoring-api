@@ -57,4 +57,9 @@ public class UserRepositoryImpl implements UserRepository {
         this.userEntity = userEntity;
         return userEntity;
     }
+
+    @Override
+    public void logout() {
+        userEntity = null;
+    }
 }
