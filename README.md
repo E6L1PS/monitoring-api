@@ -7,4 +7,8 @@
 2. Перейдите в директорию проекта: `cd monitoring-api`
 3. Запустите приложение: `./gradlew run`
 4. Чтобы запустить тесты, выполните команду: `./gradlew test`
+5. `docker compose up --build -d`
+6. `docker-compose exec -i api-node-1 java -jar application.jar`
+
+![ERD](src/main/resources/MonitoringERD.svg)
 

@@ -1,28 +1,41 @@
 plugins {
     id 'java'
-    id 'java-library'
 }
-
-apply plugin: "java"
 
 ext {
     lombokVersion = '1.18.30'
     mapstructVersion = '1.5.5.Final'
     lombokMapstructBindingVersion = "0.2.0"
 
-    //sourceSets.main.java.srcDirs = ['src']
     javaMainClass = "ru.ylab.App"
 }
-compileJava.options.encoding = 'UTF-8'
-compileTestJava.options.encoding = 'UTF-8'
-sourceCompatibility = 1.17
-targetCompatibility = 1.17
 
 group 'ru.ylab'
 version '1.0-SNAPSHOT'
 
-repositories {
-    mavenCentral()
+allprojects {
+    tasks.withType(JavaCompile).configureEach {
+        compileJava.options.encoding = 'UTF-8'
+        compileTestJava.options.encoding = 'UTF-8'
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+jar {
+    manifest.attributes('Main-Class': javaMainClass)
+
+    // Exclude META-INF/LICENSE.txt from the jar
+    exclude('META-INF/LICENSE.txt')
+
+    // For di-container module
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 tasks.register('runApplication', JavaExec) {
@@ -36,6 +49,9 @@ tasks.register('runApplication', JavaExec) {
 
 dependencies {
     implementation project(":di-container")
+
+    implementation 'org.liquibase:liquibase-core:4.25.1'
+    implementation 'org.postgresql:postgresql:42.7.1'
 
     implementation "org.mapstruct:mapstruct:$mapstructVersion"
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
