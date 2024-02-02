@@ -31,7 +31,7 @@ public class AddNewMeterTypeImpl implements AddNewMeterType {
             auditRepository.saveAudit(AuditEntity.builder()
                     .info("Добавлен новый тип счетчика: " + name)
                     .dateTime(LocalDateTime.now())
-                    .username(userRepository.getCurrentUsername())
+                    .userId(userRepository.getCurrentUserId())
                     .build());
         } else {
             throw new UnauthorizedException("Нету доступа для данного пользователя!");

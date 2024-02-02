@@ -14,14 +14,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class AuditEntity {
 
+    private Long id;
+    private Long userId;
     private String info;
-    private String username;
     private LocalDateTime dateTime;
 
     @Override
     public String toString() {
         return "[DateTime: " + dateTime +
-                "; Username: " + username +
-                "; Info: " + info + ']';
+               "; UserId: " + userId +
+               "; Info: " + info + ']';
     }
 }

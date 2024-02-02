@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <changeSet id="2024-02-01-create-sequence-user-sequence" author="Pesternikov Danil">
+        <createSequence sequenceName="user_sequence" startValue="1" incrementBy="1"/>
+    </changeSet>
+
+    <changeSet id="2024-02-01-create-sequence-audit-sequence" author="Pesternikov Danil">
+        <createSequence sequenceName="audit_sequence" startValue="1" incrementBy="1"/>
+    </changeSet>
+
+    <changeSet id="2024-02-01-create-sequence-meter-sequence" author="Pesternikov Danil">
+        <createSequence sequenceName="meter_sequence" startValue="1" incrementBy="1"/>
+    </changeSet>
+
+    <changeSet id="2024-02-01-create-type-user-role" author="Pesternikov Danil">
+        <sql>CREATE TYPE user_role AS ENUM ('ADMIN', 'USER');</sql>
+    </changeSet>
+
+    <changeSet id="2024-02-01-create-table-user" author="Pesternikov Danil">
+        <createTable tableName="user">
+            <column name="id" type="bigint" defaultValueComputed="nextval('user_sequence')">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="varchar(64)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="password" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="user_role">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2024-02-01-create-table-meter-type" author="Pesternikov Danil">
+        <createTable tableName="meter_type">
+            <column name="name" type="varchar(64)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2024-02-01-create-table-utility-meter" author="Pesternikov Danil">
+        <createTable tableName="utility_meter">
+            <column name="id" type="bigint" defaultValueComputed="nextval('meter_sequence')">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="counter" type="double">
+                <constraints nullable="false"/>
+            </column>
+            <column name="readings_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="varchar(64)">
+                <constraints nullable="false" foreignKeyName="fk_utility_meter_meter_type" references="meter_type(name)"/>
+            </column>
+            <column name="user_id" type="serial">
+                <constraints nullable="false" foreignKeyName="fk_utility_meter_user" references="user(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2024-02-01-create-table-audit" author="Pesternikov Danil">
+        <createTable tableName="audit">
+            <column name="id" type="bigint" defaultValueComputed="nextval('audit_sequence')">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="info" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="serial">
+                <constraints nullable="false" foreignKeyName="fk_audit_user" references="user(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

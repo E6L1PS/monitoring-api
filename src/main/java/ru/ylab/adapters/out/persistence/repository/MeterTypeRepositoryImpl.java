@@ -2,10 +2,11 @@ package ru.ylab.adapters.out.persistence.repository;
 
 import lombok.NoArgsConstructor;
 import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
-import ru.ylab.annotations.Init;
+import ru.ylab.adapters.out.persistence.util.ConnectionManager;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.out.MeterTypeRepository;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,29 +14,61 @@ import java.util.List;
 @NoArgsConstructor
 public class MeterTypeRepositoryImpl implements MeterTypeRepository {
 
-    private final List<MeterTypeEntity> meterTypes = new ArrayList<>();
+    private static final String SQL_SELECT_ALL = """
+            SELECT * FROM meter_type
+            """;
 
-    @Init
-    public void init() {
-        meterTypes.add(MeterTypeEntity.builder().name("Отопление").build());
-        meterTypes.add(MeterTypeEntity.builder().name("Горячая вода").build());
-        meterTypes.add(MeterTypeEntity.builder().name("Холодная вода").build());
-    }
+    private static final String SQL_SELECT_COUNT_BY_NAME = """
+            SELECT COUNT(*) FROM meter_type WHERE name = ?;
+            """;
+
+    private static final String SQL_INSERT = """
+            INSERT INTO meter_type 
+            (name) 
+            VALUES (?)
+            """;
 
     @Override
     public List<MeterTypeEntity> findAll() {
-        return meterTypes;
+        try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_ALL)) {
+            var resultSet = statement.executeQuery();
+            List<MeterTypeEntity> meterTypeEntities = new ArrayList<>();
+            while (resultSet.next()) {
+                meterTypeEntities.add(
+                        MeterTypeEntity.builder()
+                                .name(resultSet.getString("name"))
+                                .build()
+                );
+            }
+            return meterTypeEntities;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Boolean isMeterTypeExists(String typeName) {
+        try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_COUNT_BY_NAME)) {
+            statement.setString(1, typeName);
+            var resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getLong(1) > 0;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public MeterTypeEntity createType(String typeName) {
-        MeterTypeEntity meterTypeEntity = MeterTypeEntity.builder().name(typeName).build();
-        meterTypes.add(meterTypeEntity);
-        return meterTypeEntity;
-    }
-
-    @Override
-    public Boolean isValid(MeterTypeEntity meterTypeEntity) {
-        return meterTypes.contains(meterTypeEntity);
+        try (var statement = ConnectionManager.open().prepareStatement(SQL_INSERT)) {
+            statement.setString(1, typeName);
+            statement.executeUpdate();
+            return MeterTypeEntity.builder().name(typeName).build();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

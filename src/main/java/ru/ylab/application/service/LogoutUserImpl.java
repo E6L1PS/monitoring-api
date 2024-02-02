@@ -22,13 +22,13 @@ public class LogoutUserImpl implements LogoutUser {
 
     @Override
     public void execute() {
-        var username = userRepository.getCurrentUsername();
+        var userId = userRepository.getCurrentUserId();
         userRepository.logout();
         auditRepository.saveAudit(
                 AuditEntity.builder()
                         .info("Завершение работы")
                         .dateTime(LocalDateTime.now())
-                        .username(username)
+                        .userId(userId)
                         .build());
     }
 }

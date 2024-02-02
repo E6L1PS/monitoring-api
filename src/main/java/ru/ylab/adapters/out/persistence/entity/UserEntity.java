@@ -12,6 +12,7 @@ import ru.ylab.domain.model.Role;
 @NoArgsConstructor
 public class UserEntity {
 
+    private Long id;
     private String username;
     private String password;
     private Role role;

@@ -25,24 +25,24 @@ public interface MeterRepository {
      * @param username имя пользователя
      * @return Список объектов UtilityMeterEntity, представляющих все счетчики коммунальных услуг для данного пользователя.
      */
-    List<UtilityMeterEntity> findAllByUsername(String username);
+    List<UtilityMeterEntity> findAllByUserId(Long username);
 
     /**
      * Получает последний счетчик коммунальных услуг для определенного пользователя.
      *
-     * @param username имя пользователя
      * @return Список объектов UtilityMeterEntity, представляющих последний счетчик коммунальных услуг для данного пользователя.
      */
-    List<UtilityMeterEntity> findLastByUsername(String username);
+    List<UtilityMeterEntity> findLastByUserId(Long userId);
 
     /**
      * Получает счетчики коммунальных услуг для определенного месяца и пользователя.
      *
      * @param month    Месяц (число от 1 до 12)
-     * @param username имя пользователя
      * @return Список объектов UtilityMeterEntity, представляющих счетчики коммунальных услуг для данного пользователя в указанный месяц.
      */
-    List<UtilityMeterEntity> findByMonth(Integer month, String username);
+    List<UtilityMeterEntity> findByMonth(Integer month, Long userId);
+
+    Boolean isSubmitted(Integer month, Long userId);
 
     /**
      * Создает новый счетчик коммунальных услуг.

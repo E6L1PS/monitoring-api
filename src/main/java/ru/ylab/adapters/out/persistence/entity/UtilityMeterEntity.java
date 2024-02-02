@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.ylab.domain.model.MeterType;
 
 import java.time.LocalDate;
 
@@ -14,13 +13,21 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class UtilityMeterEntity {
 
-    private String username;
+    private Long id;
+
+    private Long userId;
+
+    private String type;
+
     /** Показания счетчика.*/
     private Double counter;
 
-    /** Тип счетчика, определенный объектом класса MeterType.*/
-    private MeterType meterType;
-
     /**  Дата считывания показаний счетчика.*/
     private LocalDate readingsDate;
+    @Override
+    public String toString() {
+        return "Тип счетчика: " + type +
+               " - Показатель: " + counter +
+               " - Дата подачи: " + readingsDate;
+    }
 }

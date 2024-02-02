@@ -34,13 +34,13 @@ public class GetAllUtilityMeterImpl implements GetAllUtilityMeter {
         if (role == Role.ADMIN) {
             entityList = meterRepository.findAll();
         } else {
-            var username = userRepository.getCurrentUsername();
-            entityList = meterRepository.findAllByUsername(username);
+            var userId = userRepository.getCurrentUserId();
+            entityList = meterRepository.findAllByUserId(userId);
         }
         auditRepository.saveAudit(AuditEntity.builder()
                 .info("Получена история подачи показаний")
                 .dateTime(LocalDateTime.now())
-                .username(userRepository.getCurrentUsername())
+                .userId(userRepository.getCurrentUserId())
                 .build());
         return UtilityMeterMapper.INSTANCE.entitiesToListUtilityMeterModel(entityList);
     }

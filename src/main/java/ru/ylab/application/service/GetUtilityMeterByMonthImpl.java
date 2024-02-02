@@ -27,15 +27,15 @@ public class GetUtilityMeterByMonthImpl implements GetUtilityMeterByMonth {
 
     @Override
     public List<UtilityMeterModel> execute(Integer month) {
-        var username = userRepository.getCurrentUsername();
+        var userId = userRepository.getCurrentUserId();
         auditRepository.saveAudit(
                 AuditEntity.builder()
                         .info("Получена история подачи показаний за " + month + "-й месяц")
                         .dateTime(LocalDateTime.now())
-                        .username(username)
+                        .userId(userId)
                         .build());
         return UtilityMeterMapper.INSTANCE.entitiesToListUtilityMeterModel(
-                meterRepository.findByMonth(month, username)
+                meterRepository.findByMonth(month, userId)
         );
     }
 }

@@ -9,6 +9,7 @@ public class App {
     public static void main(String[] args) throws Exception {
 
         try (var c = ConnectionManager.open()) {
+            // LiquibaseManager.update(c);
             System.out.println(c.getTransactionIsolation());
         }
         ApplicationContext context = Application.run("ru.ylab", new HashMap<>());

@@ -21,10 +21,9 @@ public interface MeterTypeRepository {
     /**
      * Проверяет, является ли указанный тип счетчика допустимым.
      *
-     * @param meterTypeEntity Объект MeterTypeEntity, представляющий тип счетчика для проверки.
      * @return true, если тип счетчика допустим, в противном случае - false.
      */
-    Boolean isValid(MeterTypeEntity meterTypeEntity);
+    Boolean isMeterTypeExists(String typeName);
 
     /**
      * Создает новый тип счетчика с указанным именем.

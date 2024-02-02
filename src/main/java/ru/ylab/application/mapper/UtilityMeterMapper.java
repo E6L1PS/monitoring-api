@@ -14,6 +14,7 @@ public interface UtilityMeterMapper {
 
     UtilityMeter toUtilityMeter(UtilityMeterEntity utilityMeterEntity);
 
-    List<UtilityMeter> toListUtilityMeter(List<UtilityMeterEntity> utilityMeterEntities);
     List<UtilityMeterModel> entitiesToListUtilityMeterModel(List<UtilityMeterEntity> utilityMeterEntities);
+
+    List<UtilityMeter> toListUtilityMeter(List<UtilityMeterEntity> utilityMeterEntities);
 }

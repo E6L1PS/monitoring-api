@@ -1,14 +1,12 @@
 package ru.ylab.application.service;
 
 import ru.ylab.adapters.out.persistence.entity.AuditEntity;
-import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
 import ru.ylab.annotations.Autowired;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.exception.MonthlySubmitLimitException;
 import ru.ylab.application.exception.NotValidMeterTypeException;
 import ru.ylab.application.in.SubmitUtilityMeter;
-import ru.ylab.application.mapper.MeterTypeMapper;
 import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.MeterRepository;
 import ru.ylab.application.out.MeterTypeRepository;
@@ -35,16 +33,15 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
 
     @Override
     public void execute(Map<String, Double> utilityMeters) {
-        var username = userRepository.getCurrentUsername();
+        var userId = userRepository.getCurrentUserId();
         var readingsDate = LocalDate.now();
-        if (meterRepository.findByMonth(readingsDate.getMonthValue(), username).isEmpty()) {
+        if (!meterRepository.isSubmitted(readingsDate.getMonthValue(), userId)) {
             utilityMeters.forEach((type, counter) -> {
-                var meterType = MeterTypeEntity.builder().name(type).build();
-                if (meterTypeRepository.isValid(meterType)) {
+                if (meterTypeRepository.isMeterTypeExists(type)) {
                     meterRepository.create(
                             UtilityMeterEntity.builder()
-                                    .username(username)
-                                    .meterType(MeterTypeMapper.INSTANCE.toMeterType(meterType))
+                                    .userId(userId)
+                                    .type(type)
                                     .counter(counter)
                                     .readingsDate(readingsDate)
                                     .build()
@@ -54,7 +51,7 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
                             AuditEntity.builder()
                                     .info("Показания поданы")
                                     .dateTime(LocalDateTime.now())
-                                    .username(username)
+                                    .userId(userId)
                                     .build());
                 } else {
                     throw new NotValidMeterTypeException("Not valid type!");

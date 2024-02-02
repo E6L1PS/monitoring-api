@@ -27,10 +27,12 @@ allprojects {
 }
 
 jar {
+    duplicatesStrategy = 'fail'
     manifest.attributes('Main-Class': javaMainClass)
 
     // Exclude META-INF/LICENSE.txt from the jar
     exclude('META-INF/LICENSE.txt')
+    exclude('META-INF/NOTICE.txt')
 
     // For di-container module
     from {

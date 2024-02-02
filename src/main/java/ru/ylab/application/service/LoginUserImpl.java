@@ -28,7 +28,7 @@ public class LoginUserImpl implements LoginUser {
         UserEntity userEntity = userRepository.getByUsername(loginModel.username());
 
         if (userEntity == null) {
-            throw new UserNotFoundException("Пользователь с таким username не найден!");
+            throw new UserNotFoundException("Пользователь с таким userId не найден!");
         }
 
         if (Objects.equals(userEntity.getPassword(), loginModel.password())) {
@@ -37,7 +37,7 @@ public class LoginUserImpl implements LoginUser {
                     AuditEntity.builder()
                             .info("Авторизация выполнена")
                             .dateTime(LocalDateTime.now())
-                            .username(userEntity.getUsername())
+                            .userId(userEntity.getId())
                             .build()
             );
         } else {

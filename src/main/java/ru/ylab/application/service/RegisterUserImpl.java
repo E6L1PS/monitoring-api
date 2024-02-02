@@ -28,12 +28,12 @@ public class RegisterUserImpl implements RegisterUser {
         if (!userRepository.isAlreadyExists(registerModel.username())) {
             User user = UserMapper.INSTANCE.toUser(registerModel);
             if (user.usernameIsValid() && user.passwordIsValid()) {
-                userRepository.save(UserMapper.INSTANCE.userToUserEntity(user));
+                var userId = userRepository.save(UserMapper.INSTANCE.userToUserEntity(user));
                 auditRepository.saveAudit(
                         AuditEntity.builder()
                                 .info("Новый пользователь зарегистрирован")
                                 .dateTime(LocalDateTime.now())
-                                .username(registerModel.username())
+                                .userId(userId)
                                 .build()
                 );
             } else {

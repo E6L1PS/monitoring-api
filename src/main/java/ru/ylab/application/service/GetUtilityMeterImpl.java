@@ -27,12 +27,12 @@ public class GetUtilityMeterImpl implements GetUtilityMeter {
 
     @Override
     public List<UtilityMeterModel> execute() {
-        var username = userRepository.getCurrentUsername();
+        var userId = userRepository.getCurrentUserId();
         auditRepository.saveAudit(AuditEntity.builder()
                 .info("Получен актуальные показания счетчиков")
                 .dateTime(LocalDateTime.now())
-                .username(userRepository.getCurrentUsername())
+                .userId(userRepository.getCurrentUserId())
                 .build());
-        return UtilityMeterMapper.INSTANCE.entitiesToListUtilityMeterModel(meterRepository.findLastByUsername(username));
+        return UtilityMeterMapper.INSTANCE.entitiesToListUtilityMeterModel(meterRepository.findLastByUserId(userId));
     }
 }

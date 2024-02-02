@@ -15,7 +15,7 @@ public interface UserRepository {
      *
      * @param userEntity Объект UserEntity, представляющий пользователя для сохранения.
      */
-    void save(UserEntity userEntity);
+    Long save(UserEntity userEntity);
 
     /**
      * Получает пользователя по его имени пользователя.
@@ -38,7 +38,7 @@ public interface UserRepository {
      *
      * @return Текущее имя пользователя.
      */
-    String getCurrentUsername();
+    Long getCurrentUserId();
 
     /**
      * Получает роль текущего пользователя.
