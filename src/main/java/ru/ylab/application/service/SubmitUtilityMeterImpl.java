@@ -34,20 +34,19 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
     @Override
     public void execute(Map<String, Double> utilityMeters) {
         var userId = userRepository.getCurrentUserId();
-        var readingsDate = LocalDate.now();
-        if (!meterRepository.isSubmitted(readingsDate.getMonthValue(), userId)) {
+        if (!meterRepository.isSubmitted(userId)) {
             utilityMeters.forEach((type, counter) -> {
                 if (meterTypeRepository.isMeterTypeExists(type)) {
-                    meterRepository.create(
+                    meterRepository.save(
                             UtilityMeterEntity.builder()
                                     .userId(userId)
                                     .type(type)
                                     .counter(counter)
-                                    .readingsDate(readingsDate)
+                                    .readingsDate(LocalDate.now())
                                     .build()
                     );
 
-                    auditRepository.saveAudit(
+                    auditRepository.save(
                             AuditEntity.builder()
                                     .info("Показания поданы")
                                     .dateTime(LocalDateTime.now())

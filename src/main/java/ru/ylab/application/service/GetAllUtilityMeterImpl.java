@@ -37,7 +37,7 @@ public class GetAllUtilityMeterImpl implements GetAllUtilityMeter {
             var userId = userRepository.getCurrentUserId();
             entityList = meterRepository.findAllByUserId(userId);
         }
-        auditRepository.saveAudit(AuditEntity.builder()
+        auditRepository.save(AuditEntity.builder()
                 .info("Получена история подачи показаний")
                 .dateTime(LocalDateTime.now())
                 .userId(userRepository.getCurrentUserId())

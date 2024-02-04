@@ -27,10 +27,21 @@ public final class ConnectionManager {
      */
     public static Connection open() {
         try {
+            var url = System.getenv(URL_KEY);
+            var username = System.getenv(USERNAME_KEY);
+            var password = System.getenv(PASSWORD_KEY);
+
+            // Для интеграционного тестирования:
+            if (url == null || username == null || password == null) {
+                url = System.getProperty(URL_KEY);
+                username = System.getProperty(USERNAME_KEY);
+                password = System.getProperty(PASSWORD_KEY);
+
+            }
             return DriverManager.getConnection(
-                    System.getenv(URL_KEY),
-                    System.getenv(USERNAME_KEY),
-                    System.getenv(PASSWORD_KEY));
+                    url,
+                    username,
+                    password);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

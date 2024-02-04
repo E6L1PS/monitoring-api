@@ -24,7 +24,7 @@ public class LogoutUserImpl implements LogoutUser {
     public void execute() {
         var userId = userRepository.getCurrentUserId();
         userRepository.logout();
-        auditRepository.saveAudit(
+        auditRepository.save(
                 AuditEntity.builder()
                         .info("Завершение работы")
                         .dateTime(LocalDateTime.now())

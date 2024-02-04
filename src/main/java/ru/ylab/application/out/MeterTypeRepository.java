@@ -31,5 +31,5 @@ public interface MeterTypeRepository {
      * @param typeName имя нового типа счетчика.
      * @return Объект MeterTypeEntity, представляющий созданный тип счетчика.
      */
-    MeterTypeEntity createType(String typeName);
+    MeterTypeEntity save(String typeName);
 }

@@ -11,7 +11,7 @@ import ru.ylab.application.model.RegisterModel;
 import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.UserRepository;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -25,7 +25,9 @@ class RegisterUserImplTest {
 
     @InjectMocks
     private RegisterUserImpl registerUser;
+
     private RegisterModel validRegisterModel;
+
     private RegisterModel invalidRegisterModel;
 
     @BeforeEach
@@ -42,23 +44,26 @@ class RegisterUserImplTest {
         registerUser.execute(validRegisterModel);
 
         verify(userRepository, times(1)).save(any());
-        verify(auditRepository, times(1)).saveAudit(any());
+        verify(auditRepository, times(1)).save(any());
     }
 
     @Test
     void testExecute_UsernameAlreadyExists() {
         when(userRepository.isAlreadyExists(any())).thenReturn(true);
 
-        assertThrows(UsernameAlreadyExistsException.class, () -> registerUser.execute(validRegisterModel));
+        assertThatThrownBy(() -> registerUser.execute(validRegisterModel))
+                .isInstanceOf(UsernameAlreadyExistsException.class);
 
         verify(userRepository, never()).save(any());
-        verify(auditRepository, never()).saveAudit(any());
+        verify(auditRepository, never()).save(any());
     }
 
     @Test
     void testExecute_InvalidUsernameOrPassword() {
-        assertThrows(NotValidUsernameOrPasswordException.class, () -> registerUser.execute(invalidRegisterModel));
+        assertThatThrownBy(() -> registerUser.execute(invalidRegisterModel))
+                .isInstanceOf(NotValidUsernameOrPasswordException.class);
+
         verify(userRepository, never()).save(any());
-        verify(auditRepository, never()).saveAudit(any());
+        verify(auditRepository, never()).save(any());
     }
 }

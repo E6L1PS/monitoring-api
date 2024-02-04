@@ -7,23 +7,47 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+/**
+ * Представляет сущность утилитарного счетчика.
+ *
+ * @author Pesternikov Danil
+ */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class UtilityMeterEntity {
 
+    /**
+     * Уникальный идентификатор счетчика.
+     */
     private Long id;
 
+    /**
+     * Уникальный идентификатор пользователя, которому принадлежит счетчик.
+     */
     private Long userId;
 
+    /**
+     * Тип счетчика.
+     */
     private String type;
 
-    /** Показания счетчика.*/
+    /**
+     * Показания счетчика.
+     */
     private Double counter;
 
-    /**  Дата считывания показаний счетчика.*/
+    /**
+     * Дата считывания показаний счетчика.
+     */
     private LocalDate readingsDate;
+
+    /**
+     * Возвращает строковое представление этой сущности счетчика.
+     *
+     * @return строковое представление этой сущности счетчика.
+     */
     @Override
     public String toString() {
         return "Тип счетчика: " + type +

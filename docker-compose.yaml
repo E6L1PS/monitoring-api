@@ -22,7 +22,7 @@ services:
     tty: true
     env_file:
       - .env
-  #docker-compose exec -i api-node-1  java -jar application.jar
+
   postgres-node-1:
     image: 'postgres:16.1'
     container_name: postgres-node-1

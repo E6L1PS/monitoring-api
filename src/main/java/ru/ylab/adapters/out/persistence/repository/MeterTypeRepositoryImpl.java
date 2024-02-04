@@ -15,15 +15,16 @@ import java.util.List;
 public class MeterTypeRepositoryImpl implements MeterTypeRepository {
 
     private static final String SQL_SELECT_ALL = """
-            SELECT * FROM meter_type
+            SELECT * FROM monitoring_schema.meter_type
             """;
 
     private static final String SQL_SELECT_COUNT_BY_NAME = """
-            SELECT COUNT(*) FROM meter_type WHERE name = ?;
+            SELECT COUNT(*) FROM monitoring_schema.meter_type
+            WHERE name = ?;
             """;
 
     private static final String SQL_INSERT = """
-            INSERT INTO meter_type 
+            INSERT INTO monitoring_schema.meter_type 
             (name) 
             VALUES (?)
             """;
@@ -54,7 +55,7 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
             if (resultSet.next()) {
                 return resultSet.getLong(1) > 0;
             } else {
-                return false;
+                throw new RuntimeException("isMeterTypeExists error!");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -62,7 +63,7 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
     }
 
     @Override
-    public MeterTypeEntity createType(String typeName) {
+    public MeterTypeEntity save(String typeName) {
         try (var statement = ConnectionManager.open().prepareStatement(SQL_INSERT)) {
             statement.setString(1, typeName);
             statement.executeUpdate();

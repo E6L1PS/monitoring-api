@@ -16,11 +16,12 @@ import java.util.List;
 public class AuditRepositoryImpl implements AuditRepository {
 
     private static final String SQL_SELECT_ALL = """
-            SELECT * FROM audit ORDER BY created_at
+            SELECT * FROM monitoring_schema.audit
+            ORDER BY created_at
             """;
 
     private static final String SQL_INSERT = """
-            INSERT INTO audit 
+            INSERT INTO monitoring_schema.audit
             (info, created_at, user_id) 
             VALUES (?, ?, ?)
             """;
@@ -47,7 +48,7 @@ public class AuditRepositoryImpl implements AuditRepository {
     }
 
     @Override
-    public void saveAudit(AuditEntity auditEntity) {
+    public void save(AuditEntity auditEntity) {
         try (var statement = ConnectionManager.open().prepareStatement(SQL_INSERT)) {
             statement.setString(1, auditEntity.getInfo());
             statement.setTimestamp(2, Timestamp.valueOf(auditEntity.getDateTime()));

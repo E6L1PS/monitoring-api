@@ -27,8 +27,8 @@ public class AddNewMeterTypeImpl implements AddNewMeterType {
     @Override
     public void execute(String name) {
         if (userRepository.getCurrentRoleUser() == Role.ADMIN) {
-            meterTypeRepository.createType(name);
-            auditRepository.saveAudit(AuditEntity.builder()
+            meterTypeRepository.save(name);
+            auditRepository.save(AuditEntity.builder()
                     .info("Добавлен новый тип счетчика: " + name)
                     .dateTime(LocalDateTime.now())
                     .userId(userRepository.getCurrentUserId())

@@ -29,5 +29,5 @@ public interface AuditRepository {
      *
      * @param auditEntity Аудит-запись для сохранения.
      */
-    void saveAudit(AuditEntity auditEntity);
+    void save(AuditEntity auditEntity);
 }

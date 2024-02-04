@@ -16,34 +16,36 @@ import java.util.List;
 public class MeterRepositoryImpl implements MeterRepository {
 
     private static final String SQL_SELECT_ALL = """
-            SELECT * FROM utility_meter
+            SELECT * FROM monitoring_schema.utility_meter
             """;
 
     private static final String SQL_SELECT_ALL_BY_USER_ID = """
-            SELECT * FROM utility_meter WHERE user_id = ?
+            SELECT * FROM monitoring_schema.utility_meter
+            WHERE user_id = ?
             """;
 
     private static final String SQL_SELECT_ALL_BY_USER_ID_LAST = """
-            SELECT * FROM utility_meter WHERE user_id = ? AND readings_date = (
+            SELECT * FROM monitoring_schema.utility_meter
+            WHERE user_id = ? AND readings_date = (
                 SELECT readings_date
-                FROM utility_meter
-                ORDER BY readings_date
+                FROM monitoring_schema.utility_meter
+                ORDER BY readings_date DESC
                 LIMIT 1
                 );
             """;
 
     private static final String SQL_SELECT_COUNT_BY_USER_ID_AND_DATE = """
-            SELECT COUNT(*) FROM utility_meter
+            SELECT COUNT(*) FROM monitoring_schema.utility_meter
             WHERE user_id = ? AND EXTRACT(MONTH FROM readings_date) = EXTRACT(MONTH FROM CURRENT_DATE)
             """;
 
     private static final String SQL_SELECT_ALL_BY_USER_ID_AND_DATE = """
-            SELECT * FROM utility_meter
+            SELECT * FROM monitoring_schema.utility_meter
             WHERE user_id = ? AND EXTRACT(MONTH FROM readings_date) = ?
             """;
 
     private static final String SQL_INSERT = """
-            INSERT INTO utility_meter
+            INSERT INTO monitoring_schema.utility_meter
             (counter, readings_date, user_id, type)
             VALUES (?, ?, ?, ?)
             """;
@@ -118,7 +120,7 @@ public class MeterRepositoryImpl implements MeterRepository {
     }
 
     @Override
-    public List<UtilityMeterEntity> findByMonth(Integer month, Long userId) {
+    public List<UtilityMeterEntity> findByMonthAndUserId(Integer month, Long userId) {
         try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_ALL_BY_USER_ID_AND_DATE)) {
             statement.setLong(1, userId);
             statement.setLong(2, month);
@@ -144,7 +146,7 @@ public class MeterRepositoryImpl implements MeterRepository {
     }
 
     @Override
-    public Boolean isSubmitted(Integer month, Long userId) {
+    public Boolean isSubmitted(Long userId) {
         try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_COUNT_BY_USER_ID_AND_DATE)) {
             statement.setLong(1, userId);
             var resultSet = statement.executeQuery();
@@ -160,7 +162,7 @@ public class MeterRepositoryImpl implements MeterRepository {
     }
 
     @Override
-    public UtilityMeterEntity create(UtilityMeterEntity utilityMeterEntity) {
+    public UtilityMeterEntity save(UtilityMeterEntity utilityMeterEntity) {
         try (var statement = ConnectionManager.open().prepareStatement(SQL_INSERT)) {
             statement.setDouble(1, utilityMeterEntity.getCounter());
             statement.setDate(2, Date.valueOf(utilityMeterEntity.getReadingsDate()));

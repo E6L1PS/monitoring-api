@@ -29,7 +29,7 @@ public class RegisterUserImpl implements RegisterUser {
             User user = UserMapper.INSTANCE.toUser(registerModel);
             if (user.usernameIsValid() && user.passwordIsValid()) {
                 var userId = userRepository.save(UserMapper.INSTANCE.userToUserEntity(user));
-                auditRepository.saveAudit(
+                auditRepository.save(
                         AuditEntity.builder()
                                 .info("Новый пользователь зарегистрирован")
                                 .dateTime(LocalDateTime.now())

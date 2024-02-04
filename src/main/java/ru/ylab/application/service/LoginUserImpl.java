@@ -33,7 +33,7 @@ public class LoginUserImpl implements LoginUser {
 
         if (Objects.equals(userEntity.getPassword(), loginModel.password())) {
             userRepository.setupCurrentUser(userEntity);
-            auditRepository.saveAudit(
+            auditRepository.save(
                     AuditEntity.builder()
                             .info("Авторизация выполнена")
                             .dateTime(LocalDateTime.now())

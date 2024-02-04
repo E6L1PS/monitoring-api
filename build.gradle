@@ -63,6 +63,9 @@ dependencies {
 
     annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
 
+    testImplementation 'org.testcontainers:junit-jupiter:1.19.4'
+    testImplementation "org.testcontainers:postgresql:1.19.4"
+    testImplementation 'org.assertj:assertj-core:3.25.2'
     testImplementation 'org.mockito:mockito-core:5.10.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'

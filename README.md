@@ -10,5 +10,6 @@
 5. Запустите контейнеры: `docker compose up --build -d`
 6. Для запуска интерактивного режима, выполните команду: `docker-compose exec -i api-node-1 java -jar application.jar`
 
+## Entity Relationship Diagram
 ![ERD](src/main/resources/MonitoringERD.png)
 

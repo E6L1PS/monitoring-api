@@ -16,40 +16,22 @@ import java.sql.Types;
 public class UserRepositoryImpl implements UserRepository {
 
     private static final String SQL_INSERT = """
-            INSERT INTO monitoring_schema.user 
-            (username, password, role) 
+            INSERT INTO monitoring_schema.user
+            (username, password, role)
             VALUES (?, ?, ?)
             """;
 
     private static final String SQL_SELECT_USER_BY_USERNAME = """
-            SELECT * FROM monitoring_schema.user WHERE username = ?;
+            SELECT * FROM monitoring_schema.user
+            WHERE username = ?;
             """;
 
     private static final String SQL_SELECT_COUNT_BY_USERNAME = """
-            SELECT COUNT(*) FROM monitoring_schema.user WHERE username = ?;
+            SELECT COUNT(*) FROM monitoring_schema.user
+            WHERE username = ?;
             """;
 
-    private UserEntity userEntity;
-
-    @Override
-    public Long save(UserEntity userEntity) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setString(1, userEntity.getUsername());
-            statement.setString(2, userEntity.getPassword());
-            statement.setObject(3, userEntity.getRole(), Types.OTHER);
-            statement.executeUpdate();
-
-            var keys = statement.getGeneratedKeys();
-
-            if (keys.next()) {
-                return keys.getLong("id");
-            } else {
-                return -1L;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    private UserEntity currentUser;
 
     @Override
     public UserEntity getByUsername(String username) {
@@ -79,7 +61,29 @@ public class UserRepositoryImpl implements UserRepository {
             if (resultSet.next()) {
                 int count = resultSet.getInt(1);
                 return count > 0; // Если пользователь существует, вернуть true
-            } else return false;
+            } else {
+                throw new RuntimeException("isAlreadyExists error");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Long save(UserEntity userEntity) {
+        try (var statement = ConnectionManager.open().prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, userEntity.getUsername());
+            statement.setString(2, userEntity.getPassword());
+            statement.setObject(3, userEntity.getRole(), Types.OTHER);
+            statement.executeUpdate();
+
+            var keys = statement.getGeneratedKeys();
+
+            if (keys.next()) {
+                return keys.getLong("id");
+            } else {
+                throw new RuntimeException("save error!");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -87,26 +91,26 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Long getCurrentUserId() {
-        return userEntity.getId();
+        return currentUser.getId();
     }
 
     @Override
     public Role getCurrentRoleUser() {
-        if (userEntity == null) {
+        if (currentUser == null) {
             return Role.USER;
         } else {
-            return userEntity.getRole();
+            return currentUser.getRole();
         }
     }
 
     @Override
     public UserEntity setupCurrentUser(UserEntity userEntity) {
-        this.userEntity = userEntity;
+        this.currentUser = userEntity;
         return userEntity;
     }
 
     @Override
     public void logout() {
-        userEntity = null;
+        currentUser = null;
     }
 }

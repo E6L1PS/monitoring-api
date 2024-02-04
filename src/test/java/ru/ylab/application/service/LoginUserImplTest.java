@@ -13,7 +13,7 @@ import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.UserRepository;
 import ru.ylab.domain.model.Role;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 class LoginUserImplTest {
@@ -43,7 +43,7 @@ class LoginUserImplTest {
         loginUser.execute(loginModel);
 
         verify(userRepository, times(1)).setupCurrentUser(any());
-        verify(auditRepository, times(1)).saveAudit(any());
+        verify(auditRepository, times(1)).save(any());
     }
 
     @Test
@@ -51,10 +51,11 @@ class LoginUserImplTest {
         LoginModel loginModel = new LoginModel("testUser", "wrongPassword");
         when(userRepository.getByUsername(anyString())).thenReturn(user);
 
-        assertThrows(IncorrectPasswordException.class, () -> loginUser.execute(loginModel));
+        assertThatThrownBy(() -> loginUser.execute(loginModel))
+                .isInstanceOf(IncorrectPasswordException.class);
 
         verify(userRepository, never()).setupCurrentUser(any());
-        verify(auditRepository, never()).saveAudit(any());
+        verify(auditRepository, never()).save(any());
     }
 
     @Test
@@ -62,9 +63,10 @@ class LoginUserImplTest {
         LoginModel loginModel = new LoginModel("nonExistentUser", "password");
         when(userRepository.getByUsername(anyString())).thenReturn(null);
 
-        assertThrows(UserNotFoundException.class, () -> loginUser.execute(loginModel));
+        assertThatThrownBy(() -> loginUser.execute(loginModel))
+                .isInstanceOf(UserNotFoundException.class);
 
         verify(userRepository, never()).setupCurrentUser(any());
-        verify(auditRepository, never()).saveAudit(any());
+        verify(auditRepository, never()).save(any());
     }
 }
