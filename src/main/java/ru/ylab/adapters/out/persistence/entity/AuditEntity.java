@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * Представляет сущность аудита, которая хранит информацию о действии пользователя.
+ * Представляет сущность аудита для бд, которая хранит информацию о действии пользователя.
  *
  * @author Pesternikov Danil
  */

@@ -44,7 +44,6 @@ class IntegrationTest {
                     .withPassword(PASSWORD)
                     .withInitScript("test.init-schema.sql");
 
-
     AuditRepository auditRepository = new AuditRepositoryImpl();
     UserRepository userRepository = new UserRepositoryImpl();
     MeterRepository meterRepository = new MeterRepositoryImpl();
@@ -122,7 +121,6 @@ class IntegrationTest {
         assertThat(submitted).isTrue();
         assertThat(notSubmitted).isFalse();
     }
-
 
     @Test
     void meterTypeRepositoryTest() {

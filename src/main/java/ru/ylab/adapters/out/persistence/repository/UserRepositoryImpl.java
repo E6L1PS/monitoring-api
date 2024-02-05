@@ -4,6 +4,7 @@ import lombok.NoArgsConstructor;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
 import ru.ylab.adapters.out.persistence.util.ConnectionManager;
 import ru.ylab.annotations.Singleton;
+import ru.ylab.application.exception.UserNotFoundException;
 import ru.ylab.application.out.UserRepository;
 import ru.ylab.domain.model.Role;
 
@@ -11,28 +12,55 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 
+/**
+ * Класс {@code UserRepositoryImpl} представляет собой реализацию интерфейса {@link UserRepository},
+ * предоставляя методы для взаимодействия с данными о пользователях в системе мониторинга.
+ *
+ * <p>Этот класс помечен аннотацией {@link Singleton} для обеспечения использования единственного
+ * экземпляра на протяжении всего приложения. Также имеет конструктор без аргументов, помеченный
+ * аннотацией {@link NoArgsConstructor}.
+ *
+ * <p>Реализация включает SQL-запросы для извлечения и сохранения информации о пользователях в базе данных.
+ *
+ * @author Pesternikov Danil
+ */
 @Singleton
 @NoArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
 
+    /**
+     * SQL-запрос для вставки нового пользователя в базу данных.
+     */
     private static final String SQL_INSERT = """
             INSERT INTO monitoring_schema.user
             (username, password, role)
             VALUES (?, ?, ?)
             """;
 
+    /**
+     * SQL-запрос для выбора пользователя по имени пользователя из базы данных.
+     */
     private static final String SQL_SELECT_USER_BY_USERNAME = """
             SELECT * FROM monitoring_schema.user
             WHERE username = ?;
             """;
 
+    /**
+     * SQL-запрос для подсчета пользователей по имени пользователя.
+     */
     private static final String SQL_SELECT_COUNT_BY_USERNAME = """
             SELECT COUNT(*) FROM monitoring_schema.user
             WHERE username = ?;
             """;
 
+    /**
+     * Текущий пользователь, авторизованный в системе.
+     */
     private UserEntity currentUser;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserEntity getByUsername(String username) {
         try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_USER_BY_USERNAME)) {
@@ -46,13 +74,16 @@ public class UserRepositoryImpl implements UserRepository {
                         .role(Role.valueOf(resultSet.getString("role")))
                         .build();
             } else {
-                throw new RuntimeException("User Not Found");
+                throw new UserNotFoundException("User Not Found");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Boolean isAlreadyExists(String username) {
         try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_COUNT_BY_USERNAME)) {
@@ -69,6 +100,9 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Long save(UserEntity userEntity) {
         try (var statement = ConnectionManager.open().prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
@@ -89,11 +123,17 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Long getCurrentUserId() {
         return currentUser.getId();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Role getCurrentRoleUser() {
         if (currentUser == null) {
@@ -103,12 +143,18 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserEntity setupCurrentUser(UserEntity userEntity) {
         this.currentUser = userEntity;
         return userEntity;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void logout() {
         currentUser = null;

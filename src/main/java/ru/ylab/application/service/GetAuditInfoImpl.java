@@ -8,12 +8,20 @@ import ru.ylab.application.out.AuditRepository;
 
 import java.util.List;
 
+/**
+ * {@inheritDoc}
+ *
+ * @author Pesternikov Danil
+ */
 @Singleton
 public class GetAuditInfoImpl implements GetAuditInfo {
 
     @Autowired
     private AuditRepository auditRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<AuditEntity> execute() {
         return auditRepository.findAll();

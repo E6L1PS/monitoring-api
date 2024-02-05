@@ -16,6 +16,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+/**
+ * {@inheritDoc}
+ *
+ * @author Pesternikov Danil
+ */
 @Singleton
 public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
 
@@ -31,6 +36,12 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
     @Autowired
     private MeterTypeRepository meterTypeRepository;
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws NotValidMeterTypeException  в случае если такого типа счетчика не существует
+     * @throws MonthlySubmitLimitException в случае если пользователь уже подавал показания в текущем месяце
+     */
     @Override
     public void execute(Map<String, Double> utilityMeters) {
         var userId = userRepository.getCurrentUserId();
@@ -53,7 +64,7 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
                                     .userId(userId)
                                     .build());
                 } else {
-                    throw new NotValidMeterTypeException("Not valid type!");
+                    throw new NotValidMeterTypeException("Такой тип не существует!");
                 }
             });
         } else {

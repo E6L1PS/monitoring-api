@@ -14,6 +14,11 @@ import ru.ylab.domain.model.User;
 
 import java.time.LocalDateTime;
 
+/**
+ * {@inheritDoc}
+ *
+ * @author Pesternikov Danil
+ */
 @Singleton
 public class RegisterUserImpl implements RegisterUser {
 
@@ -23,6 +28,12 @@ public class RegisterUserImpl implements RegisterUser {
     @Autowired
     private AuditRepository auditRepository;
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws NotValidUsernameOrPasswordException в случае некорректного username/password
+     * @throws UsernameAlreadyExistsException      в случае если пользователь уже существует с таким username
+     */
     @Override
     public void execute(RegisterModel registerModel) {
         if (!userRepository.isAlreadyExists(registerModel.username())) {
@@ -41,7 +52,7 @@ public class RegisterUserImpl implements RegisterUser {
             }
         } else {
             throw new UsernameAlreadyExistsException("Пользователь с именем: '" +
-                    registerModel.username() + "' уже существует!");
+                                                     registerModel.username() + "' уже существует!");
         }
     }
 }

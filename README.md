@@ -13,3 +13,19 @@
 ## Entity Relationship Diagram
 ![ERD](src/main/resources/MonitoringERD.png)
 
+## Используемый стек:
+- Docker
+- PostgreSQL JDBC Driver
+- Liquibase
+- MapStruct
+- Lombok
+- Тестирование:
+    - Testcontainers для PostgreSQL
+    - AssertJ
+    - Mockito
+    - JUnit 5
+## Tasks:
+1. [Task-1](https://github.com/E6L1PS/monitoring-api/tree/task-1) (Вводная)
+2. [Task-2](https://github.com/E6L1PS/monitoring-api/pull/2) (JDBC. Миграции БД)
+
+

@@ -19,17 +19,17 @@ public interface MeterTypeRepository {
     List<MeterTypeEntity> findAll();
 
     /**
-     * Проверяет, является ли указанный тип счетчика допустимым.
-     *
-     * @return true, если тип счетчика допустим, в противном случае - false.
-     */
-    Boolean isMeterTypeExists(String typeName);
-
-    /**
      * Создает новый тип счетчика с указанным именем.
      *
      * @param typeName имя нового типа счетчика.
      * @return Объект MeterTypeEntity, представляющий созданный тип счетчика.
      */
     MeterTypeEntity save(String typeName);
+
+    /**
+     * Проверяет, является ли указанный тип счетчика допустимым.
+     *
+     * @return true, если тип счетчика допустим, в противном случае - false.
+     */
+    Boolean isMeterTypeExists(String typeName);
 }

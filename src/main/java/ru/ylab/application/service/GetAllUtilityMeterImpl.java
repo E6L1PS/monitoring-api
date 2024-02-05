@@ -15,6 +15,11 @@ import ru.ylab.domain.model.Role;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * {@inheritDoc}
+ *
+ * @author Pesternikov Danil
+ */
 @Singleton
 public class GetAllUtilityMeterImpl implements GetAllUtilityMeter {
 
@@ -27,6 +32,9 @@ public class GetAllUtilityMeterImpl implements GetAllUtilityMeter {
     @Autowired
     private AuditRepository auditRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UtilityMeterModel> execute() {
         var role = userRepository.getCurrentRoleUser();

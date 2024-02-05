@@ -36,12 +36,9 @@ public final class ConnectionManager {
                 url = System.getProperty(URL_KEY);
                 username = System.getProperty(USERNAME_KEY);
                 password = System.getProperty(PASSWORD_KEY);
-
             }
-            return DriverManager.getConnection(
-                    url,
-                    username,
-                    password);
+
+            return DriverManager.getConnection(url, username, password);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

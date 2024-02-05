@@ -9,12 +9,20 @@ import ru.ylab.domain.model.MeterType;
 
 import java.util.List;
 
+/**
+ * {@inheritDoc}
+ *
+ * @author Pesternikov Danil
+ */
 @Singleton
 public class GetUtilityMeterTypesImpl implements GetUtilityMeterTypes {
 
     @Autowired
     private MeterTypeRepository meterTypeRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<MeterType> execute() {
         var types = meterTypeRepository.findAll();

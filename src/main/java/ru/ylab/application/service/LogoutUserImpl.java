@@ -10,6 +10,11 @@ import ru.ylab.application.out.UserRepository;
 
 import java.time.LocalDateTime;
 
+/**
+ * {@inheritDoc}
+ *
+ * @author Pesternikov Danil
+ */
 @Singleton
 @NoArgsConstructor
 public class LogoutUserImpl implements LogoutUser {
@@ -20,6 +25,9 @@ public class LogoutUserImpl implements LogoutUser {
     @Autowired
     private AuditRepository auditRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute() {
         var userId = userRepository.getCurrentUserId();

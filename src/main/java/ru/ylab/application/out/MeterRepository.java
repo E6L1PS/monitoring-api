@@ -22,7 +22,7 @@ public interface MeterRepository {
     /**
      * Получает все счетчики коммунальных услуг, связанные с определенным именем пользователя.
      *
-     * @param userId имя пользователя
+     * @param userId id пользователя
      * @return Список объектов UtilityMeterEntity, представляющих все счетчики коммунальных услуг для данного пользователя.
      */
     List<UtilityMeterEntity> findAllByUserId(Long userId);
@@ -30,7 +30,7 @@ public interface MeterRepository {
     /**
      * Получает последний счетчик коммунальных услуг для определенного пользователя.
      *
-     * @param userId имя пользователя
+     * @param userId id пользователя
      * @return Список объектов UtilityMeterEntity, представляющих последний счетчик коммунальных услуг для данного пользователя.
      */
     List<UtilityMeterEntity> findLastByUserId(Long userId);
@@ -39,12 +39,10 @@ public interface MeterRepository {
      * Получает счетчики коммунальных услуг для определенного месяца и пользователя.
      *
      * @param month  Месяц (число от 1 до 12)
-     * @param userId имя пользователя
+     * @param userId id пользователя
      * @return Список объектов UtilityMeterEntity, представляющих счетчики коммунальных услуг для данного пользователя в указанный месяц.
      */
     List<UtilityMeterEntity> findByMonthAndUserId(Integer month, Long userId);
-
-    Boolean isSubmitted(Long userId);
 
     /**
      * Создает новый счетчик коммунальных услуг.
@@ -53,4 +51,12 @@ public interface MeterRepository {
      * @return Созданный счетчик коммунальных услуг.
      */
     UtilityMeterEntity save(UtilityMeterEntity utilityMeterEntity);
+
+    /**
+     * Проверяет поданы ли показания в текущем месяце.
+     *
+     * @param userId id пользователя
+     * @return True - если уже подано, false - если еще не подано.
+     */
+    Boolean isSubmitted(Long userId);
 }

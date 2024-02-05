@@ -11,21 +11,43 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс {@code AuditRepositoryImpl} представляет собой реализацию интерфейса {@link AuditRepository},
+ * предоставляя методы для взаимодействия с данными аудита в системе мониторинга.
+ *
+ * <p>Этот класс помечен аннотацией {@link Singleton} для обеспечения использования единственного
+ * экземпляра на протяжении всего приложения. Также имеет конструктор без аргументов, помеченный
+ * аннотацией {@link NoArgsConstructor}.
+ *
+ * <p>Реализация включает SQL-запросы для извлечения и сохранения информации об аудите в базе данных.
+ *
+ * @author Pesternikov Danil
+ */
 @Singleton
 @NoArgsConstructor
 public class AuditRepositoryImpl implements AuditRepository {
 
+    /**
+     * SQL-запрос для выбора всех записей аудита из базы данных, упорядоченных по времени создания.
+     */
     private static final String SQL_SELECT_ALL = """
             SELECT * FROM monitoring_schema.audit
             ORDER BY created_at
             """;
 
+
+    /**
+     * SQL-запрос для вставки новой записи аудита в базу данных.
+     */
     private static final String SQL_INSERT = """
             INSERT INTO monitoring_schema.audit
             (info, created_at, user_id) 
             VALUES (?, ?, ?)
             """;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<AuditEntity> findAll() {
         try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_ALL)) {
@@ -47,6 +69,9 @@ public class AuditRepositoryImpl implements AuditRepository {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void save(AuditEntity auditEntity) {
         try (var statement = ConnectionManager.open().prepareStatement(SQL_INSERT)) {

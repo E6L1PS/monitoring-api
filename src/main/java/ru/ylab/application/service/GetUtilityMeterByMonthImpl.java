@@ -13,6 +13,11 @@ import ru.ylab.application.out.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * {@inheritDoc}
+ *
+ * @author Pesternikov Danil
+ */
 @Singleton
 public class GetUtilityMeterByMonthImpl implements GetUtilityMeterByMonth {
 
@@ -25,6 +30,9 @@ public class GetUtilityMeterByMonthImpl implements GetUtilityMeterByMonth {
     @Autowired
     private AuditRepository auditRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UtilityMeterModel> execute(Integer month) {
         var userId = userRepository.getCurrentUserId();

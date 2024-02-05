@@ -11,19 +11,40 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс {@code MeterRepositoryImpl} представляет собой реализацию интерфейса {@link MeterRepository},
+ * предоставляя методы для взаимодействия с данными счетчиков в системе мониторинга.
+ *
+ * <p>Этот класс помечен аннотацией {@link Singleton} для обеспечения использования единственного
+ * экземпляра на протяжении всего приложения. Также имеет конструктор без аргументов, помеченный
+ * аннотацией {@link NoArgsConstructor}.
+ *
+ * <p>Реализация включает SQL-запросы для извлечения и сохранения информации о счетчиках в базе данных.
+ *
+ * @author Pesternikov Danil
+ */
 @Singleton
 @NoArgsConstructor
 public class MeterRepositoryImpl implements MeterRepository {
 
+    /**
+     * SQL-запрос для выбора всех записей о счетчиках из базы данных.
+     */
     private static final String SQL_SELECT_ALL = """
             SELECT * FROM monitoring_schema.utility_meter
             """;
 
+    /**
+     * SQL-запрос для выбора всех записей о счетчиках по идентификатору пользователя из базы данных.
+     */
     private static final String SQL_SELECT_ALL_BY_USER_ID = """
             SELECT * FROM monitoring_schema.utility_meter
             WHERE user_id = ?
             """;
 
+    /**
+     * SQL-запрос для выбора последних записей о счетчиках по идентификатору пользователя из базы данных.
+     */
     private static final String SQL_SELECT_ALL_BY_USER_ID_LAST = """
             SELECT * FROM monitoring_schema.utility_meter
             WHERE user_id = ? AND readings_date = (
@@ -34,22 +55,34 @@ public class MeterRepositoryImpl implements MeterRepository {
                 );
             """;
 
+    /**
+     * SQL-запрос для подсчета записей о счетчиках по идентификатору пользователя и месяцу.
+     */
     private static final String SQL_SELECT_COUNT_BY_USER_ID_AND_DATE = """
             SELECT COUNT(*) FROM monitoring_schema.utility_meter
             WHERE user_id = ? AND EXTRACT(MONTH FROM readings_date) = EXTRACT(MONTH FROM CURRENT_DATE)
             """;
 
+    /**
+     * SQL-запрос для выбора всех записей о счетчиках по идентификатору пользователя и месяцу.
+     */
     private static final String SQL_SELECT_ALL_BY_USER_ID_AND_DATE = """
             SELECT * FROM monitoring_schema.utility_meter
             WHERE user_id = ? AND EXTRACT(MONTH FROM readings_date) = ?
             """;
 
+    /**
+     * SQL-запрос для вставки новой записи о счетчике в базу данных.
+     */
     private static final String SQL_INSERT = """
             INSERT INTO monitoring_schema.utility_meter
             (counter, readings_date, user_id, type)
             VALUES (?, ?, ?, ?)
             """;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UtilityMeterEntity> findAll() {
         try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_ALL)) {
@@ -72,6 +105,9 @@ public class MeterRepositoryImpl implements MeterRepository {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UtilityMeterEntity> findAllByUserId(Long userId) {
         try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_ALL_BY_USER_ID)) {
@@ -96,6 +132,9 @@ public class MeterRepositoryImpl implements MeterRepository {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UtilityMeterEntity> findLastByUserId(Long userId) {
         try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_ALL_BY_USER_ID_LAST)) {
@@ -119,6 +158,9 @@ public class MeterRepositoryImpl implements MeterRepository {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UtilityMeterEntity> findByMonthAndUserId(Integer month, Long userId) {
         try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_ALL_BY_USER_ID_AND_DATE)) {
@@ -145,6 +187,9 @@ public class MeterRepositoryImpl implements MeterRepository {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Boolean isSubmitted(Long userId) {
         try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_COUNT_BY_USER_ID_AND_DATE)) {
@@ -161,6 +206,9 @@ public class MeterRepositoryImpl implements MeterRepository {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UtilityMeterEntity save(UtilityMeterEntity utilityMeterEntity) {
         try (var statement = ConnectionManager.open().prepareStatement(SQL_INSERT)) {

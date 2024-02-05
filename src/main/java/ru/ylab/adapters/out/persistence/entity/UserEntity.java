@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import ru.ylab.domain.model.Role;
 
 /**
- * Представляет сущность пользователя.
+ * Представляет сущность пользователя для бд.
  *
  * @author Pesternikov Danil
  */

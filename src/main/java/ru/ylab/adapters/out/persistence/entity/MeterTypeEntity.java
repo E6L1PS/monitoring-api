@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Представляет сущность типа счетчика.
+ * Представляет сущность типа счетчика для бд.
  *
  * @author Pesternikov Danil
  */
