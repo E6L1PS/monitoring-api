@@ -1,11 +1,12 @@
 package ru.ylab.application.service;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
 import ru.ylab.application.exception.MonthlySubmitLimitException;
 import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.MeterRepository;
@@ -15,10 +16,8 @@ import ru.ylab.application.out.UserRepository;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -39,8 +38,6 @@ class SubmitUtilityMeterImplTest {
     @InjectMocks
     private SubmitUtilityMeterImpl submitUtilityMeter;
 
-    private List<MeterRepository> meterRepositoryList;
-
     private Map<String, Double> utilityMeters;
 
     @BeforeEach
@@ -52,24 +49,26 @@ class SubmitUtilityMeterImplTest {
     }
 
     @Test
+    @DisplayName("Если в этом месяце еще не подавали показания")
     void testExecuteWhenMonthlyLimitNotExceeded() {
         int month = LocalDate.now().getMonthValue();
-        String username = "testUser";
-        when(userRepository.getCurrentUsername()).thenReturn(username);
-        when(meterTypeRepository.isValid(any())).thenReturn(true);
-        when(meterRepository.findByMonth(month, username)).thenReturn(Collections.emptyList());
+        Long userId = 1L;
+        when(userRepository.getCurrentUserId()).thenReturn(userId);
+        when(meterTypeRepository.isMeterTypeExists(any())).thenReturn(true);
+        when(meterRepository.findByMonthAndUserId(month, userId)).thenReturn(Collections.emptyList());
 
         submitUtilityMeter.execute(utilityMeters);
 
-        verify(meterRepository, times(1)).create(any());
-        verify(auditRepository, times(1)).saveAudit(any());
+        verify(meterRepository, times(1)).save(any());
+        verify(auditRepository, times(1)).save(any());
     }
 
     @Test
+    @DisplayName("Если в этом месяце уже подавали показания")
     void testExecuteWhenMonthlyLimitExceeded() {
-        when(meterTypeRepository.isValid(any())).thenReturn(true);
-        when(meterRepository.findByMonth(any(), any())).thenReturn(List.of(UtilityMeterEntity.builder().build()));
+        when(meterRepository.isSubmitted(any())).thenReturn(true);
 
-        assertThrows(MonthlySubmitLimitException.class, () -> submitUtilityMeter.execute(utilityMeters));
+        Assertions.assertThatThrownBy(() -> submitUtilityMeter.execute(utilityMeters))
+                .isInstanceOf(MonthlySubmitLimitException.class);
     }
 }

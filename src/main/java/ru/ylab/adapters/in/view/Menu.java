@@ -186,8 +186,8 @@ public class Menu {
                 MenuItem.builder()
                         .title("2. <--- Просмотреть все показания")
                         .action(() -> {
-                            Map<String, List<UtilityMeterModel>> groupedByDate = getAllUtilityMeter.execute().stream()
-                                    .collect(Collectors.groupingBy(UtilityMeterModel::username));
+                            Map<Long, List<UtilityMeterModel>> groupedByDate = getAllUtilityMeter.execute().stream()
+                                    .collect(Collectors.groupingBy(UtilityMeterModel::userId));
                             groupedByDate.forEach((username, models) -> {
                                 System.out.println("Username: " + username);
                                 models.forEach(System.out::println);
@@ -197,6 +197,7 @@ public class Menu {
                 MenuItem.builder()
                         .title("3. <--- Добавить новый тип показания")
                         .action(() -> {
+                            System.out.println("Введите новый тип показания");
                             Scanner scanner = new Scanner(System.in);
                             var typeName = scanner.nextLine();
                             addNewMeterType.execute(typeName);

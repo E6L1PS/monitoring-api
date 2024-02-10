@@ -15,6 +15,11 @@ import ru.ylab.domain.model.Role;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * {@inheritDoc}
+ *
+ * @author Pesternikov Danil
+ */
 @Singleton
 public class GetAllUtilityMeterImpl implements GetAllUtilityMeter {
 
@@ -27,6 +32,9 @@ public class GetAllUtilityMeterImpl implements GetAllUtilityMeter {
     @Autowired
     private AuditRepository auditRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UtilityMeterModel> execute() {
         var role = userRepository.getCurrentRoleUser();
@@ -34,13 +42,13 @@ public class GetAllUtilityMeterImpl implements GetAllUtilityMeter {
         if (role == Role.ADMIN) {
             entityList = meterRepository.findAll();
         } else {
-            var username = userRepository.getCurrentUsername();
-            entityList = meterRepository.findAllByUsername(username);
+            var userId = userRepository.getCurrentUserId();
+            entityList = meterRepository.findAllByUserId(userId);
         }
-        auditRepository.saveAudit(AuditEntity.builder()
+        auditRepository.save(AuditEntity.builder()
                 .info("Получена история подачи показаний")
                 .dateTime(LocalDateTime.now())
-                .username(userRepository.getCurrentUsername())
+                .userId(userRepository.getCurrentUserId())
                 .build());
         return UtilityMeterMapper.INSTANCE.entitiesToListUtilityMeterModel(entityList);
     }

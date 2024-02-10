@@ -14,6 +14,11 @@ import ru.ylab.application.out.UserRepository;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * {@inheritDoc}
+ *
+ * @author Pesternikov Danil
+ */
 @Singleton
 public class LoginUserImpl implements LoginUser {
 
@@ -23,6 +28,12 @@ public class LoginUserImpl implements LoginUser {
     @Autowired
     private AuditRepository auditRepository;
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws UserNotFoundException      в случае если пользователь с таким username не найден
+     * @throws IncorrectPasswordException в случае если пользователь ввел не верный пароль
+     */
     @Override
     public void execute(LoginModel loginModel) {
         UserEntity userEntity = userRepository.getByUsername(loginModel.username());
@@ -33,11 +44,11 @@ public class LoginUserImpl implements LoginUser {
 
         if (Objects.equals(userEntity.getPassword(), loginModel.password())) {
             userRepository.setupCurrentUser(userEntity);
-            auditRepository.saveAudit(
+            auditRepository.save(
                     AuditEntity.builder()
                             .info("Авторизация выполнена")
                             .dateTime(LocalDateTime.now())
-                            .username(userEntity.getUsername())
+                            .userId(userEntity.getId())
                             .build()
             );
         } else {

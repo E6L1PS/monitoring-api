@@ -17,7 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -43,37 +43,37 @@ class GetUtilityMeterImplTest {
         LocalDate date1 = LocalDate.of(2024, 1, 4);
         LocalDate date2 = LocalDate.of(2024, 2, 4);
         entityList = Arrays.asList(
-                UtilityMeterEntity.builder().username("username1").readingsDate(date1).build(),
-                UtilityMeterEntity.builder().username("username1").readingsDate(date1).build(),
-                UtilityMeterEntity.builder().username("username1").readingsDate(date1).build(),
-                UtilityMeterEntity.builder().username("username1").readingsDate(date2).build(),
-                UtilityMeterEntity.builder().username("username1").readingsDate(date2).build(),
-                UtilityMeterEntity.builder().username("username1").readingsDate(date2).build(),
-                UtilityMeterEntity.builder().username("username2").readingsDate(date1).build(),
-                UtilityMeterEntity.builder().username("username2").readingsDate(date1).build(),
-                UtilityMeterEntity.builder().username("username2").readingsDate(date1).build(),
-                UtilityMeterEntity.builder().username("username2").readingsDate(date2).build(),
-                UtilityMeterEntity.builder().username("username2").readingsDate(date2).build(),
-                UtilityMeterEntity.builder().username("username2").readingsDate(date2).build()
+                UtilityMeterEntity.builder().userId(1L).readingsDate(date1).build(),
+                UtilityMeterEntity.builder().userId(1L).readingsDate(date1).build(),
+                UtilityMeterEntity.builder().userId(1L).readingsDate(date1).build(),
+                UtilityMeterEntity.builder().userId(1L).readingsDate(date2).build(),
+                UtilityMeterEntity.builder().userId(1L).readingsDate(date2).build(),
+                UtilityMeterEntity.builder().userId(1L).readingsDate(date2).build(),
+                UtilityMeterEntity.builder().userId(2L).readingsDate(date1).build(),
+                UtilityMeterEntity.builder().userId(2L).readingsDate(date1).build(),
+                UtilityMeterEntity.builder().userId(2L).readingsDate(date1).build(),
+                UtilityMeterEntity.builder().userId(2L).readingsDate(date2).build(),
+                UtilityMeterEntity.builder().userId(2L).readingsDate(date2).build(),
+                UtilityMeterEntity.builder().userId(2L).readingsDate(date2).build()
         );
     }
 
     @Test
     void testExecute() {
-        String username = "username1";
+        Long userId = 1L;
         var date = entityList.stream()
                 .min(Comparator.comparing(UtilityMeterEntity::getReadingsDate))
                 .get()
                 .getReadingsDate();
         var list = entityList.stream()
-                .filter(meter -> meter.getUsername().equals(username) && meter.getReadingsDate() == date)
+                .filter(meter -> meter.getUserId().equals(userId) && meter.getReadingsDate() == date)
                 .collect(Collectors.toList());
-        when(userRepository.getCurrentUsername()).thenReturn(username);
-        when(meterRepository.findLastByUsername(username)).thenReturn(list);
+        when(userRepository.getCurrentUserId()).thenReturn(userId);
+        when(meterRepository.findLastByUserId(userId)).thenReturn(list);
 
         List<UtilityMeterModel> result = getUtilityMeter.execute();
 
-        verify(auditRepository, times(1)).saveAudit(any());
-        assertEquals(3, result.size());
+        verify(auditRepository, times(1)).save(any());
+        assertThat(result).hasSize(3);
     }
 }

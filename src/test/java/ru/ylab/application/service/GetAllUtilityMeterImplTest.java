@@ -1,6 +1,7 @@
 package ru.ylab.application.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -15,7 +16,7 @@ import ru.ylab.domain.model.Role;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -39,37 +40,39 @@ class GetAllUtilityMeterImplTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         entityList = Arrays.asList(
-                UtilityMeterEntity.builder().username("username1").build(),
-                UtilityMeterEntity.builder().username("username1").build(),
-                UtilityMeterEntity.builder().username("username1").build(),
-                UtilityMeterEntity.builder().username("username2").build(),
-                UtilityMeterEntity.builder().username("username2").build(),
-                UtilityMeterEntity.builder().username("username2").build()
+                UtilityMeterEntity.builder().userId(1L).build(),
+                UtilityMeterEntity.builder().userId(1L).build(),
+                UtilityMeterEntity.builder().userId(1L).build(),
+                UtilityMeterEntity.builder().userId(1L).build(),
+                UtilityMeterEntity.builder().userId(1L).build(),
+                UtilityMeterEntity.builder().userId(1L).build()
         );
     }
 
     @Test
+    @DisplayName("Тест выполнения с ролью ADMIN")
     void testExecuteWithAdminRole() {
         when(userRepository.getCurrentRoleUser()).thenReturn(Role.ADMIN);
         when(meterRepository.findAll()).thenReturn(entityList);
 
         List<UtilityMeterModel> result = getAllUtilityMeter.execute();
 
-        verify(auditRepository, times(1)).saveAudit(any());
-        assertEquals(entityList.size(), result.size());
+        verify(auditRepository, times(1)).save(any());
+        assertThat(entityList).hasSize(result.size());
     }
 
     @Test
+    @DisplayName("Тест выполнения с ролью USER")
     void testExecuteWithUserRole() {
+        Long userId = 1L;
+        when(userRepository.getCurrentUserId()).thenReturn(userId);
         when(userRepository.getCurrentRoleUser()).thenReturn(Role.USER);
-        String username = "username1";
-        when(userRepository.getCurrentUsername()).thenReturn(username);
-        when(meterRepository.findAllByUsername(username)).thenReturn(entityList.subList(0, 3));
+        when(meterRepository.findAllByUserId(userId)).thenReturn(entityList.subList(0, 3));
 
         List<UtilityMeterModel> result = getAllUtilityMeter.execute();
 
-        verify(auditRepository, times(1)).saveAudit(any());
-        assertEquals(3, result.size());
+        verify(auditRepository, times(1)).save(any());
+        assertThat(result).hasSize(3);
     }
 
 }

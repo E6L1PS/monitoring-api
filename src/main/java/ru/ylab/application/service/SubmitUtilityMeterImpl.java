@@ -1,14 +1,12 @@
 package ru.ylab.application.service;
 
 import ru.ylab.adapters.out.persistence.entity.AuditEntity;
-import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
 import ru.ylab.annotations.Autowired;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.exception.MonthlySubmitLimitException;
 import ru.ylab.application.exception.NotValidMeterTypeException;
 import ru.ylab.application.in.SubmitUtilityMeter;
-import ru.ylab.application.mapper.MeterTypeMapper;
 import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.MeterRepository;
 import ru.ylab.application.out.MeterTypeRepository;
@@ -18,6 +16,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+/**
+ * {@inheritDoc}
+ *
+ * @author Pesternikov Danil
+ */
 @Singleton
 public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
 
@@ -33,31 +36,35 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
     @Autowired
     private MeterTypeRepository meterTypeRepository;
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws NotValidMeterTypeException  в случае если такого типа счетчика не существует
+     * @throws MonthlySubmitLimitException в случае если пользователь уже подавал показания в текущем месяце
+     */
     @Override
     public void execute(Map<String, Double> utilityMeters) {
-        var username = userRepository.getCurrentUsername();
-        var readingsDate = LocalDate.now();
-        if (meterRepository.findByMonth(readingsDate.getMonthValue(), username).isEmpty()) {
+        var userId = userRepository.getCurrentUserId();
+        if (!meterRepository.isSubmitted(userId)) {
             utilityMeters.forEach((type, counter) -> {
-                var meterType = MeterTypeEntity.builder().name(type).build();
-                if (meterTypeRepository.isValid(meterType)) {
-                    meterRepository.create(
+                if (meterTypeRepository.isMeterTypeExists(type)) {
+                    meterRepository.save(
                             UtilityMeterEntity.builder()
-                                    .username(username)
-                                    .meterType(MeterTypeMapper.INSTANCE.toMeterType(meterType))
+                                    .userId(userId)
+                                    .type(type)
                                     .counter(counter)
-                                    .readingsDate(readingsDate)
+                                    .readingsDate(LocalDate.now())
                                     .build()
                     );
 
-                    auditRepository.saveAudit(
+                    auditRepository.save(
                             AuditEntity.builder()
                                     .info("Показания поданы")
                                     .dateTime(LocalDateTime.now())
-                                    .username(username)
+                                    .userId(userId)
                                     .build());
                 } else {
-                    throw new NotValidMeterTypeException("Not valid type!");
+                    throw new NotValidMeterTypeException("Такой тип не существует!");
                 }
             });
         } else {

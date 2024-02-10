@@ -12,6 +12,11 @@ import ru.ylab.domain.model.Role;
 
 import java.time.LocalDateTime;
 
+/**
+ * {@inheritDoc}
+ *
+ * @author Pesternikov Danil
+ */
 @Singleton
 public class AddNewMeterTypeImpl implements AddNewMeterType {
 
@@ -24,14 +29,18 @@ public class AddNewMeterTypeImpl implements AddNewMeterType {
     @Autowired
     private AuditRepository auditRepository;
 
+    /**
+     * {@inheritDoc}
+     * @throws UnauthorizedException в случае если пользователь не обладает правами ADMIN
+     */
     @Override
     public void execute(String name) {
         if (userRepository.getCurrentRoleUser() == Role.ADMIN) {
-            meterTypeRepository.createType(name);
-            auditRepository.saveAudit(AuditEntity.builder()
+            meterTypeRepository.save(name);
+            auditRepository.save(AuditEntity.builder()
                     .info("Добавлен новый тип счетчика: " + name)
                     .dateTime(LocalDateTime.now())
-                    .username(userRepository.getCurrentUsername())
+                    .userId(userRepository.getCurrentUserId())
                     .build());
         } else {
             throw new UnauthorizedException("Нету доступа для данного пользователя!");

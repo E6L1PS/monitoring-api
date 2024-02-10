@@ -13,6 +13,11 @@ import ru.ylab.application.out.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * {@inheritDoc}
+ *
+ * @author Pesternikov Danil
+ */
 @Singleton
 public class GetUtilityMeterByMonthImpl implements GetUtilityMeterByMonth {
 
@@ -25,17 +30,20 @@ public class GetUtilityMeterByMonthImpl implements GetUtilityMeterByMonth {
     @Autowired
     private AuditRepository auditRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UtilityMeterModel> execute(Integer month) {
-        var username = userRepository.getCurrentUsername();
-        auditRepository.saveAudit(
+        var userId = userRepository.getCurrentUserId();
+        auditRepository.save(
                 AuditEntity.builder()
                         .info("Получена история подачи показаний за " + month + "-й месяц")
                         .dateTime(LocalDateTime.now())
-                        .username(username)
+                        .userId(userId)
                         .build());
         return UtilityMeterMapper.INSTANCE.entitiesToListUtilityMeterModel(
-                meterRepository.findByMonth(month, username)
+                meterRepository.findByMonthAndUserId(month, userId)
         );
     }
 }

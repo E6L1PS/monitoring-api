@@ -50,6 +50,6 @@ public class User {
      * @return true, если пароль валиден, иначе false.
      */
     public boolean passwordIsValid() {
-        return password != null && username.matches("\\w{5,15}");
+        return password != null && password.matches("\\w{5,15}");
     }
 }

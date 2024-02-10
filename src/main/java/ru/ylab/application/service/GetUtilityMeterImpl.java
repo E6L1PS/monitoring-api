@@ -13,6 +13,11 @@ import ru.ylab.application.out.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * {@inheritDoc}
+ *
+ * @author Pesternikov Danil
+ */
 @Singleton
 public class GetUtilityMeterImpl implements GetUtilityMeter {
 
@@ -25,14 +30,17 @@ public class GetUtilityMeterImpl implements GetUtilityMeter {
     @Autowired
     private AuditRepository auditRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UtilityMeterModel> execute() {
-        var username = userRepository.getCurrentUsername();
-        auditRepository.saveAudit(AuditEntity.builder()
+        var userId = userRepository.getCurrentUserId();
+        auditRepository.save(AuditEntity.builder()
                 .info("Получен актуальные показания счетчиков")
                 .dateTime(LocalDateTime.now())
-                .username(userRepository.getCurrentUsername())
+                .userId(userRepository.getCurrentUserId())
                 .build());
-        return UtilityMeterMapper.INSTANCE.entitiesToListUtilityMeterModel(meterRepository.findLastByUsername(username));
+        return UtilityMeterMapper.INSTANCE.entitiesToListUtilityMeterModel(meterRepository.findLastByUserId(userId));
     }
 }

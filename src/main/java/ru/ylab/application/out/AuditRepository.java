@@ -7,12 +7,6 @@ import java.util.List;
 /**
  * интерфейс AuditRepository предоставляет методы для работы с аудитом.
  *
- * <p>Этот интерфейс предоставляет методы для получения списка всех аудит-записей
- * и сохранения новой аудит-записи.</p>
- *
- * <p>Реализации этого интерфейса должны предоставить конкретную логику для работы с
- * аудит-записями.</p>
- *
  * @author Pesternikov Danil
  */
 public interface AuditRepository {
@@ -29,5 +23,5 @@ public interface AuditRepository {
      *
      * @param auditEntity Аудит-запись для сохранения.
      */
-    void saveAudit(AuditEntity auditEntity);
+    void save(AuditEntity auditEntity);
 }

@@ -1,0 +1,46 @@
+version: '3.8'
+
+x-api-config: &api-config
+  build: .
+  depends_on:
+    postgres-node-1:
+      condition: service_healthy
+
+x-postgres-healthcheck: &postgres-healthcheck
+  healthcheck:
+    interval: 5s
+    timeout: 10s
+    retries: 10
+    test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'" ]
+
+services:
+
+  api-node-1:
+    container_name: api-node-1
+    <<: [ *api-config ]
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+
+  postgres-node-1:
+    image: 'postgres:16.1'
+    container_name: postgres-node-1
+    <<: *postgres-healthcheck
+    env_file:
+      - .env
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./data/postgres-node-1-data:/var/lib/postgresql/data
+      - ./src/main/resources/init-schema.sql:/docker-entrypoint-initdb.d/init.sql
+
+  liquibase:
+    image: 'liquibase/liquibase:4.25.1'
+    container_name: liquibase
+    depends_on:
+      postgres-node-1:
+        condition: service_healthy
+    volumes:
+      - ./src/main/resources/db.changelog:/liquibase/changelog
+    command: --defaults-file=/liquibase/changelog/liquibase.properties update
