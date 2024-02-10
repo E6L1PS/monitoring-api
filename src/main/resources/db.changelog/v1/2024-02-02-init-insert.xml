@@ -11,6 +11,11 @@
             <column name="password" value="admin"/>
             <column name="role" value="ADMIN"/>
         </insert>
+        <insert tableName="user">
+            <column name="username" value="user"/>
+            <column name="password" value="user"/>
+            <column name="role" value="USER"/>
+        </insert>
     </changeSet>
 
     <changeSet id="2024-02-02-insert-default-meter-types" author="Pesternikov Danil">

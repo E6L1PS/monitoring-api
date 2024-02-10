@@ -42,7 +42,7 @@ class IntegrationTest {
                     .withDatabaseName(DB_NAME)
                     .withUsername(USERNAME)
                     .withPassword(PASSWORD)
-                    .withInitScript("test.init-schema.sql");
+                    .withInitScript("init-schema.sql");
 
     AuditRepository auditRepository = new AuditRepositoryImpl();
     UserRepository userRepository = new UserRepositoryImpl();
@@ -186,7 +186,7 @@ class IntegrationTest {
             database.setDefaultSchemaName("monitoring_schema");
             database.setLiquibaseSchemaName("migration_schema");
             Liquibase liquibase = new Liquibase(
-                    "test.db.changelog-master.xml",
+                    "db.changelog/db.changelog-master.xml",
                     new ClassLoaderResourceAccessor(),
                     database);
 
