@@ -10,6 +10,7 @@ import ru.ylab.application.model.UtilityMeterModel;
 import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.MeterRepository;
 import ru.ylab.application.out.UserRepository;
+import ru.ylab.aspect.Loggable;
 import ru.ylab.domain.model.Role;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import java.util.List;
  *
  * @author Pesternikov Danil
  */
+@Loggable
 @Singleton
 public class GetAllUtilityMeterImpl implements GetAllUtilityMeter {
 

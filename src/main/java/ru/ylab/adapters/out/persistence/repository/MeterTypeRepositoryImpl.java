@@ -55,7 +55,8 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
      */
     @Override
     public List<MeterTypeEntity> findAll() {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_ALL)) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(SQL_SELECT_ALL)) {
             var resultSet = statement.executeQuery();
             List<MeterTypeEntity> meterTypeEntities = new ArrayList<>();
             while (resultSet.next()) {
@@ -76,7 +77,8 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
      */
     @Override
     public Boolean isMeterTypeExists(String typeName) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_COUNT_BY_NAME)) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(SQL_SELECT_COUNT_BY_NAME)) {
             statement.setString(1, typeName);
             var resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -94,7 +96,8 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
      */
     @Override
     public MeterTypeEntity save(String typeName) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_INSERT)) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(SQL_INSERT)) {
             statement.setString(1, typeName);
             statement.executeUpdate();
             return MeterTypeEntity.builder().name(typeName).build();

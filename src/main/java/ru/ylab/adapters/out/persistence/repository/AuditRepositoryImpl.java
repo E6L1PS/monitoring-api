@@ -50,7 +50,8 @@ public class AuditRepositoryImpl implements AuditRepository {
      */
     @Override
     public List<AuditEntity> findAll() {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_ALL)) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(SQL_SELECT_ALL)) {
             var resultSet = statement.executeQuery();
             List<AuditEntity> audits = new ArrayList<>();
             while (resultSet.next()) {
@@ -74,7 +75,8 @@ public class AuditRepositoryImpl implements AuditRepository {
      */
     @Override
     public void save(AuditEntity auditEntity) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_INSERT)) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(SQL_INSERT)) {
             statement.setString(1, auditEntity.getInfo());
             statement.setTimestamp(2, Timestamp.valueOf(auditEntity.getDateTime()));
             statement.setLong(3, auditEntity.getUserId());

@@ -85,7 +85,8 @@ public class MeterRepositoryImpl implements MeterRepository {
      */
     @Override
     public List<UtilityMeterEntity> findAll() {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_ALL)) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(SQL_SELECT_ALL)) {
             var resultSet = statement.executeQuery();
             List<UtilityMeterEntity> utilityMeterEntities = new ArrayList<>();
             while (resultSet.next()) {
@@ -110,7 +111,8 @@ public class MeterRepositoryImpl implements MeterRepository {
      */
     @Override
     public List<UtilityMeterEntity> findAllByUserId(Long userId) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_ALL_BY_USER_ID)) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(SQL_SELECT_ALL_BY_USER_ID)) {
             statement.setLong(1, userId);
             var resultSet = statement.executeQuery();
             List<UtilityMeterEntity> utilityMeterEntities = new ArrayList<>();
@@ -137,7 +139,8 @@ public class MeterRepositoryImpl implements MeterRepository {
      */
     @Override
     public List<UtilityMeterEntity> findLastByUserId(Long userId) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_ALL_BY_USER_ID_LAST)) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(SQL_SELECT_ALL_BY_USER_ID_LAST)) {
             statement.setLong(1, userId);
             var resultSet = statement.executeQuery();
             List<UtilityMeterEntity> utilityMeterEntities = new ArrayList<>();
@@ -163,7 +166,8 @@ public class MeterRepositoryImpl implements MeterRepository {
      */
     @Override
     public List<UtilityMeterEntity> findByMonthAndUserId(Integer month, Long userId) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_ALL_BY_USER_ID_AND_DATE)) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(SQL_SELECT_ALL_BY_USER_ID_AND_DATE)) {
             statement.setLong(1, userId);
             statement.setLong(2, month);
 
@@ -192,7 +196,8 @@ public class MeterRepositoryImpl implements MeterRepository {
      */
     @Override
     public Boolean isSubmitted(Long userId) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_COUNT_BY_USER_ID_AND_DATE)) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(SQL_SELECT_COUNT_BY_USER_ID_AND_DATE)) {
             statement.setLong(1, userId);
             var resultSet = statement.executeQuery();
 
@@ -211,7 +216,8 @@ public class MeterRepositoryImpl implements MeterRepository {
      */
     @Override
     public UtilityMeterEntity save(UtilityMeterEntity utilityMeterEntity) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_INSERT)) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(SQL_INSERT)) {
             statement.setDouble(1, utilityMeterEntity.getCounter());
             statement.setDate(2, Date.valueOf(utilityMeterEntity.getReadingsDate()));
             statement.setLong(3, utilityMeterEntity.getUserId());

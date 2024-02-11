@@ -18,6 +18,8 @@ services:
   api-node-1:
     container_name: api-node-1
     <<: [ *api-config ]
+    ports:
+      - '8080:8080'
     stdin_open: true
     tty: true
     env_file:

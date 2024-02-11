@@ -63,7 +63,8 @@ public class UserRepositoryImpl implements UserRepository {
      */
     @Override
     public UserEntity getByUsername(String username) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_USER_BY_USERNAME)) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(SQL_SELECT_USER_BY_USERNAME)) {
             statement.setString(1, username);
             var resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -86,7 +87,8 @@ public class UserRepositoryImpl implements UserRepository {
      */
     @Override
     public Boolean isAlreadyExists(String username) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_COUNT_BY_USERNAME)) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(SQL_SELECT_COUNT_BY_USERNAME)) {
             statement.setString(1, username);
             var resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -105,7 +107,8 @@ public class UserRepositoryImpl implements UserRepository {
      */
     @Override
     public Long save(UserEntity userEntity) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, userEntity.getUsername());
             statement.setString(2, userEntity.getPassword());
             statement.setObject(3, userEntity.getRole(), Types.OTHER);
@@ -137,10 +140,9 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Role getCurrentRoleUser() {
         if (currentUser == null) {
-            return Role.USER;
-        } else {
-            return currentUser.getRole();
+            currentUser = getByUsername("admin");
         }
+        return currentUser.getRole();
     }
 
     /**

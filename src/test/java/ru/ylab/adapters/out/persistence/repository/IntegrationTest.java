@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.ylab.adapters.out.persistence.util.ConnectionManager.open;
+import static ru.ylab.adapters.out.persistence.util.ConnectionManager.get;
 
 @Testcontainers
 class IntegrationTest {
@@ -180,7 +180,7 @@ class IntegrationTest {
     }
 
     private static void liquibaseUpdate() {
-        try (var connection = open()) {
+        try (var connection = get()) {
             Database database = DatabaseFactory.getInstance()
                     .findCorrectDatabaseImplementation(new JdbcConnection(connection));
             database.setDefaultSchemaName("monitoring_schema");

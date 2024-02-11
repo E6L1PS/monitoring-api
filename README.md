@@ -15,6 +15,7 @@
 
 ## Используемый стек:
 - Docker
+- ServletAPI
 - PostgreSQL JDBC Driver
 - Liquibase
 - MapStruct
@@ -26,6 +27,7 @@
     - JUnit 5
 ## Tasks:
 1. [Task-1](https://github.com/E6L1PS/monitoring-api/tree/task-1) (Вводная)
-2. [Task-2](https://github.com/E6L1PS/monitoring-api/pull/2) (JDBC. Миграции БД)
+2. [Task-2](https://github.com/E6L1PS/monitoring-api/tree/task-2) (JDBC. Миграции БД)
+3. [Task-3](https://github.com/E6L1PS/monitoring-api/pull/3) (Сервлеты. АОП)
 
 
