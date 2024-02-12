@@ -22,21 +22,11 @@ public class LogoutUserImpl implements LogoutUser {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private AuditRepository auditRepository;
-
     /**
      * {@inheritDoc}
      */
     @Override
     public void execute() {
-        var userId = userRepository.getCurrentUserId();
         userRepository.logout();
-        auditRepository.save(
-                AuditEntity.builder()
-                        .info("Завершение работы")
-                        .dateTime(LocalDateTime.now())
-                        .userId(userId)
-                        .build());
     }
 }

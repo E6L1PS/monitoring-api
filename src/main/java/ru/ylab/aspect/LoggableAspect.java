@@ -12,9 +12,9 @@ import org.aspectj.lang.annotation.Pointcut;
  */
 @Aspect
 public class LoggableAspect {
-    @Pointcut("@within(ru.ylab.aspect.Loggable) && execution(* *(..))")
-    public void annotatedByLoggable() {
-    }
+
+    @Pointcut("@within(ru.ylab.aspect.annotation.Loggable) && execution(* *(..))")
+    public void annotatedByLoggable() {}
 
     @Around("annotatedByLoggable()")
     public Object logging(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {

@@ -20,5 +20,5 @@ public interface SubmitUtilityMeter {
      *
      * @param utilityMeters Словарь, содержащий данные счетчиков в формате "название счетчика" -> "значение".
      */
-    void execute(Map<String, Double> utilityMeters);
+    void execute(Map<String, Double> utilityMeters, Long userId);
 }

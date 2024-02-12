@@ -26,9 +26,6 @@ public class AddNewMeterTypeImpl implements AddNewMeterType {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private AuditRepository auditRepository;
-
     /**
      * {@inheritDoc}
      * @throws UnauthorizedException в случае если пользователь не обладает правами ADMIN
@@ -36,12 +33,6 @@ public class AddNewMeterTypeImpl implements AddNewMeterType {
     @Override
     public void execute(String name) {
         if (userRepository.getCurrentRoleUser() == Role.ADMIN) {
-            meterTypeRepository.save(name);
-            auditRepository.save(AuditEntity.builder()
-                    .info("Добавлен новый тип счетчика: " + name)
-                    .dateTime(LocalDateTime.now())
-                    .userId(userRepository.getCurrentUserId())
-                    .build());
         } else {
             throw new UnauthorizedException("Нету доступа для данного пользователя!");
         }

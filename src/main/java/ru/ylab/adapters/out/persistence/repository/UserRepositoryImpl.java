@@ -54,11 +54,6 @@ public class UserRepositoryImpl implements UserRepository {
             """;
 
     /**
-     * Текущий пользователь, авторизованный в системе.
-     */
-    private UserEntity currentUser;
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -102,6 +97,26 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
+    @Override
+    public Long getCurrentUserId() {
+        return null;
+    }
+
+    @Override
+    public Role getCurrentRoleUser() {
+        return null;
+    }
+
+    @Override
+    public UserEntity setupCurrentUser(UserEntity userEntity) {
+        return null;
+    }
+
+    @Override
+    public void logout() {
+
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -124,41 +139,5 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Long getCurrentUserId() {
-        return currentUser.getId();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Role getCurrentRoleUser() {
-        if (currentUser == null) {
-            currentUser = getByUsername("admin");
-        }
-        return currentUser.getRole();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public UserEntity setupCurrentUser(UserEntity userEntity) {
-        this.currentUser = userEntity;
-        return userEntity;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void logout() {
-        currentUser = null;
     }
 }

@@ -1,5 +1,6 @@
 package ru.ylab.application.in;
 
+import ru.ylab.adapters.out.persistence.entity.UserEntity;
 import ru.ylab.application.model.LoginModel;
 
 /**
@@ -19,6 +20,7 @@ public interface LoginUser {
      * Выполняет операцию аутентификации пользователя.
      *
      * @param loginModel Модель входа, содержащая информацию о пользовательском вводе.
+     * @return
      */
-    void execute(LoginModel loginModel);
+    UserEntity execute(LoginModel loginModel);
 }

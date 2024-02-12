@@ -1,4 +1,5 @@
 # Интенсив по Java Y_lab
+
 # Веб-сервис для подачи показаний счетчиков отопления, горячей и холодной воды
 
 ## Запуск приложения
@@ -11,11 +12,14 @@
 6. Для запуска интерактивного режима, выполните команду: `docker-compose exec -i api-node-1 java -jar application.jar`
 
 ## Entity Relationship Diagram
+
 ![ERD](src/main/resources/MonitoringERD.png)
 
 ## Используемый стек:
+
 - Docker
 - ServletAPI
+- AspectJ
 - PostgreSQL JDBC Driver
 - Liquibase
 - MapStruct
@@ -25,7 +29,9 @@
     - AssertJ
     - Mockito
     - JUnit 5
+
 ## Tasks:
+
 1. [Task-1](https://github.com/E6L1PS/monitoring-api/tree/task-1) (Вводная)
 2. [Task-2](https://github.com/E6L1PS/monitoring-api/tree/task-2) (JDBC. Миграции БД)
 3. [Task-3](https://github.com/E6L1PS/monitoring-api/pull/3) (Сервлеты. АОП)

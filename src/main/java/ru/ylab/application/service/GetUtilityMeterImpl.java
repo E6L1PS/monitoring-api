@@ -36,11 +36,6 @@ public class GetUtilityMeterImpl implements GetUtilityMeter {
     @Override
     public List<UtilityMeterModel> execute() {
         var userId = userRepository.getCurrentUserId();
-        auditRepository.save(AuditEntity.builder()
-                .info("Получен актуальные показания счетчиков")
-                .dateTime(LocalDateTime.now())
-                .userId(userRepository.getCurrentUserId())
-                .build());
         return UtilityMeterMapper.INSTANCE.entitiesToListUtilityMeterModel(meterRepository.findLastByUserId(userId));
     }
 }

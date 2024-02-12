@@ -28,9 +28,6 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
     private UserRepository userRepository;
 
     @Autowired
-    private AuditRepository auditRepository;
-
-    @Autowired
     private MeterRepository meterRepository;
 
     @Autowired
@@ -43,8 +40,7 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
      * @throws MonthlySubmitLimitException в случае если пользователь уже подавал показания в текущем месяце
      */
     @Override
-    public void execute(Map<String, Double> utilityMeters) {
-        var userId = userRepository.getCurrentUserId();
+    public void execute(Map<String, Double> utilityMeters, Long userId) {
         if (!meterRepository.isSubmitted(userId)) {
             utilityMeters.forEach((type, counter) -> {
                 if (meterTypeRepository.isMeterTypeExists(type)) {
@@ -56,13 +52,6 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
                                     .readingsDate(LocalDate.now())
                                     .build()
                     );
-
-                    auditRepository.save(
-                            AuditEntity.builder()
-                                    .info("Показания поданы")
-                                    .dateTime(LocalDateTime.now())
-                                    .userId(userId)
-                                    .build());
                 } else {
                     throw new NotValidMeterTypeException("Такой тип не существует!");
                 }

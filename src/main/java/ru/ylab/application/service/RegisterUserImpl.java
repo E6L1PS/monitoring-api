@@ -25,9 +25,6 @@ public class RegisterUserImpl implements RegisterUser {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private AuditRepository auditRepository;
-
     /**
      * {@inheritDoc}
      *
@@ -39,14 +36,7 @@ public class RegisterUserImpl implements RegisterUser {
         if (!userRepository.isAlreadyExists(registerModel.username())) {
             User user = UserMapper.INSTANCE.toUser(registerModel);
             if (user.usernameIsValid() && user.passwordIsValid()) {
-                var userId = userRepository.save(UserMapper.INSTANCE.userToUserEntity(user));
-                auditRepository.save(
-                        AuditEntity.builder()
-                                .info("Новый пользователь зарегистрирован")
-                                .dateTime(LocalDateTime.now())
-                                .userId(userId)
-                                .build()
-                );
+                userRepository.save(UserMapper.INSTANCE.userToUserEntity(user));
             } else {
                 throw new NotValidUsernameOrPasswordException("Not Valid Username Or Password!");
             }
