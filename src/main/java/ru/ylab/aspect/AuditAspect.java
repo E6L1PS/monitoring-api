@@ -4,7 +4,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import ru.ylab.adapters.in.web.listener.MyServletContextListener;
+import ru.ylab.adapters.in.web.listener.ApplicationContextInitializationListener;
 import ru.ylab.adapters.out.persistence.entity.AuditEntity;
 import ru.ylab.adapters.out.persistence.repository.AuditRepositoryImpl;
 import ru.ylab.adapters.out.persistence.repository.UserRepositoryImpl;
@@ -30,8 +30,8 @@ public class AuditAspect {
         AuditRepository auditRepository;
         UserRepository userRepository;
         try {
-            userRepository = MyServletContextListener.context.getObject(UserRepositoryImpl.class);
-            auditRepository = MyServletContextListener.context.getObject(AuditRepositoryImpl.class);
+            userRepository = ApplicationContextInitializationListener.context.getObject(UserRepositoryImpl.class);
+            auditRepository = ApplicationContextInitializationListener.context.getObject(AuditRepositoryImpl.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

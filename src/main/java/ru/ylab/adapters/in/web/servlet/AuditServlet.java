@@ -5,10 +5,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ru.ylab.adapters.in.web.Json;
-import ru.ylab.adapters.in.web.listener.MyServletContextListener;
+import ru.ylab.adapters.util.Json;
+import ru.ylab.adapters.in.web.listener.ApplicationContextInitializationListener;
 import ru.ylab.application.in.GetAuditInfo;
-import ru.ylab.application.model.AuditModel;
+import ru.ylab.adapters.in.web.dto.AuditModel;
 import ru.ylab.application.service.GetAuditInfoImpl;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class AuditServlet extends HttpServlet {
 
     {
         try {
-            getAuditInfo = MyServletContextListener.context.getObject(GetAuditInfoImpl.class);
+            getAuditInfo = ApplicationContextInitializationListener.context.getObject(GetAuditInfoImpl.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

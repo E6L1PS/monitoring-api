@@ -1,7 +1,6 @@
 package ru.ylab.application.out;
 
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
-import ru.ylab.domain.model.Role;
 
 /**
  * интерфейс UserRepository предоставляет методы для работы с пользователями.
@@ -9,13 +8,6 @@ import ru.ylab.domain.model.Role;
  * @author Pesternikov Danil
  */
 public interface UserRepository {
-
-    /**
-     * Сохраняет информацию о пользователе.
-     *
-     * @param userEntity Объект UserEntity, представляющий пользователя для сохранения.
-     */
-    Long save(UserEntity userEntity);
 
     /**
      * Получает пользователя по его имени пользователя.
@@ -34,29 +26,9 @@ public interface UserRepository {
     Boolean isAlreadyExists(String username);
 
     /**
-     * Получает текущее имя пользователя.
+     * Сохраняет информацию о пользователе.
      *
-     * @return Текущее имя пользователя.
+     * @param userEntity Объект UserEntity, представляющий пользователя для сохранения.
      */
-    Long getCurrentUserId();
-
-    /**
-     * Получает роль текущего пользователя.
-     *
-     * @return Роль текущего пользователя.
-     */
-    Role getCurrentRoleUser();
-
-    /**
-     * Настраивает текущего пользователя.
-     *
-     * @param userEntity Объект UserEntity, представляющий пользователя для настройки.
-     * @return Объект UserEntity, представляющий настроенного пользователя.
-     */
-    UserEntity setupCurrentUser(UserEntity userEntity);
-
-    /**
-     * Выполняет выход текущего пользователя.
-     */
-    void logout();
+    Long save(UserEntity userEntity);
 }

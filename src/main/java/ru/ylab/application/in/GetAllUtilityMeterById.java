@@ -1,6 +1,6 @@
 package ru.ylab.application.in;
 
-import ru.ylab.application.model.UtilityMeterModel;
+import ru.ylab.adapters.in.web.dto.UtilityMeterModel;
 
 import java.util.List;
 

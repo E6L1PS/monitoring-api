@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ru.ylab.application.exception.NotValidUsernameOrPasswordException;
 import ru.ylab.application.exception.UsernameAlreadyExistsException;
-import ru.ylab.application.model.RegisterModel;
+import ru.ylab.adapters.in.web.dto.RegisterModel;
 import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.UserRepository;
 

@@ -6,13 +6,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import ru.ylab.adapters.in.web.Json;
-import ru.ylab.adapters.in.web.listener.MyServletContextListener;
+import ru.ylab.adapters.util.Json;
+import ru.ylab.adapters.in.web.listener.ApplicationContextInitializationListener;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
 import ru.ylab.application.exception.IncorrectPasswordException;
 import ru.ylab.application.exception.UserNotFoundException;
 import ru.ylab.application.in.LoginUser;
-import ru.ylab.application.model.LoginModel;
+import ru.ylab.adapters.in.web.dto.LoginModel;
 import ru.ylab.application.service.LoginUserImpl;
 
 import java.io.BufferedReader;
@@ -24,13 +24,13 @@ import java.io.IOException;
  * @author Pesternikov Danil
  */
 @WebServlet("/login")
-public class AuthServlet extends HttpServlet {
+public class LoginServlet extends HttpServlet {
 
     private final LoginUser loginUser;
 
     {
         try {
-            loginUser = MyServletContextListener.context.getObject(LoginUserImpl.class);
+            loginUser = ApplicationContextInitializationListener.context.getObject(LoginUserImpl.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

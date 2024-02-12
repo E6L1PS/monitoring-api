@@ -25,7 +25,6 @@ public class GetUtilityMeterTypesImpl implements GetUtilityMeterTypes {
      */
     @Override
     public List<MeterType> execute() {
-        var types = meterTypeRepository.findAll();
-        return MeterTypeMapper.INSTANCE.entitiesToListMeterType(types);
+        return MeterTypeMapper.INSTANCE.entitiesToListMeterType(meterTypeRepository.findAll());
     }
 }

@@ -1,6 +1,6 @@
 package ru.ylab.application.in;
 
-import ru.ylab.application.model.AuditModel;
+import ru.ylab.adapters.in.web.dto.AuditModel;
 
 import java.util.List;
 

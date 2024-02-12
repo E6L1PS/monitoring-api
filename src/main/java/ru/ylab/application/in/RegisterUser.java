@@ -1,6 +1,6 @@
 package ru.ylab.application.in;
 
-import ru.ylab.application.model.RegisterModel;
+import ru.ylab.domain.model.User;
 
 /**
  * Интерфейс RegisterUser предоставляет метод для регистрации нового пользователя.
@@ -18,7 +18,7 @@ public interface RegisterUser {
     /**
      * Выполняет операцию регистрации нового пользователя.
      *
-     * @param registerModel Модель регистрации, содержащая информацию о новом пользователе.
+     * @param user Модель регистрации, содержащая информацию о новом пользователе.
      */
-    void execute(RegisterModel registerModel);
+    void execute(User user);
 }

@@ -1,4 +1,4 @@
-package ru.ylab.application.model;
+package ru.ylab.adapters.in.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -14,5 +14,6 @@ public record AuditModel(
         Long userId,
         String info,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-        LocalDateTime dateTime) {
+        LocalDateTime dateTime
+) {
 }

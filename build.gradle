@@ -12,7 +12,7 @@ ext {
     jacksonDatabindVersion = '2.16.1'
     liquibaseVersion = '4.25.1'
     postgresqlVersion = '42.7.1'
-
+    aspectjVersion = '1.9.21'
     testcontainersVersion = '1.19.4'
     assertjVersion = '3.25.2'
     mockitoVersion = '5.10.0'
@@ -63,13 +63,13 @@ tasks.register('runApplication', JavaExec) {
 dependencies {
     implementation project(":di-container")
 
-    implementation "org.aspectj:aspectjrt:1.9.21"
-    implementation "org.aspectj:aspectjweaver:1.9.21"
+    implementation "org.aspectj:aspectjrt:$aspectjVersion"
+    implementation "org.aspectj:aspectjweaver:$aspectjVersion"
 
     compileOnly "jakarta.servlet:jakarta.servlet-api:$jakartaServletApiVersion"
+
     implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonDatabindVersion"
-
 
     implementation "org.liquibase:liquibase-core:$liquibaseVersion"
     implementation "org.postgresql:postgresql:$postgresqlVersion"

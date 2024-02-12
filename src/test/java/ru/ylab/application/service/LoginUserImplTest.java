@@ -8,7 +8,7 @@ import org.mockito.MockitoAnnotations;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
 import ru.ylab.application.exception.IncorrectPasswordException;
 import ru.ylab.application.exception.UserNotFoundException;
-import ru.ylab.application.model.LoginModel;
+import ru.ylab.adapters.in.web.dto.LoginModel;
 import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.UserRepository;
 import ru.ylab.domain.model.Role;
@@ -42,7 +42,6 @@ class LoginUserImplTest {
 
         loginUser.execute(loginModel);
 
-        verify(userRepository, times(1)).setupCurrentUser(any());
         verify(auditRepository, times(1)).save(any());
     }
 
@@ -54,7 +53,6 @@ class LoginUserImplTest {
         assertThatThrownBy(() -> loginUser.execute(loginModel))
                 .isInstanceOf(IncorrectPasswordException.class);
 
-        verify(userRepository, never()).setupCurrentUser(any());
         verify(auditRepository, never()).save(any());
     }
 
@@ -66,7 +64,6 @@ class LoginUserImplTest {
         assertThatThrownBy(() -> loginUser.execute(loginModel))
                 .isInstanceOf(UserNotFoundException.class);
 
-        verify(userRepository, never()).setupCurrentUser(any());
         verify(auditRepository, never()).save(any());
     }
 }

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import ru.ylab.application.exception.UnauthorizedException;
 import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.MeterTypeRepository;
 import ru.ylab.application.out.UserRepository;

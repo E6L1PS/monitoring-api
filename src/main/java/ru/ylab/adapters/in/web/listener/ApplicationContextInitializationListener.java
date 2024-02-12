@@ -14,7 +14,7 @@ import java.util.HashMap;
  * @author Pesternikov Danil
  */
 @WebListener
-public class MyServletContextListener implements ServletContextListener {
+public class ApplicationContextInitializationListener implements ServletContextListener {
 
     public static ApplicationContext context;
 

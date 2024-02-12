@@ -2,7 +2,7 @@ package ru.ylab.adapters.out.persistence.repository;
 
 import lombok.NoArgsConstructor;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
-import ru.ylab.adapters.out.persistence.util.ConnectionManager;
+import ru.ylab.adapters.util.ConnectionManager;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.out.MeterRepository;
 

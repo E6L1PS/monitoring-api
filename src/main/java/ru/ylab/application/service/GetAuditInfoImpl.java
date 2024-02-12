@@ -4,7 +4,7 @@ import ru.ylab.annotations.Autowired;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.in.GetAuditInfo;
 import ru.ylab.application.mapper.AuditMapper;
-import ru.ylab.application.model.AuditModel;
+import ru.ylab.adapters.in.web.dto.AuditModel;
 import ru.ylab.application.out.AuditRepository;
 
 import java.util.List;

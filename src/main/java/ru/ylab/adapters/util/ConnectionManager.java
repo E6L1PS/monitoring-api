@@ -1,4 +1,4 @@
-package ru.ylab.adapters.out.persistence.util;
+package ru.ylab.adapters.util;
 
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
@@ -32,6 +32,12 @@ public final class ConnectionManager {
     private static void initConnectionPool() {
         int poolSize = DEFAULT_POOL_SIZE;
         pool = new ArrayBlockingQueue<>(poolSize);
+
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         for (int i = 0; i < poolSize; i++) {
             Connection connection = open();
@@ -72,10 +78,8 @@ public final class ConnectionManager {
                 username = System.getProperty(USERNAME_KEY);
                 password = System.getProperty(PASSWORD_KEY);
             }
-
-            Class.forName("org.postgresql.Driver");
             return DriverManager.getConnection(url, username, password);
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }

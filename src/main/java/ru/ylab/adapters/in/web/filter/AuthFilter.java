@@ -44,7 +44,7 @@ public class AuthFilter implements Filter {
             case "/login", "/register" -> {
                 chain.doFilter(request, response);
             }
-            case "/meter" -> {
+            case "/meter", "/type" -> {
                 if (session != null) {
                     chain.doFilter(request, response);
                 } else {

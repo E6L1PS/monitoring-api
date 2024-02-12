@@ -1,6 +1,6 @@
 package ru.ylab.application.in;
 
-import ru.ylab.application.model.UtilityMeterModel;
+import ru.ylab.adapters.in.web.dto.UtilityMeterModel;
 
 import java.util.List;
 
@@ -23,5 +23,5 @@ public interface GetUtilityMeterByMonth {
      * @param month Месяц, за который необходимо получить показания.
      * @return Список объектов типа UtilityMeterModel, представляющих счетчикики коммунальных услуг за указанный месяц.
      */
-    List<UtilityMeterModel> execute(Integer month);
+    List<UtilityMeterModel> execute(Integer month, Long userId);
 }

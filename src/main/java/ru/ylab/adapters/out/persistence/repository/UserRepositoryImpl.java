@@ -2,7 +2,7 @@ package ru.ylab.adapters.out.persistence.repository;
 
 import lombok.NoArgsConstructor;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
-import ru.ylab.adapters.out.persistence.util.ConnectionManager;
+import ru.ylab.adapters.util.ConnectionManager;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.exception.UserNotFoundException;
 import ru.ylab.application.out.UserRepository;
@@ -95,26 +95,6 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public Long getCurrentUserId() {
-        return null;
-    }
-
-    @Override
-    public Role getCurrentRoleUser() {
-        return null;
-    }
-
-    @Override
-    public UserEntity setupCurrentUser(UserEntity userEntity) {
-        return null;
-    }
-
-    @Override
-    public void logout() {
-
     }
 
     /**

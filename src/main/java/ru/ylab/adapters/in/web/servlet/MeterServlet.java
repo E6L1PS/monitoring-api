@@ -7,18 +7,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NoArgsConstructor;
-import ru.ylab.adapters.in.web.Json;
-import ru.ylab.adapters.in.web.listener.MyServletContextListener;
+import ru.ylab.adapters.util.Json;
+import ru.ylab.adapters.in.web.listener.ApplicationContextInitializationListener;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
 import ru.ylab.application.exception.MonthlySubmitLimitException;
 import ru.ylab.application.exception.NotValidMeterTypeException;
-import ru.ylab.application.in.GetAllUtilityMeter;
-import ru.ylab.application.in.GetAllUtilityMeterById;
-import ru.ylab.application.in.SubmitUtilityMeter;
-import ru.ylab.application.model.UtilityMeterModel;
-import ru.ylab.application.service.GetAllUtilityMeterByIdImpl;
-import ru.ylab.application.service.GetAllUtilityMeterImpl;
-import ru.ylab.application.service.SubmitUtilityMeterImpl;
+import ru.ylab.application.in.*;
+import ru.ylab.adapters.in.web.dto.UtilityMeterModel;
+import ru.ylab.application.service.*;
 import ru.ylab.aspect.annotation.Loggable;
 import ru.ylab.domain.model.Role;
 
@@ -33,19 +29,23 @@ import java.util.Map;
  * @author Pesternikov Danil
  */
 @Loggable
-@WebServlet("/meter")
+@WebServlet("/meter/*")
 @NoArgsConstructor
 public class MeterServlet extends HttpServlet {
 
     private final GetAllUtilityMeter getAllUtilityMeter;
     private final GetAllUtilityMeterById getAllUtilityMeterById;
+    private final GetLastUtilityMeter getLastUtilityMeter;
+    private final GetUtilityMeterByMonth getUtilityMeterByMonth;
     private final SubmitUtilityMeter submitUtilityMeter;
 
     {
         try {
-            getAllUtilityMeter = MyServletContextListener.context.getObject(GetAllUtilityMeterImpl.class);
-            getAllUtilityMeterById = MyServletContextListener.context.getObject(GetAllUtilityMeterByIdImpl.class);
-            submitUtilityMeter = MyServletContextListener.context.getObject(SubmitUtilityMeterImpl.class);
+            getAllUtilityMeter = ApplicationContextInitializationListener.context.getObject(GetAllUtilityMeterImpl.class);
+            getAllUtilityMeterById = ApplicationContextInitializationListener.context.getObject(GetAllUtilityMeterByIdImpl.class);
+            getLastUtilityMeter = ApplicationContextInitializationListener.context.getObject(GetLastUtilityMeterImpl.class);
+            getUtilityMeterByMonth = ApplicationContextInitializationListener.context.getObject(GetUtilityMeterByMonthImpl.class);
+            submitUtilityMeter = ApplicationContextInitializationListener.context.getObject(SubmitUtilityMeterImpl.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -56,15 +56,34 @@ public class MeterServlet extends HttpServlet {
         UserEntity userEntity = (UserEntity) req.getSession().getAttribute("user");
         Role userRole = userEntity.getRole();
         Long userEntityId = userEntity.getId();
-        List<UtilityMeterModel> meters = switch (userRole) {
-            case ADMIN -> getAllUtilityMeter.execute();
-            case USER -> getAllUtilityMeterById.execute(userEntityId);
-        };
-        byte[] bytes = Json.objectMapper.writeValueAsBytes(meters);
 
-        resp.setStatus(HttpServletResponse.SC_OK);
-        resp.setContentType("application/json");
-        resp.getOutputStream().write(bytes);
+        String pathInfo = req.getPathInfo();
+        System.out.println(pathInfo);
+        List<UtilityMeterModel> meters = null;
+
+        if (pathInfo == null) {
+            meters = switch (userRole) {
+                case ADMIN -> getAllUtilityMeter.execute();
+                case USER -> getAllUtilityMeterById.execute(userEntityId);
+            };
+        } else if (pathInfo.equals("/last")) {
+            meters = getLastUtilityMeter.execute(userEntityId);
+        } else if (pathInfo.startsWith("/month/")) {
+            String[] pathSegments = pathInfo.split("/");
+            if (pathSegments.length == 3 && pathSegments[2].matches("\\d+")) {
+                Integer numberMonth = Integer.parseInt(pathSegments[2]);
+                meters = getUtilityMeterByMonth.execute(numberMonth, userEntityId);
+            }
+        }
+
+        if (meters == null) {
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        } else {
+            byte[] bytes = Json.objectMapper.writeValueAsBytes(meters);
+
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.getOutputStream().write(bytes);
+        }
     }
 
     @Override

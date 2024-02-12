@@ -9,7 +9,12 @@
 3. Чтобы запустить тесты, выполните команду: `./gradlew test`
 4. Если требуется, измените файлы конфигурации `.env` и `liquibase.properties`.
 5. Запустите контейнеры: `docker compose up --build -d`
-6. Для запуска интерактивного режима, выполните команду: `docker-compose exec -i api-node-1 java -jar application.jar`
+6. Приложение будет доступно по адресу `http://localhost:8080/app`
+7. Регистрация `http://localhost:8080/app/register`
+8. Аутентификация `http://localhost:8080/app/login`
+9. Эндпоинт показаний `http://localhost:8080/app/meter`
+10. Эндпоинт типов показаний `http://localhost:8080/app/type`
+11. Эндпоинт аудитов `http://localhost:8080/app/audit`
 
 ## Entity Relationship Diagram
 

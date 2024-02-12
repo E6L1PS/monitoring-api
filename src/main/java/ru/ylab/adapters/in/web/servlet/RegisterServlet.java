@@ -5,13 +5,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ru.ylab.adapters.in.web.Json;
-import ru.ylab.adapters.in.web.listener.MyServletContextListener;
+import ru.ylab.adapters.util.Json;
+import ru.ylab.adapters.in.web.dto.RegisterModel;
+import ru.ylab.adapters.in.web.listener.ApplicationContextInitializationListener;
 import ru.ylab.application.exception.NotValidUsernameOrPasswordException;
 import ru.ylab.application.exception.UsernameAlreadyExistsException;
 import ru.ylab.application.in.RegisterUser;
-import ru.ylab.application.model.RegisterModel;
+import ru.ylab.application.mapper.UserMapper;
 import ru.ylab.application.service.RegisterUserImpl;
+import ru.ylab.domain.model.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,7 +30,7 @@ public class RegisterServlet extends HttpServlet {
 
     {
         try {
-            registerUser = MyServletContextListener.context.getObject(RegisterUserImpl.class);
+            registerUser = ApplicationContextInitializationListener.context.getObject(RegisterUserImpl.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -45,7 +47,8 @@ public class RegisterServlet extends HttpServlet {
         }
         RegisterModel registerModel = Json.objectMapper.readValue(jsonBody.toString(), RegisterModel.class);
         try {
-            registerUser.execute(registerModel);
+            User user = UserMapper.INSTANCE.toUser(registerModel);
+            registerUser.execute(user);
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (NotValidUsernameOrPasswordException e) {
             resp.getWriter().println(e.getMessage());

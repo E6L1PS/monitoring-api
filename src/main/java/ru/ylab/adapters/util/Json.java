@@ -1,4 +1,4 @@
-package ru.ylab.adapters.in.web;
+package ru.ylab.adapters.util;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,7 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
  *
  * @author Pesternikov Danil
  */
-public class Json {
+public final class Json {
 
     public static final ObjectMapper objectMapper = getDefaultObjectMapper();
 

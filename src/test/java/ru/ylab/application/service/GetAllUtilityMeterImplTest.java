@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
-import ru.ylab.application.model.UtilityMeterModel;
+import ru.ylab.adapters.in.web.dto.UtilityMeterModel;
 import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.MeterRepository;
 import ru.ylab.application.out.UserRepository;

@@ -6,7 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
-import ru.ylab.application.model.UtilityMeterModel;
+import ru.ylab.adapters.in.web.dto.UtilityMeterModel;
 import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.MeterRepository;
 import ru.ylab.application.out.UserRepository;
@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class GetUtilityMeterImplTest {
+class GetLastUtilityMeterImplTest {
 
     @Mock
     private MeterRepository meterRepository;
@@ -33,7 +33,7 @@ class GetUtilityMeterImplTest {
     private AuditRepository auditRepository;
 
     @InjectMocks
-    private GetUtilityMeterImpl getUtilityMeter;
+    private GetLastUtilityMeterImpl getUtilityMeter;
 
     private List<UtilityMeterEntity> entityList;
 
@@ -68,7 +68,6 @@ class GetUtilityMeterImplTest {
         var list = entityList.stream()
                 .filter(meter -> meter.getUserId().equals(userId) && meter.getReadingsDate() == date)
                 .collect(Collectors.toList());
-        when(userRepository.getCurrentUserId()).thenReturn(userId);
         when(meterRepository.findLastByUserId(userId)).thenReturn(list);
 
         List<UtilityMeterModel> result = getUtilityMeter.execute();
