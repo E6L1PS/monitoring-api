@@ -3,6 +3,7 @@ package ru.ylab.adapters.out.persistence.repository;
 import lombok.NoArgsConstructor;
 import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
 import ru.ylab.adapters.util.ConnectionManager;
+import ru.ylab.annotations.Autowired;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.out.MeterTypeRepository;
 
@@ -50,12 +51,19 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
             VALUES (?)
             """;
 
+    @Autowired
+    private ConnectionManager connectionManager;
+
+    public MeterTypeRepositoryImpl(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public List<MeterTypeEntity> findAll() {
-        try (var connection = ConnectionManager.get();
+        try (var connection = connectionManager.get();
              var statement = connection.prepareStatement(SQL_SELECT_ALL)) {
             var resultSet = statement.executeQuery();
             List<MeterTypeEntity> meterTypeEntities = new ArrayList<>();
@@ -77,7 +85,7 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
      */
     @Override
     public Boolean isMeterTypeExists(String typeName) {
-        try (var connection = ConnectionManager.get();
+        try (var connection = connectionManager.get();
              var statement = connection.prepareStatement(SQL_SELECT_COUNT_BY_NAME)) {
             statement.setString(1, typeName);
             var resultSet = statement.executeQuery();
@@ -96,7 +104,7 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
      */
     @Override
     public MeterTypeEntity save(String typeName) {
-        try (var connection = ConnectionManager.get();
+        try (var connection = connectionManager.get();
              var statement = connection.prepareStatement(SQL_INSERT)) {
             statement.setString(1, typeName);
             statement.executeUpdate();

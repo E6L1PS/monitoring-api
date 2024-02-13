@@ -1,9 +1,12 @@
 package ru.ylab.adapters.util;
 
+import ru.ylab.annotations.Singleton;
+
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ResourceBundle;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -13,23 +16,36 @@ import java.util.concurrent.BlockingQueue;
  *
  * @author Pesternikov Danil
  */
+@Singleton
 public final class ConnectionManager {
 
     /**
      * Ключи для доступа к переменным окружения, содержащим информацию о подключении к базе данных.
      */
-    private static final String URL_KEY = "JDBC_URL";
-    private static final String USERNAME_KEY = "POSTGRES_USER";
-    private static final String PASSWORD_KEY = "POSTGRES_PASSWORD";
-    private static final int DEFAULT_POOL_SIZE = 10;
+    private final String URL_KEY;
+    private final String USERNAME_KEY;
+    private final String PASSWORD_KEY;
+    private final int DEFAULT_POOL_SIZE;
+    private BlockingQueue<Connection> pool;
 
-    private static BlockingQueue<Connection> pool;
-
-    static {
+    public ConnectionManager() {
+        ResourceBundle resource = ResourceBundle.getBundle("application");
+        this.URL_KEY = resource.getString("url");
+        this.USERNAME_KEY = resource.getString("username");
+        this.PASSWORD_KEY = resource.getString("password");
+        this.DEFAULT_POOL_SIZE = Integer.parseInt(resource.getString("poolsize"));
         initConnectionPool();
     }
 
-    private static void initConnectionPool() {
+    public ConnectionManager(String URL_KEY, String USERNAME_KEY, String PASSWORD_KEY, int DEFAULT_POOL_SIZE) {
+        this.URL_KEY = URL_KEY;
+        this.USERNAME_KEY = USERNAME_KEY;
+        this.PASSWORD_KEY = PASSWORD_KEY;
+        this.DEFAULT_POOL_SIZE = DEFAULT_POOL_SIZE;
+        initConnectionPool();
+    }
+
+    private void initConnectionPool() {
         int poolSize = DEFAULT_POOL_SIZE;
         pool = new ArrayBlockingQueue<>(poolSize);
 
@@ -45,14 +61,14 @@ public final class ConnectionManager {
                     new Class[]{Connection.class},
                     (proxy, method, args) -> method.getName().equals("close") ?
                             pool.add((Connection) proxy) : method.invoke(connection, args)
-                    );
+            );
 
             pool.add(proxyConnection);
         }
 
     }
 
-    public static Connection get() {
+    public Connection get() {
         try {
             return pool.take();
         } catch (InterruptedException e) {
@@ -66,24 +82,11 @@ public final class ConnectionManager {
      * @return объект Connection для взаимодействия с базой данных
      * @throws RuntimeException в случае ошибки при установке соединения
      */
-    private static Connection open() {
+    private Connection open() {
         try {
-            var url = System.getenv(URL_KEY);
-            var username = System.getenv(USERNAME_KEY);
-            var password = System.getenv(PASSWORD_KEY);
-
-            // Для интеграционного тестирования:
-            if (url == null || username == null || password == null) {
-                url = System.getProperty(URL_KEY);
-                username = System.getProperty(USERNAME_KEY);
-                password = System.getProperty(PASSWORD_KEY);
-            }
-            return DriverManager.getConnection(url, username, password);
+            return DriverManager.getConnection(URL_KEY, USERNAME_KEY, PASSWORD_KEY);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private ConnectionManager() {
     }
 }

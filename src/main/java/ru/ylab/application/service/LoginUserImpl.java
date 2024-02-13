@@ -8,6 +8,8 @@ import ru.ylab.application.exception.IncorrectPasswordException;
 import ru.ylab.application.exception.UserNotFoundException;
 import ru.ylab.application.in.LoginUser;
 import ru.ylab.application.out.UserRepository;
+import ru.ylab.aspect.annotation.Auditable;
+import ru.ylab.aspect.annotation.Loggable;
 
 import java.util.Objects;
 
@@ -16,6 +18,8 @@ import java.util.Objects;
  *
  * @author Pesternikov Danil
  */
+@Auditable
+@Loggable
 @Singleton
 public class LoginUserImpl implements LoginUser {
 

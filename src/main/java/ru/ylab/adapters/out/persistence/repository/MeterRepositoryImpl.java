@@ -3,6 +3,7 @@ package ru.ylab.adapters.out.persistence.repository;
 import lombok.NoArgsConstructor;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
 import ru.ylab.adapters.util.ConnectionManager;
+import ru.ylab.annotations.Autowired;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.out.MeterRepository;
 
@@ -80,12 +81,19 @@ public class MeterRepositoryImpl implements MeterRepository {
             VALUES (?, ?, ?, ?)
             """;
 
+    @Autowired
+    private ConnectionManager connectionManager;
+
+    public MeterRepositoryImpl(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public List<UtilityMeterEntity> findAll() {
-        try (var connection = ConnectionManager.get();
+        try (var connection = connectionManager.get();
              var statement = connection.prepareStatement(SQL_SELECT_ALL)) {
             var resultSet = statement.executeQuery();
             List<UtilityMeterEntity> utilityMeterEntities = new ArrayList<>();
@@ -111,7 +119,7 @@ public class MeterRepositoryImpl implements MeterRepository {
      */
     @Override
     public List<UtilityMeterEntity> findAllByUserId(Long userId) {
-        try (var connection = ConnectionManager.get();
+        try (var connection = connectionManager.get();
              var statement = connection.prepareStatement(SQL_SELECT_ALL_BY_USER_ID)) {
             statement.setLong(1, userId);
             var resultSet = statement.executeQuery();
@@ -139,7 +147,7 @@ public class MeterRepositoryImpl implements MeterRepository {
      */
     @Override
     public List<UtilityMeterEntity> findLastByUserId(Long userId) {
-        try (var connection = ConnectionManager.get();
+        try (var connection = connectionManager.get();
              var statement = connection.prepareStatement(SQL_SELECT_ALL_BY_USER_ID_LAST)) {
             statement.setLong(1, userId);
             var resultSet = statement.executeQuery();
@@ -166,7 +174,7 @@ public class MeterRepositoryImpl implements MeterRepository {
      */
     @Override
     public List<UtilityMeterEntity> findByMonthAndUserId(Integer month, Long userId) {
-        try (var connection = ConnectionManager.get();
+        try (var connection = connectionManager.get();
              var statement = connection.prepareStatement(SQL_SELECT_ALL_BY_USER_ID_AND_DATE)) {
             statement.setLong(1, userId);
             statement.setLong(2, month);
@@ -196,7 +204,7 @@ public class MeterRepositoryImpl implements MeterRepository {
      */
     @Override
     public Boolean isSubmitted(Long userId) {
-        try (var connection = ConnectionManager.get();
+        try (var connection = connectionManager.get();
              var statement = connection.prepareStatement(SQL_SELECT_COUNT_BY_USER_ID_AND_DATE)) {
             statement.setLong(1, userId);
             var resultSet = statement.executeQuery();
@@ -216,7 +224,7 @@ public class MeterRepositoryImpl implements MeterRepository {
      */
     @Override
     public UtilityMeterEntity save(UtilityMeterEntity utilityMeterEntity) {
-        try (var connection = ConnectionManager.get();
+        try (var connection = connectionManager.get();
              var statement = connection.prepareStatement(SQL_INSERT)) {
             statement.setDouble(1, utilityMeterEntity.getCounter());
             statement.setDate(2, Date.valueOf(utilityMeterEntity.getReadingsDate()));

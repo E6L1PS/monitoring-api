@@ -8,6 +8,8 @@ import ru.ylab.application.exception.NotValidMeterTypeException;
 import ru.ylab.application.in.SubmitUtilityMeter;
 import ru.ylab.application.out.MeterRepository;
 import ru.ylab.application.out.MeterTypeRepository;
+import ru.ylab.aspect.annotation.Auditable;
+import ru.ylab.aspect.annotation.Loggable;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -17,6 +19,8 @@ import java.util.Map;
  *
  * @author Pesternikov Danil
  */
+@Auditable
+@Loggable
 @Singleton
 public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
 

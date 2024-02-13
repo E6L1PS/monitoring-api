@@ -3,6 +3,7 @@ package ru.ylab.adapters.out.persistence.repository;
 import lombok.NoArgsConstructor;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
 import ru.ylab.adapters.util.ConnectionManager;
+import ru.ylab.annotations.Autowired;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.exception.UserNotFoundException;
 import ru.ylab.application.out.UserRepository;
@@ -53,12 +54,19 @@ public class UserRepositoryImpl implements UserRepository {
             WHERE username = ?;
             """;
 
+    @Autowired
+    private ConnectionManager connectionManager;
+
+    public UserRepositoryImpl(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public UserEntity getByUsername(String username) {
-        try (var connection = ConnectionManager.get();
+        try (var connection = connectionManager.get();
              var statement = connection.prepareStatement(SQL_SELECT_USER_BY_USERNAME)) {
             statement.setString(1, username);
             var resultSet = statement.executeQuery();
@@ -82,7 +90,7 @@ public class UserRepositoryImpl implements UserRepository {
      */
     @Override
     public Boolean isAlreadyExists(String username) {
-        try (var connection = ConnectionManager.get();
+        try (var connection = connectionManager.get();
              var statement = connection.prepareStatement(SQL_SELECT_COUNT_BY_USERNAME)) {
             statement.setString(1, username);
             var resultSet = statement.executeQuery();
@@ -102,7 +110,7 @@ public class UserRepositoryImpl implements UserRepository {
      */
     @Override
     public Long save(UserEntity userEntity) {
-        try (var connection = ConnectionManager.get();
+        try (var connection = connectionManager.get();
              var statement = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, userEntity.getUsername());
             statement.setString(2, userEntity.getPassword());

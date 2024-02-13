@@ -14,6 +14,7 @@ import ru.ylab.application.in.GetUtilityMeterTypes;
 import ru.ylab.application.mapper.MeterTypeMapper;
 import ru.ylab.application.service.AddNewMeterTypeImpl;
 import ru.ylab.application.service.GetUtilityMeterTypesImpl;
+import ru.ylab.aspect.annotation.Loggable;
 import ru.ylab.domain.model.Role;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ import java.util.List;
  *
  * @author Pesternikov Danil
  */
+@Loggable
 @WebServlet("/type")
 public class MeterTypeServlet extends HttpServlet {
 

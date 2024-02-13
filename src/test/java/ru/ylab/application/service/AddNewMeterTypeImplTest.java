@@ -1,5 +1,6 @@
 package ru.ylab.application.service;
 
+import com.github.dockerjava.api.exception.UnauthorizedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,8 +9,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.MeterTypeRepository;
-import ru.ylab.application.out.UserRepository;
-import ru.ylab.domain.model.Role;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -19,9 +18,6 @@ class AddNewMeterTypeImplTest {
 
     @Mock
     private MeterTypeRepository meterTypeRepository;
-
-    @Mock
-    private UserRepository userRepository;
 
     @Mock
     private AuditRepository auditRepository;
@@ -37,7 +33,6 @@ class AddNewMeterTypeImplTest {
     @Test
     @DisplayName("Тест выполнения с ролью ADMIN")
     void testExecuteWithAdminRole() {
-        when(userRepository.getCurrentRoleUser()).thenReturn(Role.ADMIN);
         String meterTypeName = "Электричество";
 
         addNewMeterType.execute(meterTypeName);
@@ -49,7 +44,6 @@ class AddNewMeterTypeImplTest {
     @Test
     @DisplayName("Тест выполнения с ролью USER")
     void testExecuteWithNonAdminRole() {
-        when(userRepository.getCurrentRoleUser()).thenReturn(Role.USER);
         String meterTypeName = "Электричество";
 
         assertThatThrownBy(() -> addNewMeterType.execute(meterTypeName))

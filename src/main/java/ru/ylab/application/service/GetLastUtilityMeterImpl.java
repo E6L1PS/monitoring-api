@@ -6,6 +6,8 @@ import ru.ylab.application.in.GetLastUtilityMeter;
 import ru.ylab.application.mapper.UtilityMeterMapper;
 import ru.ylab.adapters.in.web.dto.UtilityMeterModel;
 import ru.ylab.application.out.MeterRepository;
+import ru.ylab.aspect.annotation.Auditable;
+import ru.ylab.aspect.annotation.Loggable;
 
 import java.util.List;
 
@@ -14,6 +16,8 @@ import java.util.List;
  *
  * @author Pesternikov Danil
  */
+@Auditable
+@Loggable
 @Singleton
 public class GetLastUtilityMeterImpl implements GetLastUtilityMeter {
 

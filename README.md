@@ -7,7 +7,7 @@
 1. Клонируйте репозиторий: `git clone https://github.com/E6L1PS/monitoring-api.git`
 2. Перейдите в директорию проекта: `cd monitoring-api`
 3. Чтобы запустить тесты, выполните команду: `./gradlew test`
-4. Если требуется, измените файлы конфигурации `.env` и `liquibase.properties`.
+4. Если требуется, измените файлы конфигурации `.env`, `application.properties`, `liquibase.properties`.
 5. Запустите контейнеры: `docker compose up --build -d`
 6. Приложение будет доступно по адресу `http://localhost:8080/app`
 7. Регистрация `http://localhost:8080/app/register`

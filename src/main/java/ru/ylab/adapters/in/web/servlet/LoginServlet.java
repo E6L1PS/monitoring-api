@@ -14,6 +14,7 @@ import ru.ylab.application.exception.UserNotFoundException;
 import ru.ylab.application.in.LoginUser;
 import ru.ylab.adapters.in.web.dto.LoginModel;
 import ru.ylab.application.service.LoginUserImpl;
+import ru.ylab.aspect.annotation.Loggable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,6 +24,7 @@ import java.io.IOException;
  *
  * @author Pesternikov Danil
  */
+@Loggable
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 

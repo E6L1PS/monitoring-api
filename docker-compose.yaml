@@ -22,8 +22,6 @@ services:
       - '8080:8080'
     stdin_open: true
     tty: true
-    env_file:
-      - .env
 
   postgres-node-1:
     image: 'postgres:16.1'

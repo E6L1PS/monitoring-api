@@ -3,6 +3,7 @@ package ru.ylab.adapters.out.persistence.repository;
 import lombok.NoArgsConstructor;
 import ru.ylab.adapters.out.persistence.entity.AuditEntity;
 import ru.ylab.adapters.util.ConnectionManager;
+import ru.ylab.annotations.Autowired;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.out.AuditRepository;
 
@@ -45,12 +46,19 @@ public class AuditRepositoryImpl implements AuditRepository {
             VALUES (?, ?, ?)
             """;
 
+    @Autowired
+    private ConnectionManager connectionManager;
+
+    public AuditRepositoryImpl(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public List<AuditEntity> findAll() {
-        try (var connection = ConnectionManager.get();
+        try (var connection = connectionManager.get();
              var statement = connection.prepareStatement(SQL_SELECT_ALL)) {
             var resultSet = statement.executeQuery();
             List<AuditEntity> audits = new ArrayList<>();
@@ -75,7 +83,7 @@ public class AuditRepositoryImpl implements AuditRepository {
      */
     @Override
     public void save(AuditEntity auditEntity) {
-        try (var connection = ConnectionManager.get();
+        try (var connection = connectionManager.get();
              var statement = connection.prepareStatement(SQL_INSERT)) {
             statement.setString(1, auditEntity.getInfo());
             statement.setTimestamp(2, Timestamp.valueOf(auditEntity.getDateTime()));

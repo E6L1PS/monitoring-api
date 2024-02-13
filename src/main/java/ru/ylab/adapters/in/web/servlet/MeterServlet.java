@@ -6,14 +6,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.NoArgsConstructor;
-import ru.ylab.adapters.util.Json;
+import ru.ylab.adapters.in.web.dto.UtilityMeterModel;
 import ru.ylab.adapters.in.web.listener.ApplicationContextInitializationListener;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
+import ru.ylab.adapters.util.Json;
 import ru.ylab.application.exception.MonthlySubmitLimitException;
 import ru.ylab.application.exception.NotValidMeterTypeException;
 import ru.ylab.application.in.*;
-import ru.ylab.adapters.in.web.dto.UtilityMeterModel;
 import ru.ylab.application.service.*;
 import ru.ylab.aspect.annotation.Loggable;
 import ru.ylab.domain.model.Role;
@@ -30,7 +29,6 @@ import java.util.Map;
  */
 @Loggable
 @WebServlet("/meter/*")
-@NoArgsConstructor
 public class MeterServlet extends HttpServlet {
 
     private final GetAllUtilityMeter getAllUtilityMeter;

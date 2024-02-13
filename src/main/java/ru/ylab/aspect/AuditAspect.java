@@ -7,9 +7,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import ru.ylab.adapters.in.web.listener.ApplicationContextInitializationListener;
 import ru.ylab.adapters.out.persistence.entity.AuditEntity;
 import ru.ylab.adapters.out.persistence.repository.AuditRepositoryImpl;
-import ru.ylab.adapters.out.persistence.repository.UserRepositoryImpl;
 import ru.ylab.application.out.AuditRepository;
-import ru.ylab.application.out.UserRepository;
 
 import java.time.LocalDateTime;
 
@@ -28,26 +26,46 @@ public class AuditAspect {
     @After("annotatedByAuditable()")
     public void auditing(JoinPoint joinPoint) {
         AuditRepository auditRepository;
-        UserRepository userRepository;
         try {
-            userRepository = ApplicationContextInitializationListener.context.getObject(UserRepositoryImpl.class);
             auditRepository = ApplicationContextInitializationListener.context.getObject(AuditRepositoryImpl.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-        String className = joinPoint.getTarget().getClass().getName();
-        //var info = generateInfoMessage(joinPoint.getTarget().getClass());
+        Object[] args = joinPoint.getArgs();
+        var userId = 1L;
+        for (Object arg : args) {
+            if (arg instanceof Long id) {
+                userId = id;
+                System.out.println("Найден аргумент id: " + id);
+                break;
+            }
+        }
+        String className = joinPoint.getTarget().getClass().getSimpleName();
+        System.out.println(className);
+        var info = generateInfoMessage(className);
         auditRepository.save(AuditEntity.builder()
-                .info(className)
+                .info(info)
                 .dateTime(LocalDateTime.now())
-                .userId(1L) //TODO Придумать как получать userId
+                .userId(userId) //TODO Придумать как получать userId
                 .build());
 
         System.out.println("-----------audit save --------");
     }
-//
-//    private String generateInfoMessage(Class<?> aClass) {}
+
+    private String generateInfoMessage(String className) {
+        return switch (className) {
+            case "AddNewMeterTypeImpl" -> "Добавлен новый тип счетчика!";
+            case "GetAllUtilityMeterByIdImpl", "GetAllUtilityMeterImpl" -> "Просмотр всех показаний!";
+            case "GetAuditInfoImpl" -> "Просмотр всех аудитов!";
+            case "GetLastUtilityMeterImpl" -> "Просмотр последних показаний!";
+            case "GetUtilityMeterByMonthImpl" -> "Просмотр всех показаний за конкретный месяц!";
+            case "GetUtilityMeterTypesImpl" -> "Просмотр всех типов показаний!";
+            case "LoginUserImpl" -> "Авторизация выполнена!";
+            case "RegisterUserImpl" -> "Новый пользователь зарегистрирован!";
+            case "SubmitUtilityMeterImpl" -> "Показания поданы!";
+            default -> "Действие";
+        };
+    }
 
 
 }

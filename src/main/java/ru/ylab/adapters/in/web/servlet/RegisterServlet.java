@@ -13,6 +13,7 @@ import ru.ylab.application.exception.UsernameAlreadyExistsException;
 import ru.ylab.application.in.RegisterUser;
 import ru.ylab.application.mapper.UserMapper;
 import ru.ylab.application.service.RegisterUserImpl;
+import ru.ylab.aspect.annotation.Loggable;
 import ru.ylab.domain.model.User;
 
 import java.io.BufferedReader;
@@ -23,6 +24,7 @@ import java.io.IOException;
  *
  * @author Pesternikov Danil
  */
+@Loggable
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
 

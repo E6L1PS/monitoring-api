@@ -7,6 +7,8 @@ import ru.ylab.application.exception.UsernameAlreadyExistsException;
 import ru.ylab.application.in.RegisterUser;
 import ru.ylab.application.mapper.UserMapper;
 import ru.ylab.application.out.UserRepository;
+import ru.ylab.aspect.annotation.Auditable;
+import ru.ylab.aspect.annotation.Loggable;
 import ru.ylab.domain.model.User;
 
 /**
@@ -14,6 +16,8 @@ import ru.ylab.domain.model.User;
  *
  * @author Pesternikov Danil
  */
+@Auditable
+@Loggable
 @Singleton
 public class RegisterUserImpl implements RegisterUser {
 

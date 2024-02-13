@@ -10,6 +10,7 @@ import java.util.List;
 
 @Mapper
 public interface UtilityMeterMapper {
+
     UtilityMeterMapper INSTANCE = Mappers.getMapper(UtilityMeterMapper.class);
 
     UtilityMeter toUtilityMeter(UtilityMeterEntity utilityMeterEntity);

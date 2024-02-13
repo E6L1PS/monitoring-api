@@ -6,6 +6,8 @@ import ru.ylab.application.in.GetAuditInfo;
 import ru.ylab.application.mapper.AuditMapper;
 import ru.ylab.adapters.in.web.dto.AuditModel;
 import ru.ylab.application.out.AuditRepository;
+import ru.ylab.aspect.annotation.Auditable;
+import ru.ylab.aspect.annotation.Loggable;
 
 import java.util.List;
 
@@ -14,6 +16,8 @@ import java.util.List;
  *
  * @author Pesternikov Danil
  */
+@Auditable
+@Loggable
 @Singleton
 public class GetAuditInfoImpl implements GetAuditInfo {
 
