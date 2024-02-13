@@ -8,6 +8,7 @@ ext {
     lombokVersion = '1.18.30'
     mapstructVersion = '1.5.5.Final'
     lombokMapstructBindingVersion = '0.2.0'
+    slf4jVersion = '2.0.12'
     jakartaServletApiVersion = '6.0.0'
     jacksonDatabindVersion = '2.16.1'
     liquibaseVersion = '4.25.1'
@@ -62,6 +63,9 @@ tasks.register('runApplication', JavaExec) {
 
 dependencies {
     implementation project(":di-container")
+
+    implementation "org.slf4j:slf4j-api:$slf4jVersion"
+    implementation "org.slf4j:slf4j-simple:$slf4jVersion"
 
     implementation "org.aspectj:aspectjrt:$aspectjVersion"
     implementation "org.aspectj:aspectjweaver:$aspectjVersion"

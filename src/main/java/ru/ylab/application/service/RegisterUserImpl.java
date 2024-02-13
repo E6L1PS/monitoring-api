@@ -1,5 +1,6 @@
 package ru.ylab.application.service;
 
+import ru.ylab.adapters.out.persistence.entity.UserEntity;
 import ru.ylab.annotations.Autowired;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.exception.NotValidUsernameOrPasswordException;
@@ -31,10 +32,11 @@ public class RegisterUserImpl implements RegisterUser {
      * @throws UsernameAlreadyExistsException      в случае если пользователь уже существует с таким username
      */
     @Override
-    public void execute(User user) {
+    public Long execute(User user) {
         if (!userRepository.isAlreadyExists(user.getUsername())) {
             if (user.usernameIsValid() && user.passwordIsValid()) {
-                userRepository.save(UserMapper.INSTANCE.userToUserEntity(user));
+                UserEntity userEntity = UserMapper.INSTANCE.userToUserEntity(user);
+                return userRepository.save(userEntity);
             } else {
                 throw new NotValidUsernameOrPasswordException("Not Valid Username Or Password!");
             }

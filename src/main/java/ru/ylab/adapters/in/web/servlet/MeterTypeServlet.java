@@ -5,18 +5,21 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ru.ylab.adapters.util.Json;
+import lombok.AllArgsConstructor;
 import ru.ylab.adapters.in.web.dto.MeterTypeModel;
 import ru.ylab.adapters.in.web.listener.ApplicationContextInitializationListener;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
+import ru.ylab.adapters.util.Json;
 import ru.ylab.application.in.AddNewMeterType;
 import ru.ylab.application.in.GetUtilityMeterTypes;
 import ru.ylab.application.mapper.MeterTypeMapper;
 import ru.ylab.application.service.AddNewMeterTypeImpl;
 import ru.ylab.application.service.GetUtilityMeterTypesImpl;
 import ru.ylab.aspect.annotation.Loggable;
+import ru.ylab.domain.model.MeterType;
 import ru.ylab.domain.model.Role;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
 
@@ -25,6 +28,7 @@ import java.util.List;
  *
  * @author Pesternikov Danil
  */
+@AllArgsConstructor
 @Loggable
 @WebServlet("/type")
 public class MeterTypeServlet extends HttpServlet {
@@ -33,10 +37,10 @@ public class MeterTypeServlet extends HttpServlet {
 
     private final AddNewMeterType addNewMeterType;
 
-    {
+    public MeterTypeServlet() {
         try {
-            getUtilityMeterTypes = ApplicationContextInitializationListener.context.getObject(GetUtilityMeterTypesImpl.class);
-            addNewMeterType = ApplicationContextInitializationListener.context.getObject(AddNewMeterTypeImpl.class);
+            this.getUtilityMeterTypes = ApplicationContextInitializationListener.context.getObject(GetUtilityMeterTypesImpl.class);
+            this.addNewMeterType = ApplicationContextInitializationListener.context.getObject(AddNewMeterTypeImpl.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -55,14 +59,20 @@ public class MeterTypeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserEntity userEntity = (UserEntity) req.getSession().getAttribute("user");
         Role userRole = userEntity.getRole();
-        String type = req.getParameter("type");
+        BufferedReader reader = req.getReader();
+        StringBuilder jsonBody = new StringBuilder();
+
+        String line;
+        while ((line = reader.readLine()) != null) {
+            jsonBody.append(line);
+        }
+
+        MeterTypeModel meterTypeModel = Json.objectMapper.readValue(jsonBody.toString(), MeterTypeModel.class);
+        MeterType meterType = MeterTypeMapper.INSTANCE.toMeterType(meterTypeModel);
+
         if (Role.ADMIN.equals(userRole)) {
-            if (type != null) {
-                addNewMeterType.execute(type);
-                resp.setStatus(HttpServletResponse.SC_OK);
-            } else {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            }
+            addNewMeterType.execute(meterType);
+            resp.setStatus(HttpServletResponse.SC_OK);
         } else {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }

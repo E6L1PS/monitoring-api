@@ -1,6 +1,7 @@
 package ru.ylab.adapters.out.persistence.repository;
 
 import org.junit.jupiter.api.*;
+import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
 import ru.ylab.application.out.MeterTypeRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +32,7 @@ public class MeterTypeRepositoryIntegrationTest extends BaseIntegrationTest {
     @Order(2)
     @DisplayName("Сохранение нового типа счетчика - должен иметь размер 4 после сохранения")
     void testSaveAndFindAll() {
-        meterTypeRepository.save("New Type");
+        meterTypeRepository.save(MeterTypeEntity.builder().name("New Type").build());
         var types = meterTypeRepository.findAll();
 
         assertThat(types).hasSize(4);

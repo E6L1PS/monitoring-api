@@ -13,7 +13,7 @@ public record AuditModel(
         Long id,
         Long userId,
         String info,
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime dateTime
 ) {
 }

@@ -15,6 +15,10 @@ public interface MeterTypeMapper {
 
     MeterType toMeterType(MeterTypeEntity meterTypeEntity);
 
+    MeterType toMeterType(MeterTypeModel meterTypeModel);
+
+    MeterTypeEntity toMeterTypeEntity(MeterType meterType);
+
     List<MeterType> entitiesToListMeterType(List<MeterTypeEntity> meterTypeEntities);
 
     List<MeterTypeModel> metersToListMeterTypeModel(List<MeterType> meterTypes);

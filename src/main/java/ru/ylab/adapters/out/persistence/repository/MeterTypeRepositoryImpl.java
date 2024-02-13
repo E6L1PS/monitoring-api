@@ -103,12 +103,12 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
      * {@inheritDoc}
      */
     @Override
-    public MeterTypeEntity save(String typeName) {
+    public MeterTypeEntity save(MeterTypeEntity meterTypeEntity) {
         try (var connection = connectionManager.get();
              var statement = connection.prepareStatement(SQL_INSERT)) {
-            statement.setString(1, typeName);
+            statement.setString(1, meterTypeEntity.getName());
             statement.executeUpdate();
-            return MeterTypeEntity.builder().name(typeName).build();
+            return meterTypeEntity;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

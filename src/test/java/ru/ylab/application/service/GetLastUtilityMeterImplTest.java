@@ -27,9 +27,6 @@ class GetLastUtilityMeterImplTest {
     private MeterRepository meterRepository;
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
     private AuditRepository auditRepository;
 
     @InjectMocks
@@ -70,7 +67,7 @@ class GetLastUtilityMeterImplTest {
                 .collect(Collectors.toList());
         when(meterRepository.findLastByUserId(userId)).thenReturn(list);
 
-        List<UtilityMeterModel> result = getUtilityMeter.execute();
+        List<UtilityMeterModel> result = getUtilityMeter.execute(userId);
 
         verify(auditRepository, times(1)).save(any());
         assertThat(result).hasSize(3);

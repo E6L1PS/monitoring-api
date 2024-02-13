@@ -29,6 +29,7 @@
 - Liquibase
 - MapStruct
 - Lombok
+- Slf4j
 - Тестирование:
     - Testcontainers для PostgreSQL
     - AssertJ

@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
 import ru.ylab.domain.model.Role;
 
@@ -15,6 +16,7 @@ import java.io.IOException;
  *
  * @author Pesternikov Danil
  */
+@Slf4j
 @WebFilter("/*")
 public class AuthFilter implements Filter {
 
@@ -28,6 +30,9 @@ public class AuthFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpSession session = httpRequest.getSession(false);
+        String servletPath = httpRequest.getServletPath();
+
+        log.info("Servlet path: " + servletPath);
 
         Role currentRoleUser = null;
         if (session != null) {
@@ -38,9 +43,7 @@ public class AuthFilter implements Filter {
         httpResponse.setContentType("application/json");
         httpResponse.setCharacterEncoding("UTF-8");
 
-        System.out.println(httpRequest.getServletPath());
-
-        switch (httpRequest.getServletPath()) {
+        switch (servletPath) {
             case "/login", "/register" -> {
                 chain.doFilter(request, response);
             }
@@ -49,7 +52,7 @@ public class AuthFilter implements Filter {
                     chain.doFilter(request, response);
                 } else {
                     httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    System.out.println("Вы не авторизованы!");
+                    log.info("Вы не авторизованы!");
                 }
             }
             case "/audit" -> {
@@ -58,16 +61,16 @@ public class AuthFilter implements Filter {
                         chain.doFilter(request, response);
                     } else {
                         httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                        System.out.println("У вас нету доступа");
+                        log.info("У вас нету доступа!");
                     }
                 } else {
                     httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    System.out.println("Вы не авторизованы!");
+                    log.info("Вы не авторизованы!");
                 }
             }
             default -> {
                 httpResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                System.out.println("Не найдено!");
+                log.info("Не найдено!");
             }
         }
     }

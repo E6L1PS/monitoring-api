@@ -26,9 +26,6 @@ class GetAllUtilityMeterImplTest {
     private MeterRepository meterRepository;
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
     private AuditRepository auditRepository;
 
     @InjectMocks
@@ -52,7 +49,6 @@ class GetAllUtilityMeterImplTest {
     @Test
     @DisplayName("Тест выполнения с ролью ADMIN")
     void testExecuteWithAdminRole() {
-        when(userRepository.getCurrentRoleUser()).thenReturn(Role.ADMIN);
         when(meterRepository.findAll()).thenReturn(entityList);
 
         List<UtilityMeterModel> result = getAllUtilityMeter.execute();
@@ -65,8 +61,6 @@ class GetAllUtilityMeterImplTest {
     @DisplayName("Тест выполнения с ролью USER")
     void testExecuteWithUserRole() {
         Long userId = 1L;
-        when(userRepository.getCurrentUserId()).thenReturn(userId);
-        when(userRepository.getCurrentRoleUser()).thenReturn(Role.USER);
         when(meterRepository.findAllByUserId(userId)).thenReturn(entityList.subList(0, 3));
 
         List<UtilityMeterModel> result = getAllUtilityMeter.execute();

@@ -20,5 +20,5 @@ public interface RegisterUser {
      *
      * @param user Модель регистрации, содержащая информацию о новом пользователе.
      */
-    void execute(User user);
+    Long execute(User user);
 }

@@ -26,9 +26,9 @@ public class AuditServlet extends HttpServlet {
 
     private final GetAuditInfo getAuditInfo;
 
-    {
+    public AuditServlet() {
         try {
-            getAuditInfo = ApplicationContextInitializationListener.context.getObject(GetAuditInfoImpl.class);
+            this.getAuditInfo = ApplicationContextInitializationListener.context.getObject(GetAuditInfoImpl.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

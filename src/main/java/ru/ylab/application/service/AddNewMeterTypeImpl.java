@@ -1,11 +1,14 @@
 package ru.ylab.application.service;
 
+import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
 import ru.ylab.annotations.Autowired;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.in.AddNewMeterType;
+import ru.ylab.application.mapper.MeterTypeMapper;
 import ru.ylab.application.out.MeterTypeRepository;
 import ru.ylab.aspect.annotation.Auditable;
 import ru.ylab.aspect.annotation.Loggable;
+import ru.ylab.domain.model.MeterType;
 
 /**
  * {@inheritDoc}
@@ -24,7 +27,8 @@ public class AddNewMeterTypeImpl implements AddNewMeterType {
      * {@inheritDoc}
      */
     @Override
-    public void execute(String name) {
-        meterTypeRepository.save(name);
+    public void execute(MeterType meterType) {
+        MeterTypeEntity meterTypeEntity = MeterTypeMapper.INSTANCE.toMeterTypeEntity(meterType);
+        meterTypeRepository.save(meterTypeEntity);
     }
 }

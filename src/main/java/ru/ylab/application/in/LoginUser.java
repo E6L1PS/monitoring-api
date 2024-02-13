@@ -1,7 +1,7 @@
 package ru.ylab.application.in;
 
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
-import ru.ylab.adapters.in.web.dto.LoginModel;
+import ru.ylab.domain.model.User;
 
 /**
  * Интерфейс LoginUser предоставляет метод для аутентификации пользователя.
@@ -19,8 +19,8 @@ public interface LoginUser {
     /**
      * Выполняет операцию аутентификации пользователя.
      *
-     * @param loginModel Модель входа, содержащая информацию о пользовательском вводе.
+     * @param user Модель входа, содержащая информацию о пользовательском вводе.
      * @return
      */
-    UserEntity execute(LoginModel loginModel);
+    UserEntity execute(User user);
 }

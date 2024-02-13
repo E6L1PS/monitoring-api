@@ -6,15 +6,18 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import ru.ylab.adapters.util.Json;
+import lombok.AllArgsConstructor;
+import ru.ylab.adapters.in.web.dto.LoginModel;
 import ru.ylab.adapters.in.web.listener.ApplicationContextInitializationListener;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
+import ru.ylab.adapters.util.Json;
 import ru.ylab.application.exception.IncorrectPasswordException;
 import ru.ylab.application.exception.UserNotFoundException;
 import ru.ylab.application.in.LoginUser;
-import ru.ylab.adapters.in.web.dto.LoginModel;
+import ru.ylab.application.mapper.UserMapper;
 import ru.ylab.application.service.LoginUserImpl;
 import ru.ylab.aspect.annotation.Loggable;
+import ru.ylab.domain.model.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,15 +27,16 @@ import java.io.IOException;
  *
  * @author Pesternikov Danil
  */
+@AllArgsConstructor
 @Loggable
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
     private final LoginUser loginUser;
 
-    {
+    public LoginServlet() {
         try {
-            loginUser = ApplicationContextInitializationListener.context.getObject(LoginUserImpl.class);
+            this.loginUser = ApplicationContextInitializationListener.context.getObject(LoginUserImpl.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -47,10 +51,12 @@ public class LoginServlet extends HttpServlet {
         while ((line = reader.readLine()) != null) {
             jsonBody.append(line);
         }
+
         LoginModel loginModel = Json.objectMapper.readValue(jsonBody.toString(), LoginModel.class);
+        User user = UserMapper.INSTANCE.toUser(loginModel);
 
         try {
-            UserEntity userEntity = loginUser.execute(loginModel);
+            UserEntity userEntity = loginUser.execute(user);
             HttpSession session = req.getSession(true);
             session.setAttribute("user", userEntity);
             resp.setStatus(HttpServletResponse.SC_OK);

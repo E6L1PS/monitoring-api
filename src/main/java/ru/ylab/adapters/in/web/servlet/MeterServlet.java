@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import ru.ylab.adapters.in.web.dto.UtilityMeterModel;
 import ru.ylab.adapters.in.web.listener.ApplicationContextInitializationListener;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
@@ -27,6 +28,7 @@ import java.util.Map;
  *
  * @author Pesternikov Danil
  */
+@AllArgsConstructor
 @Loggable
 @WebServlet("/meter/*")
 public class MeterServlet extends HttpServlet {
@@ -37,13 +39,13 @@ public class MeterServlet extends HttpServlet {
     private final GetUtilityMeterByMonth getUtilityMeterByMonth;
     private final SubmitUtilityMeter submitUtilityMeter;
 
-    {
+    public MeterServlet() {
         try {
-            getAllUtilityMeter = ApplicationContextInitializationListener.context.getObject(GetAllUtilityMeterImpl.class);
-            getAllUtilityMeterById = ApplicationContextInitializationListener.context.getObject(GetAllUtilityMeterByIdImpl.class);
-            getLastUtilityMeter = ApplicationContextInitializationListener.context.getObject(GetLastUtilityMeterImpl.class);
-            getUtilityMeterByMonth = ApplicationContextInitializationListener.context.getObject(GetUtilityMeterByMonthImpl.class);
-            submitUtilityMeter = ApplicationContextInitializationListener.context.getObject(SubmitUtilityMeterImpl.class);
+            this.getAllUtilityMeter = ApplicationContextInitializationListener.context.getObject(GetAllUtilityMeterImpl.class);
+            this.getAllUtilityMeterById = ApplicationContextInitializationListener.context.getObject(GetAllUtilityMeterByIdImpl.class);
+            this.getLastUtilityMeter = ApplicationContextInitializationListener.context.getObject(GetLastUtilityMeterImpl.class);
+            this.getUtilityMeterByMonth = ApplicationContextInitializationListener.context.getObject(GetUtilityMeterByMonthImpl.class);
+            this.submitUtilityMeter = ApplicationContextInitializationListener.context.getObject(SubmitUtilityMeterImpl.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -56,7 +58,6 @@ public class MeterServlet extends HttpServlet {
         Long userEntityId = userEntity.getId();
 
         String pathInfo = req.getPathInfo();
-        System.out.println(pathInfo);
         List<UtilityMeterModel> meters = null;
 
         if (pathInfo == null) {
@@ -98,7 +99,7 @@ public class MeterServlet extends HttpServlet {
         Map<String, Double> utilityMeters = Json.objectMapper.readValue(
                 jsonBody.toString(), new TypeReference<>() {
                 });
-        System.out.println(utilityMeters);
+        log(utilityMeters.toString());
 
         try {
             submitUtilityMeter.execute(utilityMeters, userEntity.getId());

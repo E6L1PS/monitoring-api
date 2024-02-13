@@ -21,10 +21,10 @@ public interface MeterTypeRepository {
     /**
      * Создает новый тип счетчика с указанным именем.
      *
-     * @param typeName имя нового типа счетчика.
+     * @param meterTypeEntity имя нового типа счетчика.
      * @return Объект MeterTypeEntity, представляющий созданный тип счетчика.
      */
-    MeterTypeEntity save(String typeName);
+    MeterTypeEntity save(MeterTypeEntity meterTypeEntity);
 
     /**
      * Проверяет, является ли указанный тип счетчика допустимым.

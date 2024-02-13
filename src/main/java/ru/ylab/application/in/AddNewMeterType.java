@@ -1,5 +1,7 @@
 package ru.ylab.application.in;
 
+import ru.ylab.domain.model.MeterType;
+
 /**
  * интерфейс для добавления нового типа счётчика.
  *
@@ -16,7 +18,7 @@ public interface AddNewMeterType {
     /**
      * Выполняет добавление нового типа счётчика.
      *
-     * @param name имя нового типа счётчика.
+     * @param meterType имя нового типа счётчика.
      */
-    void execute(String name);
+    void execute(MeterType meterType);
 }

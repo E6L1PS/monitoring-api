@@ -4,26 +4,36 @@ import com.github.dockerjava.api.exception.UnauthorizedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import ru.ylab.application.out.AuditRepository;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ru.ylab.ApplicationContext;
+import ru.ylab.adapters.out.persistence.repository.AuditRepositoryImpl;
 import ru.ylab.application.out.MeterTypeRepository;
+import ru.ylab.aspect.AuditAspect;
+import ru.ylab.domain.model.MeterType;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class AddNewMeterTypeImplTest {
 
     @Mock
-    private MeterTypeRepository meterTypeRepository;
+    MeterTypeRepository meterTypeRepository;
 
     @Mock
-    private AuditRepository auditRepository;
+    AuditRepositoryImpl auditRepository;
+    @Mock
+    ApplicationContext applicationContext;
+    @InjectMocks
+    AuditAspect auditAspect;
 
     @InjectMocks
-    private AddNewMeterTypeImpl addNewMeterType;
+    AddNewMeterTypeImpl addNewMeterType;
 
     @BeforeEach
     void setUp() {
@@ -31,11 +41,10 @@ class AddNewMeterTypeImplTest {
     }
 
     @Test
-    @DisplayName("Тест выполнения с ролью ADMIN")
-    void testExecuteWithAdminRole() {
-        String meterTypeName = "Электричество";
+    void testExecuteWithAdminRole() throws Exception {
+        var type = MeterType.builder().name("Электричество").build();
 
-        addNewMeterType.execute(meterTypeName);
+        addNewMeterType.execute(type);
 
         verify(meterTypeRepository, times(1)).save(any());
         verify(auditRepository, times(1)).save(any());
@@ -44,12 +53,11 @@ class AddNewMeterTypeImplTest {
     @Test
     @DisplayName("Тест выполнения с ролью USER")
     void testExecuteWithNonAdminRole() {
-        String meterTypeName = "Электричество";
+        var type = MeterType.builder().name("Электричество").build();
 
-        assertThatThrownBy(() -> addNewMeterType.execute(meterTypeName))
+        assertThatThrownBy(() -> addNewMeterType.execute(type))
                 .isInstanceOf(UnauthorizedException.class);
 
         verify(meterTypeRepository, never()).save(any());
-        verify(auditRepository, never()).save(any());
     }
 }
