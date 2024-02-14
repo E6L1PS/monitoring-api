@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import ru.ylab.adapters.in.web.dto.LoginModel;
+import ru.ylab.adapters.in.web.dto.LoginDto;
 import ru.ylab.adapters.in.web.listener.ApplicationContextInitializationListener;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
 import ru.ylab.adapters.util.Json;
@@ -52,8 +52,8 @@ public class LoginServlet extends HttpServlet {
             jsonBody.append(line);
         }
 
-        LoginModel loginModel = Json.objectMapper.readValue(jsonBody.toString(), LoginModel.class);
-        User user = UserMapper.INSTANCE.toUser(loginModel);
+        LoginDto loginDto = Json.objectMapper.readValue(jsonBody.toString(), LoginDto.class);
+        User user = UserMapper.INSTANCE.toDomain(loginDto);
 
         try {
             UserEntity userEntity = loginUser.execute(user);

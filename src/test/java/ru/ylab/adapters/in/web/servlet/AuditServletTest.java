@@ -9,8 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.ylab.adapters.in.web.dto.AuditModel;
 import ru.ylab.application.in.GetAuditInfo;
+import ru.ylab.domain.model.Audit;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -55,9 +55,9 @@ class AuditServletTest {
                               "{\"id\":7,\"userId\":1,\"info\":\"Авторизация выполнена!\",\"dateTime\":\"%s\"}" +
                               "]";
         expectedJson = String.format(expectedJson, formattedDateTime, formattedDateTime);
-        List<AuditModel> audits = new ArrayList<>();
-        audits.add(new AuditModel(6L, 1L, "Авторизация выполнена!", localDateTime));
-        audits.add(new AuditModel(7L, 1L, "Авторизация выполнена!", localDateTime));
+        List<Audit> audits = new ArrayList<>();
+        audits.add(new Audit(6L, 1L, "Авторизация выполнена!", localDateTime));
+        audits.add(new Audit(7L, 1L, "Авторизация выполнена!", localDateTime));
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
 

@@ -1,13 +1,14 @@
 package ru.ylab.application.service;
 
+import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
 import ru.ylab.annotations.Autowired;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.in.GetAllUtilityMeterById;
 import ru.ylab.application.mapper.UtilityMeterMapper;
-import ru.ylab.adapters.in.web.dto.UtilityMeterModel;
 import ru.ylab.application.out.MeterRepository;
 import ru.ylab.aspect.annotation.Auditable;
 import ru.ylab.aspect.annotation.Loggable;
+import ru.ylab.domain.model.UtilityMeter;
 
 import java.util.List;
 
@@ -25,7 +26,8 @@ public class GetAllUtilityMeterByIdImpl implements GetAllUtilityMeterById {
     private MeterRepository meterRepository;
 
     @Override
-    public List<UtilityMeterModel> execute(Long userId) {
-        return UtilityMeterMapper.INSTANCE.entitiesToListUtilityMeterModel(meterRepository.findAllByUserId(userId));
+    public List<UtilityMeter> execute(Long userId) {
+        List<UtilityMeterEntity> utilityMeterEntities = meterRepository.findAllByUserId(userId);
+        return UtilityMeterMapper.INSTANCE.toListDomain(utilityMeterEntities);
     }
 }

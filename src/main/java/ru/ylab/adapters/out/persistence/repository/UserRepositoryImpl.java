@@ -42,7 +42,8 @@ public class UserRepositoryImpl implements UserRepository {
      * SQL-запрос для выбора пользователя по имени пользователя из базы данных.
      */
     private static final String SQL_SELECT_USER_BY_USERNAME = """
-            SELECT * FROM monitoring_schema.user
+            SELECT id, username, password, role
+            FROM monitoring_schema.user
             WHERE username = ?;
             """;
 
@@ -50,7 +51,8 @@ public class UserRepositoryImpl implements UserRepository {
      * SQL-запрос для подсчета пользователей по имени пользователя.
      */
     private static final String SQL_SELECT_COUNT_BY_USERNAME = """
-            SELECT COUNT(*) FROM monitoring_schema.user
+            SELECT COUNT(*)
+            FROM monitoring_schema.user
             WHERE username = ?;
             """;
 

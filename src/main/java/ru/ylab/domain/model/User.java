@@ -21,6 +21,11 @@ import lombok.NoArgsConstructor;
 public class User {
 
     /**
+     * Уникальный идентификатор пользователя.
+     */
+    private Long id;
+
+    /**
      * имя пользователя.
      */
     private String username;

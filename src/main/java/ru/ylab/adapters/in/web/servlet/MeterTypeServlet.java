@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import ru.ylab.adapters.in.web.dto.MeterTypeModel;
+import ru.ylab.adapters.in.web.dto.MeterTypeDto;
 import ru.ylab.adapters.in.web.listener.ApplicationContextInitializationListener;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
 import ru.ylab.adapters.util.Json;
@@ -48,8 +48,9 @@ public class MeterTypeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<MeterTypeModel> meterTypes = MeterTypeMapper.INSTANCE.metersToListMeterTypeModel(getUtilityMeterTypes.execute());
-        byte[] bytes = Json.objectMapper.writeValueAsBytes(meterTypes);
+        List<MeterType> meterTypes = getUtilityMeterTypes.execute();
+        List<MeterTypeDto> meterTypesDto = MeterTypeMapper.INSTANCE.toListDto(meterTypes);
+        byte[] bytes = Json.objectMapper.writeValueAsBytes(meterTypesDto);
 
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getOutputStream().write(bytes);
@@ -67,8 +68,8 @@ public class MeterTypeServlet extends HttpServlet {
             jsonBody.append(line);
         }
 
-        MeterTypeModel meterTypeModel = Json.objectMapper.readValue(jsonBody.toString(), MeterTypeModel.class);
-        MeterType meterType = MeterTypeMapper.INSTANCE.toMeterType(meterTypeModel);
+        MeterTypeDto meterTypeDto = Json.objectMapper.readValue(jsonBody.toString(), MeterTypeDto.class);
+        MeterType meterType = MeterTypeMapper.INSTANCE.toDomain(meterTypeDto);
 
         if (Role.ADMIN.equals(userRole)) {
             addNewMeterType.execute(meterType);

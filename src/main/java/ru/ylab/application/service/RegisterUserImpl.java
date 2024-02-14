@@ -35,7 +35,7 @@ public class RegisterUserImpl implements RegisterUser {
     public Long execute(User user) {
         if (!userRepository.isAlreadyExists(user.getUsername())) {
             if (user.usernameIsValid() && user.passwordIsValid()) {
-                UserEntity userEntity = UserMapper.INSTANCE.userToUserEntity(user);
+                UserEntity userEntity = UserMapper.INSTANCE.toEntity(user);
                 return userRepository.save(userEntity);
             } else {
                 throw new NotValidUsernameOrPasswordException("Not Valid Username Or Password!");

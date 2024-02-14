@@ -19,6 +19,7 @@ public interface SubmitUtilityMeter {
      * Выполняет операцию отправки данных счетчиков коммунальных услуг.
      *
      * @param utilityMeters Словарь, содержащий данные счетчиков в формате "название счетчика" -> "значение".
+     * @param userId id пользователя.
      */
     void execute(Map<String, Double> utilityMeters, Long userId);
 }

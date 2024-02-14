@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 
 /**
+ * DTO модель класса Audit
  * Создан: 12.02.2024.
  *
  * @author Pesternikov Danil
  */
-public record AuditModel(
+public record AuditDto(
         Long id,
         Long userId,
         String info,

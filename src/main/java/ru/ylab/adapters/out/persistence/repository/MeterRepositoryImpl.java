@@ -32,14 +32,16 @@ public class MeterRepositoryImpl implements MeterRepository {
      * SQL-запрос для выбора всех записей о счетчиках из базы данных.
      */
     private static final String SQL_SELECT_ALL = """
-            SELECT * FROM monitoring_schema.utility_meter
+            SELECT id, counter, readings_date, type, user_id
+            FROM monitoring_schema.utility_meter
             """;
 
     /**
      * SQL-запрос для выбора всех записей о счетчиках по идентификатору пользователя из базы данных.
      */
     private static final String SQL_SELECT_ALL_BY_USER_ID = """
-            SELECT * FROM monitoring_schema.utility_meter
+            SELECT id, counter, readings_date, type, user_id
+            FROM monitoring_schema.utility_meter
             WHERE user_id = ?
             """;
 
@@ -47,7 +49,8 @@ public class MeterRepositoryImpl implements MeterRepository {
      * SQL-запрос для выбора последних записей о счетчиках по идентификатору пользователя из базы данных.
      */
     private static final String SQL_SELECT_ALL_BY_USER_ID_LAST = """
-            SELECT * FROM monitoring_schema.utility_meter
+            SELECT id, counter, readings_date, type, user_id
+            FROM monitoring_schema.utility_meter
             WHERE user_id = ? AND readings_date = (
                 SELECT readings_date
                 FROM monitoring_schema.utility_meter
@@ -60,7 +63,8 @@ public class MeterRepositoryImpl implements MeterRepository {
      * SQL-запрос для подсчета записей о счетчиках по идентификатору пользователя и месяцу.
      */
     private static final String SQL_SELECT_COUNT_BY_USER_ID_AND_DATE = """
-            SELECT COUNT(*) FROM monitoring_schema.utility_meter
+            SELECT COUNT(*)
+            FROM monitoring_schema.utility_meter
             WHERE user_id = ? AND EXTRACT(MONTH FROM readings_date) = EXTRACT(MONTH FROM CURRENT_DATE)
             """;
 
@@ -68,7 +72,8 @@ public class MeterRepositoryImpl implements MeterRepository {
      * SQL-запрос для выбора всех записей о счетчиках по идентификатору пользователя и месяцу.
      */
     private static final String SQL_SELECT_ALL_BY_USER_ID_AND_DATE = """
-            SELECT * FROM monitoring_schema.utility_meter
+            SELECT id, counter, readings_date, type, user_id
+            FROM monitoring_schema.utility_meter
             WHERE user_id = ? AND EXTRACT(MONTH FROM readings_date) = ?
             """;
 

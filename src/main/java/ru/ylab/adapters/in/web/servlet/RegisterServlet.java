@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import ru.ylab.adapters.in.web.dto.RegisterModel;
+import ru.ylab.adapters.in.web.dto.RegisterDto;
 import ru.ylab.adapters.in.web.listener.ApplicationContextInitializationListener;
 import ru.ylab.adapters.util.Json;
 import ru.ylab.application.exception.NotValidUsernameOrPasswordException;
@@ -49,8 +49,8 @@ public class RegisterServlet extends HttpServlet {
         while ((line = reader.readLine()) != null) {
             jsonBody.append(line);
         }
-        RegisterModel registerModel = Json.objectMapper.readValue(jsonBody.toString(), RegisterModel.class);
-        User user = UserMapper.INSTANCE.toUser(registerModel);
+        RegisterDto registerDto = Json.objectMapper.readValue(jsonBody.toString(), RegisterDto.class);
+        User user = UserMapper.INSTANCE.toDomain(registerDto);
 
         try {
             var id = registerUser.execute(user);

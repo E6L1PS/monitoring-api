@@ -12,6 +12,7 @@ import ru.ylab.domain.model.Role;
 import java.io.IOException;
 
 /**
+ * Фильтр аутентификации.
  * Создан: 12.02.2024.
  *
  * @author Pesternikov Danil
@@ -20,11 +21,26 @@ import java.io.IOException;
 @WebFilter("/*")
 public class AuthFilter implements Filter {
 
+    /**
+     * Метод вызывается при инициализации фильтра.
+     *
+     * @param filterConfig конфигурация фильтра
+     * @throws ServletException если произошла ошибка при инициализации
+     */
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
     }
 
+    /**
+     * Метод выполняет фильтрацию запросов.
+     *
+     * @param request  HTTP-запрос
+     * @param response HTTP-ответ
+     * @param chain    цепочка фильтров
+     * @throws IOException      если произошла ошибка ввода-вывода
+     * @throws ServletException если произошла ошибка в сервлете
+     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -75,8 +91,12 @@ public class AuthFilter implements Filter {
         }
     }
 
+    /**
+     * Метод вызывается при уничтожении фильтра.
+     */
     @Override
     public void destroy() {
         Filter.super.destroy();
     }
+
 }

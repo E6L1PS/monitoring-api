@@ -1,15 +1,26 @@
 package ru.ylab.application.in;
 
-import ru.ylab.adapters.in.web.dto.UtilityMeterModel;
+import ru.ylab.domain.model.UtilityMeter;
 
 import java.util.List;
 
 /**
- * Создан: 12.02.2024.
+ * интерфейс для получения списка счетчиков коммунальных услуг по id пользователя.
+ *
+ * <p>Этот интерфейс предоставляет метод {@code execute}, который возвращает
+ * список моделей счетчика коммунальных услуг по id пользователя.</p>
+ *
+ * <p>Реализации этого интерфейса должны предоставить конкретную логику для
+ * получения списка счетчиков коммунальных услуг по id пользователя.</p>
  *
  * @author Pesternikov Danil
  */
 public interface GetAllUtilityMeterById {
 
-    List<UtilityMeterModel> execute(Long userId);
+    /**
+     * Возвращает список моделей счетчика коммунальных услуг по id пользователя.
+     *
+     * @return Список моделей счетчика коммунальных услуг.
+     */
+    List<UtilityMeter> execute(Long userId);
 }

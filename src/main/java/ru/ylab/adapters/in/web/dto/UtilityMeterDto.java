@@ -4,7 +4,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDate;
 
-public record UtilityMeterModel(
+/**
+ * DTO модель класса UtilityMeter
+ * @author Pesternikov Danil
+ */
+public record UtilityMeterDto(
         Long userId,
         Double counter,
         String type,

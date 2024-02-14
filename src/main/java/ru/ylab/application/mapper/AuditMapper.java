@@ -2,8 +2,9 @@ package ru.ylab.application.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-import ru.ylab.adapters.in.web.dto.AuditModel;
+import ru.ylab.adapters.in.web.dto.AuditDto;
 import ru.ylab.adapters.out.persistence.entity.AuditEntity;
+import ru.ylab.domain.model.Audit;
 
 import java.util.List;
 
@@ -17,7 +18,12 @@ public interface AuditMapper {
 
     AuditMapper INSTANCE = Mappers.getMapper(AuditMapper.class);
 
-    AuditModel toAuditModel(AuditEntity auditEntity);
+    Audit toDomain(AuditEntity auditEntity);
 
-    List<AuditModel> toListAuditModel(List<AuditEntity> auditEntities);
+    AuditDto toDto(AuditEntity auditEntity);
+
+    List<Audit> toListDomain(List<AuditEntity> auditEntities);
+
+    List<AuditDto> toListDto(List<Audit> audits);
+
 }

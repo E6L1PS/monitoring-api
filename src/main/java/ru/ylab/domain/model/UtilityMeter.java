@@ -23,6 +23,16 @@ import java.time.LocalDate;
 public class UtilityMeter {
 
     /**
+     * Уникальный идентификатор счетчика.
+     */
+    private Long id;
+
+    /**
+     * Уникальный идентификатор пользователя, которому принадлежит счетчик.
+     */
+    private Long userId;
+
+    /**
      * Текущие показания счётчика.
      */
     private Double counter;
@@ -30,8 +40,7 @@ public class UtilityMeter {
     /**
      * Тип счётчика.
      */
-    private MeterType meterType;
-
+    private String type;
 
     /**
      * Дата считывания показаний счетчика.

@@ -7,16 +7,18 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import ru.ylab.adapters.in.web.dto.UtilityMeterModel;
+import ru.ylab.adapters.in.web.dto.UtilityMeterDto;
 import ru.ylab.adapters.in.web.listener.ApplicationContextInitializationListener;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
 import ru.ylab.adapters.util.Json;
 import ru.ylab.application.exception.MonthlySubmitLimitException;
 import ru.ylab.application.exception.NotValidMeterTypeException;
 import ru.ylab.application.in.*;
+import ru.ylab.application.mapper.UtilityMeterMapper;
 import ru.ylab.application.service.*;
 import ru.ylab.aspect.annotation.Loggable;
 import ru.ylab.domain.model.Role;
+import ru.ylab.domain.model.UtilityMeter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -58,27 +60,28 @@ public class MeterServlet extends HttpServlet {
         Long userEntityId = userEntity.getId();
 
         String pathInfo = req.getPathInfo();
-        List<UtilityMeterModel> meters = null;
+        List<UtilityMeter> utilityMeters = null;
 
         if (pathInfo == null) {
-            meters = switch (userRole) {
+            utilityMeters = switch (userRole) {
                 case ADMIN -> getAllUtilityMeter.execute();
                 case USER -> getAllUtilityMeterById.execute(userEntityId);
             };
         } else if (pathInfo.equals("/last")) {
-            meters = getLastUtilityMeter.execute(userEntityId);
+            utilityMeters = getLastUtilityMeter.execute(userEntityId);
         } else if (pathInfo.startsWith("/month/")) {
             String[] pathSegments = pathInfo.split("/");
             if (pathSegments.length == 3 && pathSegments[2].matches("\\d+")) {
                 Integer numberMonth = Integer.parseInt(pathSegments[2]);
-                meters = getUtilityMeterByMonth.execute(numberMonth, userEntityId);
+                utilityMeters = getUtilityMeterByMonth.execute(numberMonth, userEntityId);
             }
         }
 
-        if (meters == null) {
+        if (utilityMeters == null) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } else {
-            byte[] bytes = Json.objectMapper.writeValueAsBytes(meters);
+            List<UtilityMeterDto> utilityMetersDto = UtilityMeterMapper.INSTANCE.toListDto(utilityMeters);
+            byte[] bytes = Json.objectMapper.writeValueAsBytes(utilityMetersDto);
 
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getOutputStream().write(bytes);

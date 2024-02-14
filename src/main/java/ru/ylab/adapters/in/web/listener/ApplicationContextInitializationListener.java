@@ -9,6 +9,7 @@ import ru.ylab.ApplicationContext;
 import java.util.HashMap;
 
 /**
+ * Слушатель инициализации контекста приложения.
  * Создан: 10.02.2024.
  *
  * @author Pesternikov Danil
@@ -16,8 +17,16 @@ import java.util.HashMap;
 @WebListener
 public class ApplicationContextInitializationListener implements ServletContextListener {
 
+    /**
+     * Контекст приложения.
+     */
     public static ApplicationContext context;
 
+    /**
+     * Метод вызывается при инициализации сервлет контекста.
+     *
+     * @param sce событие инициализации контекста
+     */
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         try {
@@ -27,6 +36,11 @@ public class ApplicationContextInitializationListener implements ServletContextL
         }
     }
 
+    /**
+     * Метод вызывается при уничтожении сервлет контекста.
+     *
+     * @param sce событие уничтожения контекста
+     */
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
 

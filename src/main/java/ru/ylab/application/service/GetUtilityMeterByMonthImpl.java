@@ -1,13 +1,14 @@
 package ru.ylab.application.service;
 
+import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
 import ru.ylab.annotations.Autowired;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.in.GetUtilityMeterByMonth;
 import ru.ylab.application.mapper.UtilityMeterMapper;
-import ru.ylab.adapters.in.web.dto.UtilityMeterModel;
 import ru.ylab.application.out.MeterRepository;
 import ru.ylab.aspect.annotation.Auditable;
 import ru.ylab.aspect.annotation.Loggable;
+import ru.ylab.domain.model.UtilityMeter;
 
 import java.util.List;
 
@@ -28,9 +29,8 @@ public class GetUtilityMeterByMonthImpl implements GetUtilityMeterByMonth {
      * {@inheritDoc}
      */
     @Override
-    public List<UtilityMeterModel> execute(Integer month, Long userId) {
-        return UtilityMeterMapper.INSTANCE.entitiesToListUtilityMeterModel(
-                meterRepository.findByMonthAndUserId(month, userId)
-        );
+    public List<UtilityMeter> execute(Integer month, Long userId) {
+        List<UtilityMeterEntity> utilityMeterEntities = meterRepository.findByMonthAndUserId(month, userId);
+        return UtilityMeterMapper.INSTANCE.toListDomain(utilityMeterEntities);
     }
 }

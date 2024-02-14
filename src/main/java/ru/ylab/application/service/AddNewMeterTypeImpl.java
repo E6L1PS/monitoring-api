@@ -28,7 +28,7 @@ public class AddNewMeterTypeImpl implements AddNewMeterType {
      */
     @Override
     public void execute(MeterType meterType) {
-        MeterTypeEntity meterTypeEntity = MeterTypeMapper.INSTANCE.toMeterTypeEntity(meterType);
+        MeterTypeEntity meterTypeEntity = MeterTypeMapper.INSTANCE.toEntity(meterType);
         meterTypeRepository.save(meterTypeEntity);
     }
 }

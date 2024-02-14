@@ -1,5 +1,6 @@
 package ru.ylab.application.service;
 
+import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
 import ru.ylab.annotations.Autowired;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.in.GetUtilityMeterTypes;
@@ -29,6 +30,7 @@ public class GetUtilityMeterTypesImpl implements GetUtilityMeterTypes {
      */
     @Override
     public List<MeterType> execute() {
-        return MeterTypeMapper.INSTANCE.entitiesToListMeterType(meterTypeRepository.findAll());
+        List<MeterTypeEntity> meterTypeEntities = meterTypeRepository.findAll();
+        return MeterTypeMapper.INSTANCE.toListDomain(meterTypeEntities);
     }
 }

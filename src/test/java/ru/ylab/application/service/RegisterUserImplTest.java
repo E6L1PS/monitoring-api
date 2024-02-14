@@ -1,19 +1,10 @@
 package ru.ylab.application.service;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import ru.ylab.application.exception.NotValidUsernameOrPasswordException;
-import ru.ylab.application.exception.UsernameAlreadyExistsException;
-import ru.ylab.adapters.in.web.dto.RegisterModel;
+import ru.ylab.adapters.in.web.dto.RegisterDto;
 import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.UserRepository;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 class RegisterUserImplTest {
 
@@ -26,9 +17,9 @@ class RegisterUserImplTest {
     @InjectMocks
     private RegisterUserImpl registerUser;
 
-    private RegisterModel validRegisterModel;
+    private RegisterDto validRegisterDto;
 
-    private RegisterModel invalidRegisterModel;
+    private RegisterDto invalidRegisterDto;
 
 //    @BeforeEach
 //    void setUp() {

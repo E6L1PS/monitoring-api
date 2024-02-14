@@ -32,7 +32,8 @@ public class AuditRepositoryImpl implements AuditRepository {
      * SQL-запрос для выбора всех записей аудита из базы данных, упорядоченных по времени создания.
      */
     private static final String SQL_SELECT_ALL = """
-            SELECT * FROM monitoring_schema.audit
+            SELECT id, info, created_at, user_id
+            FROM monitoring_schema.audit
             ORDER BY created_at
             """;
 

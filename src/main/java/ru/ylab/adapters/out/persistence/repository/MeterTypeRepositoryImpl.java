@@ -31,14 +31,16 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
      * SQL-запрос для выбора всех записей о типах счетчиков из базы данных.
      */
     private static final String SQL_SELECT_ALL = """
-            SELECT * FROM monitoring_schema.meter_type
+            SELECT name
+            FROM monitoring_schema.meter_type
             """;
 
     /**
      * SQL-запрос для подсчета типов счетчиков по имени.
      */
     private static final String SQL_SELECT_COUNT_BY_NAME = """
-            SELECT COUNT(*) FROM monitoring_schema.meter_type
+            SELECT COUNT(*)
+            FROM monitoring_schema.meter_type
             WHERE name = ?;
             """;
 
