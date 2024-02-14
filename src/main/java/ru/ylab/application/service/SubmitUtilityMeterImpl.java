@@ -6,12 +6,16 @@ import ru.ylab.annotations.Singleton;
 import ru.ylab.application.exception.MonthlySubmitLimitException;
 import ru.ylab.application.exception.NotValidMeterTypeException;
 import ru.ylab.application.in.SubmitUtilityMeter;
+import ru.ylab.application.mapper.UtilityMeterMapper;
 import ru.ylab.application.out.MeterRepository;
 import ru.ylab.application.out.MeterTypeRepository;
 import ru.ylab.aspect.annotation.Auditable;
 import ru.ylab.aspect.annotation.Loggable;
+import ru.ylab.domain.model.UtilityMeter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,11 +41,13 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
      * @throws MonthlySubmitLimitException в случае если пользователь уже подавал показания в текущем месяце
      */
     @Override
-    public void execute(Map<String, Double> utilityMeters, Long userId) {
+    public List<UtilityMeter> execute(Map<String, Double> utilityMeters, Long userId) {
+        List<UtilityMeterEntity> utilityMeterEntityList = new ArrayList<>();
+
         if (!meterRepository.isSubmitted(userId)) {
             utilityMeters.forEach((type, counter) -> {
                 if (meterTypeRepository.isMeterTypeExists(type)) {
-                    meterRepository.save(
+                    UtilityMeterEntity utilityMeterEntity = meterRepository.save(
                             UtilityMeterEntity.builder()
                                     .userId(userId)
                                     .type(type)
@@ -49,10 +55,13 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
                                     .readingsDate(LocalDate.now())
                                     .build()
                     );
+                    utilityMeterEntityList.add(utilityMeterEntity);
                 } else {
                     throw new NotValidMeterTypeException("Такой тип не существует!");
                 }
             });
+
+            return UtilityMeterMapper.INSTANCE.toListDomain(utilityMeterEntityList);
         } else {
             throw new MonthlySubmitLimitException("В этом месяце вы уже подали!");
         }

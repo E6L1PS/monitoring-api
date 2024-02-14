@@ -1,5 +1,8 @@
 package ru.ylab.application.in;
 
+import ru.ylab.domain.model.UtilityMeter;
+
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,5 +24,5 @@ public interface SubmitUtilityMeter {
      * @param utilityMeters Словарь, содержащий данные счетчиков в формате "название счетчика" -> "значение".
      * @param userId id пользователя.
      */
-    void execute(Map<String, Double> utilityMeters, Long userId);
+    List<UtilityMeter> execute(Map<String, Double> utilityMeters, Long userId);
 }

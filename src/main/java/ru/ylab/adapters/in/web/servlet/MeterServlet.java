@@ -81,10 +81,10 @@ public class MeterServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } else {
             List<UtilityMeterDto> utilityMetersDto = UtilityMeterMapper.INSTANCE.toListDto(utilityMeters);
-            byte[] bytes = Json.objectMapper.writeValueAsBytes(utilityMetersDto);
+            String json = Json.objectMapper.writeValueAsString(utilityMetersDto);
 
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getOutputStream().write(bytes);
+            resp.getWriter().write(json);
         }
     }
 
@@ -99,13 +99,15 @@ public class MeterServlet extends HttpServlet {
             jsonBody.append(line);
         }
 
-        Map<String, Double> utilityMeters = Json.objectMapper.readValue(
+        Map<String, Double> mapUtilityMeters = Json.objectMapper.readValue(
                 jsonBody.toString(), new TypeReference<>() {
                 });
-        log(utilityMeters.toString());
 
         try {
-            submitUtilityMeter.execute(utilityMeters, userEntity.getId());
+            List<UtilityMeter> utilityMeters = submitUtilityMeter.execute(mapUtilityMeters, userEntity.getId());
+            List<UtilityMeterDto> utilityMetersDto = UtilityMeterMapper.INSTANCE.toListDto(utilityMeters);
+            String json = Json.objectMapper.writeValueAsString(utilityMetersDto);
+            resp.getWriter().write(json);
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (NotValidMeterTypeException e) {
             resp.getWriter().println(e.getMessage());

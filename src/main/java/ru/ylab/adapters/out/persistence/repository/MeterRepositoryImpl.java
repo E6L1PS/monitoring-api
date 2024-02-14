@@ -9,6 +9,7 @@ import ru.ylab.application.out.MeterRepository;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -230,13 +231,19 @@ public class MeterRepositoryImpl implements MeterRepository {
     @Override
     public UtilityMeterEntity save(UtilityMeterEntity utilityMeterEntity) {
         try (var connection = connectionManager.get();
-             var statement = connection.prepareStatement(SQL_INSERT)) {
+             var statement = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
             statement.setDouble(1, utilityMeterEntity.getCounter());
             statement.setDate(2, Date.valueOf(utilityMeterEntity.getReadingsDate()));
             statement.setLong(3, utilityMeterEntity.getUserId());
             statement.setString(4, utilityMeterEntity.getType());
-
             statement.executeUpdate();
+
+            var keys = statement.getGeneratedKeys();
+            if (keys.next()) {
+                Long meterId = keys.getLong("id");
+                utilityMeterEntity.setId(meterId);
+            }
+
             return utilityMeterEntity;
         } catch (SQLException e) {
             throw new RuntimeException(e);

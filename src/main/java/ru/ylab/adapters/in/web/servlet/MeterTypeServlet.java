@@ -50,10 +50,10 @@ public class MeterTypeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<MeterType> meterTypes = getUtilityMeterTypes.execute();
         List<MeterTypeDto> meterTypesDto = MeterTypeMapper.INSTANCE.toListDto(meterTypes);
-        byte[] bytes = Json.objectMapper.writeValueAsBytes(meterTypesDto);
+        String json = Json.objectMapper.writeValueAsString(meterTypesDto);
 
         resp.setStatus(HttpServletResponse.SC_OK);
-        resp.getOutputStream().write(bytes);
+        resp.getWriter().write(json);
     }
 
     @Override

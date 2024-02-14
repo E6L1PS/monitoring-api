@@ -6,9 +6,11 @@ import java.time.LocalDate;
 
 /**
  * DTO модель класса UtilityMeter
+ *
  * @author Pesternikov Danil
  */
 public record UtilityMeterDto(
+        Long id,
         Long userId,
         Double counter,
         String type,
