@@ -22,6 +22,7 @@ import ru.ylab.domain.model.UtilityMeter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
@@ -76,7 +77,7 @@ public class MeterServlet extends HttpServlet {
                 utilityMeters = getUtilityMeterByMonth.execute(numberMonth, userEntityId);
             }
         }
-
+        PrintWriter writer = resp.getWriter();
         if (utilityMeters == null) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } else {
@@ -84,7 +85,7 @@ public class MeterServlet extends HttpServlet {
             String json = Json.objectMapper.writeValueAsString(utilityMetersDto);
 
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().write(json);
+            writer.write(json);
         }
     }
 
