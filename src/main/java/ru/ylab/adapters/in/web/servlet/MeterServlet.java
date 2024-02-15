@@ -58,6 +58,7 @@ public class MeterServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserEntity userEntity = (UserEntity) req.getSession().getAttribute("user");
         Role userRole = userEntity.getRole();
+        PrintWriter writer = resp.getWriter();
         Long userEntityId = userEntity.getId();
 
         String pathInfo = req.getPathInfo();
@@ -77,7 +78,6 @@ public class MeterServlet extends HttpServlet {
                 utilityMeters = getUtilityMeterByMonth.execute(numberMonth, userEntityId);
             }
         }
-        PrintWriter writer = resp.getWriter();
         if (utilityMeters == null) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } else {
@@ -93,6 +93,7 @@ public class MeterServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserEntity userEntity = (UserEntity) req.getSession().getAttribute("user");
         BufferedReader reader = req.getReader();
+        PrintWriter printWriter = resp.getWriter();
         StringBuilder jsonBody = new StringBuilder();
 
         String line;
@@ -108,13 +109,13 @@ public class MeterServlet extends HttpServlet {
             List<UtilityMeter> utilityMeters = submitUtilityMeter.execute(mapUtilityMeters, userEntity.getId());
             List<UtilityMeterDto> utilityMetersDto = UtilityMeterMapper.INSTANCE.toListDto(utilityMeters);
             String json = Json.objectMapper.writeValueAsString(utilityMetersDto);
-            resp.getWriter().write(json);
+            printWriter.write(json);
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (NotValidMeterTypeException e) {
-            resp.getWriter().println(e.getMessage());
+            printWriter.println(e.getMessage());
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } catch (MonthlySubmitLimitException e) {
-            resp.getWriter().println(e.getMessage());
+            printWriter.println(e.getMessage());
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }

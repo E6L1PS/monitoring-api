@@ -19,6 +19,7 @@ import ru.ylab.domain.model.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * Создан: 12.02.2024.
@@ -43,6 +44,7 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         BufferedReader reader = req.getReader();
+        PrintWriter printWriter = resp.getWriter();
         StringBuilder jsonBody = new StringBuilder();
 
         String line;
@@ -53,14 +55,14 @@ public class RegisterServlet extends HttpServlet {
         User user = UserMapper.INSTANCE.toDomain(registerDto);
 
         try {
-            var id = registerUser.execute(user);
-            resp.getWriter().println(id);
+            Long id = registerUser.execute(user);
+            printWriter.println(id.toString());
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (NotValidUsernameOrPasswordException e) {
-            resp.getWriter().println(e.getMessage());
+            printWriter.println(e.getMessage());
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } catch (UsernameAlreadyExistsException e) {
-            resp.getWriter().println(e.getMessage());
+            printWriter.println(e.getMessage());
             resp.setStatus(HttpServletResponse.SC_CONFLICT);
         }
     }

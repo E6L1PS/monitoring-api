@@ -71,9 +71,9 @@ public class MeterTypeServlet extends HttpServlet {
         MeterTypeDto meterTypeDto = Json.objectMapper.readValue(jsonBody.toString(), MeterTypeDto.class);
         MeterType meterType = MeterTypeMapper.INSTANCE.toDomain(meterTypeDto);
 
-        if (Role.ADMIN.equals(userRole)) {
+        if (Role.ADMIN == userRole) {
             addNewMeterType.execute(meterType);
-            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.setStatus(HttpServletResponse.SC_CREATED);
         } else {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }

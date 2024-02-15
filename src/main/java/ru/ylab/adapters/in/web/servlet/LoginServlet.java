@@ -21,6 +21,7 @@ import ru.ylab.domain.model.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * Создан: 12.02.2024.
@@ -45,6 +46,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         BufferedReader reader = req.getReader();
+        PrintWriter printWriter = resp.getWriter();
         StringBuilder jsonBody = new StringBuilder();
 
         String line;
@@ -59,9 +61,10 @@ public class LoginServlet extends HttpServlet {
             UserEntity userEntity = loginUser.execute(user);
             HttpSession session = req.getSession(true);
             session.setAttribute("user", userEntity);
+            printWriter.println("Success!");
             resp.setStatus(HttpServletResponse.SC_OK);
         } catch (UserNotFoundException | IncorrectPasswordException e) {
-            resp.getWriter().println(e.getMessage());
+            printWriter.println(e.getMessage());
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }

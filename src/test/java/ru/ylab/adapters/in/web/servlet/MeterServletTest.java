@@ -1,9 +1,7 @@
 package ru.ylab.adapters.in.web.servlet;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,9 +20,7 @@ import ru.ylab.application.in.GetUtilityMeterByMonth;
 import ru.ylab.application.service.SubmitUtilityMeterImpl;
 import ru.ylab.domain.model.Role;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Collections;
 
 import static org.mockito.Mockito.*;
@@ -35,25 +31,10 @@ import static org.mockito.Mockito.*;
  * @author Pesternikov Danil
  */
 @ExtendWith(MockitoExtension.class)
-class MeterServletTest {
-
-    @Mock
-    HttpServletRequest request;
-
-    @Mock
-    HttpServletResponse response;
-
-    @Mock
-    HttpSession session;
+class MeterServletTest extends ServletMocks {
 
     @Mock
     UserEntity userEntity;
-
-    @Mock
-    BufferedReader bufferedReader;
-
-    @Mock
-    PrintWriter printWriter;
 
     @Mock
     GetAllUtilityMeter getAllUtilityMeter;
@@ -108,6 +89,7 @@ class MeterServletTest {
             meterServlet.doGet(request, response);
 
             verify(getAllUtilityMeterById).execute(anyLong());
+            verify(printWriter).write(anyString());
             verify(response).setStatus(HttpServletResponse.SC_OK);
         }
 
@@ -121,6 +103,7 @@ class MeterServletTest {
             meterServlet.doGet(request, response);
 
             verify(getLastUtilityMeter).execute(anyLong());
+            verify(printWriter).write(anyString());
             verify(response).setStatus(HttpServletResponse.SC_OK);
         }
 
@@ -134,6 +117,7 @@ class MeterServletTest {
             meterServlet.doGet(request, response);
 
             verify(getUtilityMeterByMonth).execute(eq(3), anyLong());
+            verify(printWriter).write(anyString());
             verify(response).setStatus(HttpServletResponse.SC_OK);
         }
 
@@ -172,8 +156,8 @@ class MeterServletTest {
 
             meterServlet.doPost(request, response);
 
-            verify(printWriter).write("[]");
             verify(submitUtilityMeter).execute(anyMap(), anyLong());
+            verify(printWriter).write("[]");
             verify(response).setStatus(HttpServletResponse.SC_CREATED);
         }
 
@@ -185,8 +169,8 @@ class MeterServletTest {
 
             meterServlet.doPost(request, response);
 
-            verify(printWriter).println("Invalid meter type");
             verify(submitUtilityMeter).execute(anyMap(), anyLong());
+            verify(printWriter).println("Invalid meter type");
             verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
 
@@ -198,8 +182,8 @@ class MeterServletTest {
 
             meterServlet.doPost(request, response);
 
-            verify(printWriter).println("Monthly submit limit exceeded");
             verify(submitUtilityMeter).execute(anyMap(), anyLong());
+            verify(printWriter).println("Monthly submit limit exceeded");
             verify(response).setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }
