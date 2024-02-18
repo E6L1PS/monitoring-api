@@ -6,10 +6,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
-import ru.ylab.application.model.UtilityMeterModel;
 import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.MeterRepository;
-import ru.ylab.application.out.UserRepository;
+import ru.ylab.domain.model.UtilityMeter;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -17,23 +16,20 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class GetUtilityMeterImplTest {
+class GetLastUtilityMeterImplTest {
 
     @Mock
     private MeterRepository meterRepository;
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
     private AuditRepository auditRepository;
 
     @InjectMocks
-    private GetUtilityMeterImpl getUtilityMeter;
+    private GetLastUtilityMeterImpl getUtilityMeter;
 
     private List<UtilityMeterEntity> entityList;
 
@@ -68,10 +64,9 @@ class GetUtilityMeterImplTest {
         var list = entityList.stream()
                 .filter(meter -> meter.getUserId().equals(userId) && meter.getReadingsDate() == date)
                 .collect(Collectors.toList());
-        when(userRepository.getCurrentUserId()).thenReturn(userId);
         when(meterRepository.findLastByUserId(userId)).thenReturn(list);
 
-        List<UtilityMeterModel> result = getUtilityMeter.execute();
+        List<UtilityMeter> result = getUtilityMeter.execute(userId);
 
         verify(auditRepository, times(1)).save(any());
         assertThat(result).hasSize(3);

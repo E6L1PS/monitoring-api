@@ -7,16 +7,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
-import ru.ylab.application.model.UtilityMeterModel;
 import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.MeterRepository;
-import ru.ylab.application.out.UserRepository;
-import ru.ylab.domain.model.Role;
+import ru.ylab.domain.model.UtilityMeter;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -24,9 +22,6 @@ class GetAllUtilityMeterImplTest {
 
     @Mock
     private MeterRepository meterRepository;
-
-    @Mock
-    private UserRepository userRepository;
 
     @Mock
     private AuditRepository auditRepository;
@@ -52,10 +47,9 @@ class GetAllUtilityMeterImplTest {
     @Test
     @DisplayName("Тест выполнения с ролью ADMIN")
     void testExecuteWithAdminRole() {
-        when(userRepository.getCurrentRoleUser()).thenReturn(Role.ADMIN);
         when(meterRepository.findAll()).thenReturn(entityList);
 
-        List<UtilityMeterModel> result = getAllUtilityMeter.execute();
+        List<UtilityMeter> result = getAllUtilityMeter.execute();
 
         verify(auditRepository, times(1)).save(any());
         assertThat(entityList).hasSize(result.size());
@@ -65,11 +59,9 @@ class GetAllUtilityMeterImplTest {
     @DisplayName("Тест выполнения с ролью USER")
     void testExecuteWithUserRole() {
         Long userId = 1L;
-        when(userRepository.getCurrentUserId()).thenReturn(userId);
-        when(userRepository.getCurrentRoleUser()).thenReturn(Role.USER);
         when(meterRepository.findAllByUserId(userId)).thenReturn(entityList.subList(0, 3));
 
-        List<UtilityMeterModel> result = getAllUtilityMeter.execute();
+        List<UtilityMeter> result = getAllUtilityMeter.execute();
 
         verify(auditRepository, times(1)).save(any());
         assertThat(result).hasSize(3);

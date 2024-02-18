@@ -2,7 +2,8 @@ package ru.ylab.adapters.out.persistence.repository;
 
 import lombok.NoArgsConstructor;
 import ru.ylab.adapters.out.persistence.entity.AuditEntity;
-import ru.ylab.adapters.out.persistence.util.ConnectionManager;
+import ru.ylab.adapters.util.ConnectionManager;
+import ru.ylab.annotations.Autowired;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.out.AuditRepository;
 
@@ -31,7 +32,8 @@ public class AuditRepositoryImpl implements AuditRepository {
      * SQL-запрос для выбора всех записей аудита из базы данных, упорядоченных по времени создания.
      */
     private static final String SQL_SELECT_ALL = """
-            SELECT * FROM monitoring_schema.audit
+            SELECT id, info, created_at, user_id
+            FROM monitoring_schema.audit
             ORDER BY created_at
             """;
 
@@ -45,12 +47,20 @@ public class AuditRepositoryImpl implements AuditRepository {
             VALUES (?, ?, ?)
             """;
 
+    @Autowired
+    private ConnectionManager connectionManager;
+
+    public AuditRepositoryImpl(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public List<AuditEntity> findAll() {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_ALL)) {
+        try (var connection = connectionManager.get();
+             var statement = connection.prepareStatement(SQL_SELECT_ALL)) {
             var resultSet = statement.executeQuery();
             List<AuditEntity> audits = new ArrayList<>();
             while (resultSet.next()) {
@@ -74,7 +84,8 @@ public class AuditRepositoryImpl implements AuditRepository {
      */
     @Override
     public void save(AuditEntity auditEntity) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_INSERT)) {
+        try (var connection = connectionManager.get();
+             var statement = connection.prepareStatement(SQL_INSERT)) {
             statement.setString(1, auditEntity.getInfo());
             statement.setTimestamp(2, Timestamp.valueOf(auditEntity.getDateTime()));
             statement.setLong(3, auditEntity.getUserId());

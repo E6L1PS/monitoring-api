@@ -1,32 +1,29 @@
 package ru.ylab.application.service;
 
-import ru.ylab.adapters.out.persistence.entity.AuditEntity;
+import ru.ylab.adapters.out.persistence.entity.UserEntity;
 import ru.ylab.annotations.Autowired;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.exception.NotValidUsernameOrPasswordException;
 import ru.ylab.application.exception.UsernameAlreadyExistsException;
 import ru.ylab.application.in.RegisterUser;
 import ru.ylab.application.mapper.UserMapper;
-import ru.ylab.application.model.RegisterModel;
-import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.UserRepository;
+import ru.ylab.aspect.annotation.Auditable;
+import ru.ylab.aspect.annotation.Loggable;
 import ru.ylab.domain.model.User;
-
-import java.time.LocalDateTime;
 
 /**
  * {@inheritDoc}
  *
  * @author Pesternikov Danil
  */
+@Auditable
+@Loggable
 @Singleton
 public class RegisterUserImpl implements RegisterUser {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private AuditRepository auditRepository;
 
     /**
      * {@inheritDoc}
@@ -35,24 +32,17 @@ public class RegisterUserImpl implements RegisterUser {
      * @throws UsernameAlreadyExistsException      в случае если пользователь уже существует с таким username
      */
     @Override
-    public void execute(RegisterModel registerModel) {
-        if (!userRepository.isAlreadyExists(registerModel.username())) {
-            User user = UserMapper.INSTANCE.toUser(registerModel);
+    public Long execute(User user) {
+        if (!userRepository.isAlreadyExists(user.getUsername())) {
             if (user.usernameIsValid() && user.passwordIsValid()) {
-                var userId = userRepository.save(UserMapper.INSTANCE.userToUserEntity(user));
-                auditRepository.save(
-                        AuditEntity.builder()
-                                .info("Новый пользователь зарегистрирован")
-                                .dateTime(LocalDateTime.now())
-                                .userId(userId)
-                                .build()
-                );
+                UserEntity userEntity = UserMapper.INSTANCE.toEntity(user);
+                return userRepository.save(userEntity);
             } else {
                 throw new NotValidUsernameOrPasswordException("Not Valid Username Or Password!");
             }
         } else {
-            throw new UsernameAlreadyExistsException("Пользователь с именем: '" +
-                                                     registerModel.username() + "' уже существует!");
+            throw new UsernameAlreadyExistsException(
+                    "Пользователь с именем: '" + user.getUsername() + "' уже существует!");
         }
     }
 }

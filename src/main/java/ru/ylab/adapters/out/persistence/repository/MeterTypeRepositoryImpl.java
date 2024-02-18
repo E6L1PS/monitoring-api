@@ -2,7 +2,8 @@ package ru.ylab.adapters.out.persistence.repository;
 
 import lombok.NoArgsConstructor;
 import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
-import ru.ylab.adapters.out.persistence.util.ConnectionManager;
+import ru.ylab.adapters.util.ConnectionManager;
+import ru.ylab.annotations.Autowired;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.out.MeterTypeRepository;
 
@@ -30,14 +31,16 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
      * SQL-запрос для выбора всех записей о типах счетчиков из базы данных.
      */
     private static final String SQL_SELECT_ALL = """
-            SELECT * FROM monitoring_schema.meter_type
+            SELECT name
+            FROM monitoring_schema.meter_type
             """;
 
     /**
      * SQL-запрос для подсчета типов счетчиков по имени.
      */
     private static final String SQL_SELECT_COUNT_BY_NAME = """
-            SELECT COUNT(*) FROM monitoring_schema.meter_type
+            SELECT COUNT(*)
+            FROM monitoring_schema.meter_type
             WHERE name = ?;
             """;
 
@@ -50,12 +53,20 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
             VALUES (?)
             """;
 
+    @Autowired
+    private ConnectionManager connectionManager;
+
+    public MeterTypeRepositoryImpl(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public List<MeterTypeEntity> findAll() {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_ALL)) {
+        try (var connection = connectionManager.get();
+             var statement = connection.prepareStatement(SQL_SELECT_ALL)) {
             var resultSet = statement.executeQuery();
             List<MeterTypeEntity> meterTypeEntities = new ArrayList<>();
             while (resultSet.next()) {
@@ -76,7 +87,8 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
      */
     @Override
     public Boolean isMeterTypeExists(String typeName) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_COUNT_BY_NAME)) {
+        try (var connection = connectionManager.get();
+             var statement = connection.prepareStatement(SQL_SELECT_COUNT_BY_NAME)) {
             statement.setString(1, typeName);
             var resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -93,11 +105,12 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
      * {@inheritDoc}
      */
     @Override
-    public MeterTypeEntity save(String typeName) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_INSERT)) {
-            statement.setString(1, typeName);
+    public MeterTypeEntity save(MeterTypeEntity meterTypeEntity) {
+        try (var connection = connectionManager.get();
+             var statement = connection.prepareStatement(SQL_INSERT)) {
+            statement.setString(1, meterTypeEntity.getName());
             statement.executeUpdate();
-            return MeterTypeEntity.builder().name(typeName).build();
+            return meterTypeEntity;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -23,14 +23,19 @@ import java.time.LocalDateTime;
 public class Audit {
 
     /**
+     * Уникальный идентификатор этой сущности аудита.
+     */
+    private Long id;
+
+    /**
+     * Уникальный идентификатор пользователя, выполнившего действие.
+     */
+    private Long userId;
+
+    /**
      * информация об аудите.
      */
     private String info;
-
-    /**
-     * имя пользователя, связанного с аудитом.
-     */
-    private String username;
 
     /**
      * Время события аудита.

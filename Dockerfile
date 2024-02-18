@@ -11,12 +11,12 @@ COPY src ./src
 
 RUN gradle build --refresh-dependencies -x test
 
-FROM openjdk:17-jdk-slim
+FROM tomcat:jre17
 
 WORKDIR /app
 
-COPY --from=build /app/build/libs/monitoring-api-1.0-SNAPSHOT.jar application.jar
+COPY --from=build /app/build/libs/*war /usr/local/tomcat/webapps/app.war
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "application.jar"]
+CMD ["catalina.sh", "run"]

@@ -1,6 +1,6 @@
 package ru.ylab.application.in;
 
-import ru.ylab.adapters.out.persistence.entity.AuditEntity;
+import ru.ylab.domain.model.Audit;
 
 import java.util.List;
 
@@ -22,5 +22,5 @@ public interface GetAuditInfo {
      *
      * @return Список объектов типа AuditEntity, представляющих результаты операции аудита.
      */
-    List<AuditEntity> execute();
+    List<Audit> execute();
 }

@@ -2,7 +2,8 @@ package ru.ylab.adapters.out.persistence.repository;
 
 import lombok.NoArgsConstructor;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
-import ru.ylab.adapters.out.persistence.util.ConnectionManager;
+import ru.ylab.adapters.util.ConnectionManager;
+import ru.ylab.annotations.Autowired;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.exception.UserNotFoundException;
 import ru.ylab.application.out.UserRepository;
@@ -41,7 +42,8 @@ public class UserRepositoryImpl implements UserRepository {
      * SQL-запрос для выбора пользователя по имени пользователя из базы данных.
      */
     private static final String SQL_SELECT_USER_BY_USERNAME = """
-            SELECT * FROM monitoring_schema.user
+            SELECT id, username, password, role
+            FROM monitoring_schema.user
             WHERE username = ?;
             """;
 
@@ -49,21 +51,25 @@ public class UserRepositoryImpl implements UserRepository {
      * SQL-запрос для подсчета пользователей по имени пользователя.
      */
     private static final String SQL_SELECT_COUNT_BY_USERNAME = """
-            SELECT COUNT(*) FROM monitoring_schema.user
+            SELECT COUNT(*)
+            FROM monitoring_schema.user
             WHERE username = ?;
             """;
 
-    /**
-     * Текущий пользователь, авторизованный в системе.
-     */
-    private UserEntity currentUser;
+    @Autowired
+    private ConnectionManager connectionManager;
+
+    public UserRepositoryImpl(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public UserEntity getByUsername(String username) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_USER_BY_USERNAME)) {
+        try (var connection = connectionManager.get();
+             var statement = connection.prepareStatement(SQL_SELECT_USER_BY_USERNAME)) {
             statement.setString(1, username);
             var resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -86,7 +92,8 @@ public class UserRepositoryImpl implements UserRepository {
      */
     @Override
     public Boolean isAlreadyExists(String username) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_SELECT_COUNT_BY_USERNAME)) {
+        try (var connection = connectionManager.get();
+             var statement = connection.prepareStatement(SQL_SELECT_COUNT_BY_USERNAME)) {
             statement.setString(1, username);
             var resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -105,7 +112,8 @@ public class UserRepositoryImpl implements UserRepository {
      */
     @Override
     public Long save(UserEntity userEntity) {
-        try (var statement = ConnectionManager.open().prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
+        try (var connection = connectionManager.get();
+             var statement = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, userEntity.getUsername());
             statement.setString(2, userEntity.getPassword());
             statement.setObject(3, userEntity.getRole(), Types.OTHER);
@@ -121,42 +129,5 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Long getCurrentUserId() {
-        return currentUser.getId();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Role getCurrentRoleUser() {
-        if (currentUser == null) {
-            return Role.USER;
-        } else {
-            return currentUser.getRole();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public UserEntity setupCurrentUser(UserEntity userEntity) {
-        this.currentUser = userEntity;
-        return userEntity;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void logout() {
-        currentUser = null;
     }
 }

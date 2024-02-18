@@ -1,14 +1,19 @@
 plugins {
     id 'java'
+    id 'war'
+    id "io.freefair.aspectj.post-compile-weaving" version "6.4.1"
 }
 
 ext {
     lombokVersion = '1.18.30'
     mapstructVersion = '1.5.5.Final'
     lombokMapstructBindingVersion = '0.2.0'
+    slf4jVersion = '2.0.12'
+    jakartaServletApiVersion = '6.0.0'
+    jacksonDatabindVersion = '2.16.1'
     liquibaseVersion = '4.25.1'
     postgresqlVersion = '42.7.1'
-
+    aspectjVersion = '1.9.21'
     testcontainersVersion = '1.19.4'
     assertjVersion = '3.25.2'
     mockitoVersion = '5.10.0'
@@ -59,6 +64,17 @@ tasks.register('runApplication', JavaExec) {
 dependencies {
     implementation project(":di-container")
 
+    implementation "org.slf4j:slf4j-api:$slf4jVersion"
+    implementation "org.slf4j:slf4j-simple:$slf4jVersion"
+
+    implementation "org.aspectj:aspectjrt:$aspectjVersion"
+    implementation "org.aspectj:aspectjweaver:$aspectjVersion"
+
+    implementation "jakarta.servlet:jakarta.servlet-api:$jakartaServletApiVersion"
+
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonDatabindVersion"
+
     implementation "org.liquibase:liquibase-core:$liquibaseVersion"
     implementation "org.postgresql:postgresql:$postgresqlVersion"
 
@@ -74,6 +90,7 @@ dependencies {
     testImplementation "org.testcontainers:postgresql:$testcontainersVersion"
     testImplementation "org.assertj:assertj-core:$assertjVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 }

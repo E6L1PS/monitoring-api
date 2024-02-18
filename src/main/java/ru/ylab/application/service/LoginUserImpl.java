@@ -1,17 +1,16 @@
 package ru.ylab.application.service;
 
-import ru.ylab.adapters.out.persistence.entity.AuditEntity;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
 import ru.ylab.annotations.Autowired;
 import ru.ylab.annotations.Singleton;
 import ru.ylab.application.exception.IncorrectPasswordException;
 import ru.ylab.application.exception.UserNotFoundException;
 import ru.ylab.application.in.LoginUser;
-import ru.ylab.application.model.LoginModel;
-import ru.ylab.application.out.AuditRepository;
 import ru.ylab.application.out.UserRepository;
+import ru.ylab.aspect.annotation.Auditable;
+import ru.ylab.aspect.annotation.Loggable;
+import ru.ylab.domain.model.User;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -19,38 +18,31 @@ import java.util.Objects;
  *
  * @author Pesternikov Danil
  */
+@Auditable
+@Loggable
 @Singleton
 public class LoginUserImpl implements LoginUser {
 
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private AuditRepository auditRepository;
-
     /**
      * {@inheritDoc}
      *
+     * @return
      * @throws UserNotFoundException      в случае если пользователь с таким username не найден
      * @throws IncorrectPasswordException в случае если пользователь ввел не верный пароль
      */
     @Override
-    public void execute(LoginModel loginModel) {
-        UserEntity userEntity = userRepository.getByUsername(loginModel.username());
+    public UserEntity execute(User user) {
+        UserEntity userEntity = userRepository.getByUsername(user.getUsername());
 
         if (userEntity == null) {
             throw new UserNotFoundException("Пользователь с таким username не найден!");
         }
 
-        if (Objects.equals(userEntity.getPassword(), loginModel.password())) {
-            userRepository.setupCurrentUser(userEntity);
-            auditRepository.save(
-                    AuditEntity.builder()
-                            .info("Авторизация выполнена")
-                            .dateTime(LocalDateTime.now())
-                            .userId(userEntity.getId())
-                            .build()
-            );
+        if (Objects.equals(userEntity.getPassword(), user.getPassword())) {
+            return userEntity;
         } else {
             throw new IncorrectPasswordException("Пароль неверный!");
         }

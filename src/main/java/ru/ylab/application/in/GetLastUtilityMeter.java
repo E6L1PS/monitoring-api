@@ -1,6 +1,6 @@
 package ru.ylab.application.in;
 
-import ru.ylab.application.model.UtilityMeterModel;
+import ru.ylab.domain.model.UtilityMeter;
 
 import java.util.List;
 
@@ -15,12 +15,12 @@ import java.util.List;
  *
  * @author Pesternikov Danil
  */
-public interface GetUtilityMeter {
+public interface GetLastUtilityMeter {
 
     /**
      * Выполняет операцию для получения списка моделей счетчиков коммунальных услуг.
      *
      * @return Список объектов типа UtilityMeterModel, представляющих счетчикики коммунальных услуг.
      */
-    List<UtilityMeterModel> execute();
+    List<UtilityMeter> execute(Long userId);
 }

@@ -1,6 +1,6 @@
 package ru.ylab.application.in;
 
-import ru.ylab.application.model.UtilityMeterModel;
+import ru.ylab.domain.model.UtilityMeter;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * список моделей счетчика коммунальных услуг.</p>
  *
  * <p>Реализации этого интерфейса должны предоставить конкретную логику для
- * получения списка счетчиков коммунальных услугв.</p>
+ * получения списка счетчиков коммунальных услуг.</p>
  *
  * @author Pesternikov Danil
  */
@@ -23,5 +23,5 @@ public interface GetAllUtilityMeter {
      *
      * @return Список моделей счетчика коммунальных услуг.
      */
-    List<UtilityMeterModel> execute();
+    List<UtilityMeter> execute();
 }
