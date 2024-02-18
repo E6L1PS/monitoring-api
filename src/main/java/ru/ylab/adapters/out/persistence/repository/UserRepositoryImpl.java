@@ -1,10 +1,10 @@
 package ru.ylab.adapters.out.persistence.repository;
 
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
 import ru.ylab.adapters.util.ConnectionManager;
-import ru.ylab.annotations.Autowired;
-import ru.ylab.annotations.Singleton;
 import ru.ylab.application.exception.UserNotFoundException;
 import ru.ylab.application.out.UserRepository;
 import ru.ylab.domain.model.Role;
@@ -17,7 +17,7 @@ import java.sql.Types;
  * Класс {@code UserRepositoryImpl} представляет собой реализацию интерфейса {@link UserRepository},
  * предоставляя методы для взаимодействия с данными о пользователях в системе мониторинга.
  *
- * <p>Этот класс помечен аннотацией {@link Singleton} для обеспечения использования единственного
+ * <p>Этот класс помечен аннотацией {@link Repository} для обеспечения использования единственного
  * экземпляра на протяжении всего приложения. Также имеет конструктор без аргументов, помеченный
  * аннотацией {@link NoArgsConstructor}.
  *
@@ -25,7 +25,7 @@ import java.sql.Types;
  *
  * @author Pesternikov Danil
  */
-@Singleton
+@Repository
 @NoArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
 

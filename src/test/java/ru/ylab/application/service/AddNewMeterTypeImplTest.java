@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.ylab.ApplicationContext;
 import ru.ylab.adapters.out.persistence.repository.AuditRepositoryImpl;
 import ru.ylab.application.out.MeterTypeRepository;
 import ru.ylab.aspect.AuditAspect;
@@ -27,8 +26,7 @@ class AddNewMeterTypeImplTest {
 
     @Mock
     AuditRepositoryImpl auditRepository;
-    @Mock
-    ApplicationContext applicationContext;
+
     @InjectMocks
     AuditAspect auditAspect;
 

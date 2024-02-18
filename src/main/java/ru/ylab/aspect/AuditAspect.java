@@ -1,14 +1,13 @@
 package ru.ylab.aspect;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import ru.ylab.adapters.in.web.listener.ApplicationContextInitializationListener;
+import org.springframework.stereotype.Component;
 import ru.ylab.adapters.out.persistence.entity.AuditEntity;
-import ru.ylab.adapters.out.persistence.repository.AuditRepositoryImpl;
 import ru.ylab.application.out.AuditRepository;
 
 import java.time.LocalDateTime;
@@ -19,19 +18,12 @@ import java.time.LocalDateTime;
  * @author Pesternikov Danil
  */
 @Slf4j
-@AllArgsConstructor
 @Aspect
+@Component
+@RequiredArgsConstructor
 public class AuditAspect {
 
     private final AuditRepository auditRepository;
-
-    public AuditAspect() {
-        try {
-            auditRepository = ApplicationContextInitializationListener.context.getObject(AuditRepositoryImpl.class);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Pointcut("@within(ru.ylab.aspect.annotation.Auditable) && execution(* *(..))")
     public void annotatedByAuditable() {

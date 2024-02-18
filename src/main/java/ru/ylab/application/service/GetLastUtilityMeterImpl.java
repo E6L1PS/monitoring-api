@@ -1,8 +1,8 @@
 package ru.ylab.application.service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
-import ru.ylab.annotations.Autowired;
-import ru.ylab.annotations.Singleton;
 import ru.ylab.application.in.GetLastUtilityMeter;
 import ru.ylab.application.mapper.UtilityMeterMapper;
 import ru.ylab.application.out.MeterRepository;
@@ -19,11 +19,13 @@ import java.util.List;
  */
 @Auditable
 @Loggable
-@Singleton
+@RequiredArgsConstructor
+@Service
 public class GetLastUtilityMeterImpl implements GetLastUtilityMeter {
 
-    @Autowired
-    private MeterRepository meterRepository;
+    private final MeterRepository meterRepository;
+
+    private final UtilityMeterMapper utilityMeterMapper;
 
     /**
      * {@inheritDoc}
@@ -31,6 +33,6 @@ public class GetLastUtilityMeterImpl implements GetLastUtilityMeter {
     @Override
     public List<UtilityMeter> execute(Long userId) {
         List<UtilityMeterEntity> utilityMeterEntities = meterRepository.findLastByUserId(userId);
-        return UtilityMeterMapper.INSTANCE.toListDomain(utilityMeterEntities);
+        return utilityMeterMapper.toListDomain(utilityMeterEntities);
     }
 }

@@ -1,11 +1,12 @@
 package ru.ylab.application.service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
-import ru.ylab.annotations.Autowired;
-import ru.ylab.annotations.Singleton;
 import ru.ylab.application.exception.IncorrectPasswordException;
 import ru.ylab.application.exception.UserNotFoundException;
 import ru.ylab.application.in.LoginUser;
+import ru.ylab.application.mapper.UserMapper;
 import ru.ylab.application.out.UserRepository;
 import ru.ylab.aspect.annotation.Auditable;
 import ru.ylab.aspect.annotation.Loggable;
@@ -20,11 +21,13 @@ import java.util.Objects;
  */
 @Auditable
 @Loggable
-@Singleton
+@RequiredArgsConstructor
+@Service
 public class LoginUserImpl implements LoginUser {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final UserMapper userMapper;
 
     /**
      * {@inheritDoc}

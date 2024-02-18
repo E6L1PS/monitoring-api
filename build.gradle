@@ -5,6 +5,7 @@ plugins {
 }
 
 ext {
+    springVersion = '6.1.4'
     lombokVersion = '1.18.30'
     mapstructVersion = '1.5.5.Final'
     lombokMapstructBindingVersion = '0.2.0'
@@ -62,7 +63,9 @@ tasks.register('runApplication', JavaExec) {
 }
 
 dependencies {
-    implementation project(":di-container")
+    implementation "org.springframework:spring-context:$springVersion"
+    implementation "org.springframework:spring-web:$springVersion"
+    implementation "org.springframework:spring-webmvc:$springVersion"
 
     implementation "org.slf4j:slf4j-api:$slf4jVersion"
     implementation "org.slf4j:slf4j-simple:$slf4jVersion"

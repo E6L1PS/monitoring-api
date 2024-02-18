@@ -1,8 +1,8 @@
 package ru.ylab.application.service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
-import ru.ylab.annotations.Autowired;
-import ru.ylab.annotations.Singleton;
 import ru.ylab.application.exception.NotValidUsernameOrPasswordException;
 import ru.ylab.application.exception.UsernameAlreadyExistsException;
 import ru.ylab.application.in.RegisterUser;
@@ -19,11 +19,13 @@ import ru.ylab.domain.model.User;
  */
 @Auditable
 @Loggable
-@Singleton
+@RequiredArgsConstructor
+@Service
 public class RegisterUserImpl implements RegisterUser {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final UserMapper userMapper;
 
     /**
      * {@inheritDoc}
@@ -35,7 +37,7 @@ public class RegisterUserImpl implements RegisterUser {
     public Long execute(User user) {
         if (!userRepository.isAlreadyExists(user.getUsername())) {
             if (user.usernameIsValid() && user.passwordIsValid()) {
-                UserEntity userEntity = UserMapper.INSTANCE.toEntity(user);
+                UserEntity userEntity = userMapper.toEntity(user);
                 return userRepository.save(userEntity);
             } else {
                 throw new NotValidUsernameOrPasswordException("Not Valid Username Or Password!");

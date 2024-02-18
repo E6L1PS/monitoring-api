@@ -2,9 +2,6 @@ FROM gradle:7.5.1-jdk17-alpine AS build
 
 WORKDIR /app
 
-COPY di-container/build.gradle ./di-container/
-COPY di-container/settings.gradle ./di-container/
-COPY di-container/src ./di-container/src/
 COPY build.gradle .
 COPY settings.gradle .
 COPY src ./src

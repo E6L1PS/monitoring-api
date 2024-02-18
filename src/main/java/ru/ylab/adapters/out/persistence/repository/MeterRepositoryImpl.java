@@ -1,10 +1,10 @@
 package ru.ylab.adapters.out.persistence.repository;
 
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
 import ru.ylab.adapters.util.ConnectionManager;
-import ru.ylab.annotations.Autowired;
-import ru.ylab.annotations.Singleton;
 import ru.ylab.application.out.MeterRepository;
 
 import java.sql.Date;
@@ -17,7 +17,7 @@ import java.util.List;
  * Класс {@code MeterRepositoryImpl} представляет собой реализацию интерфейса {@link MeterRepository},
  * предоставляя методы для взаимодействия с данными счетчиков в системе мониторинга.
  *
- * <p>Этот класс помечен аннотацией {@link Singleton} для обеспечения использования единственного
+ * <p>Этот класс помечен аннотацией {@link Repository} для обеспечения использования единственного
  * экземпляра на протяжении всего приложения. Также имеет конструктор без аргументов, помеченный
  * аннотацией {@link NoArgsConstructor}.
  *
@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author Pesternikov Danil
  */
-@Singleton
+@Repository
 @NoArgsConstructor
 public class MeterRepositoryImpl implements MeterRepository {
 

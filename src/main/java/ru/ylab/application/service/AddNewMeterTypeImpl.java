@@ -1,8 +1,8 @@
 package ru.ylab.application.service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
-import ru.ylab.annotations.Autowired;
-import ru.ylab.annotations.Singleton;
 import ru.ylab.application.in.AddNewMeterType;
 import ru.ylab.application.mapper.MeterTypeMapper;
 import ru.ylab.application.out.MeterTypeRepository;
@@ -17,18 +17,21 @@ import ru.ylab.domain.model.MeterType;
  */
 @Auditable
 @Loggable
-@Singleton
+@RequiredArgsConstructor
+@Service
 public class AddNewMeterTypeImpl implements AddNewMeterType {
 
-    @Autowired
-    private MeterTypeRepository meterTypeRepository;
+
+    private final MeterTypeRepository meterTypeRepository;
+
+    private final MeterTypeMapper meterTypeMapper;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public void execute(MeterType meterType) {
-        MeterTypeEntity meterTypeEntity = MeterTypeMapper.INSTANCE.toEntity(meterType);
+        MeterTypeEntity meterTypeEntity = meterTypeMapper.toEntity(meterType);
         meterTypeRepository.save(meterTypeEntity);
     }
 }

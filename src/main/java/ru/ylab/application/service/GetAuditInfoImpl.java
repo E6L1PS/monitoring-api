@@ -1,8 +1,8 @@
 package ru.ylab.application.service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.ylab.adapters.out.persistence.entity.AuditEntity;
-import ru.ylab.annotations.Autowired;
-import ru.ylab.annotations.Singleton;
 import ru.ylab.application.in.GetAuditInfo;
 import ru.ylab.application.mapper.AuditMapper;
 import ru.ylab.application.out.AuditRepository;
@@ -19,11 +19,13 @@ import java.util.List;
  */
 @Auditable
 @Loggable
-@Singleton
+@RequiredArgsConstructor
+@Service
 public class GetAuditInfoImpl implements GetAuditInfo {
 
-    @Autowired
-    private AuditRepository auditRepository;
+    private final AuditRepository auditRepository;
+
+    private final AuditMapper auditMapper;
 
     /**
      * {@inheritDoc}
@@ -31,6 +33,6 @@ public class GetAuditInfoImpl implements GetAuditInfo {
     @Override
     public List<Audit> execute() {
         List<AuditEntity> auditEntities = auditRepository.findAll();
-        return AuditMapper.INSTANCE.toListDomain(auditEntities);
+        return auditMapper.toListDomain(auditEntities);
     }
 }

@@ -1,6 +1,6 @@
 package ru.ylab.adapters.util;
 
-import ru.ylab.annotations.Singleton;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
@@ -16,7 +16,7 @@ import java.util.concurrent.BlockingQueue;
  *
  * @author Pesternikov Danil
  */
-@Singleton
+@Component
 public final class ConnectionManager {
 
     /**

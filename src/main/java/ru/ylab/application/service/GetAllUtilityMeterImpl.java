@@ -1,8 +1,8 @@
 package ru.ylab.application.service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
-import ru.ylab.annotations.Autowired;
-import ru.ylab.annotations.Singleton;
 import ru.ylab.application.in.GetAllUtilityMeter;
 import ru.ylab.application.mapper.UtilityMeterMapper;
 import ru.ylab.application.out.MeterRepository;
@@ -19,11 +19,13 @@ import java.util.List;
  */
 @Auditable
 @Loggable
-@Singleton
+@RequiredArgsConstructor
+@Service
 public class GetAllUtilityMeterImpl implements GetAllUtilityMeter {
 
-    @Autowired
-    private MeterRepository meterRepository;
+    private final MeterRepository meterRepository;
+
+    private final UtilityMeterMapper utilityMeterMapper;
 
     /**
      * {@inheritDoc}
@@ -31,6 +33,6 @@ public class GetAllUtilityMeterImpl implements GetAllUtilityMeter {
     @Override
     public List<UtilityMeter> execute() {
         List<UtilityMeterEntity> utilityMeterEntities = meterRepository.findAll();
-        return UtilityMeterMapper.INSTANCE.toListDomain(utilityMeterEntities);
+        return utilityMeterMapper.toListDomain(utilityMeterEntities);
     }
 }

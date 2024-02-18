@@ -1,8 +1,8 @@
 package ru.ylab.application.service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
-import ru.ylab.annotations.Autowired;
-import ru.ylab.annotations.Singleton;
 import ru.ylab.application.exception.MonthlySubmitLimitException;
 import ru.ylab.application.exception.NotValidMeterTypeException;
 import ru.ylab.application.in.SubmitUtilityMeter;
@@ -25,14 +25,15 @@ import java.util.Map;
  */
 @Auditable
 @Loggable
-@Singleton
+@RequiredArgsConstructor
+@Service
 public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
 
-    @Autowired
-    private MeterRepository meterRepository;
+    private final MeterRepository meterRepository;
 
-    @Autowired
-    private MeterTypeRepository meterTypeRepository;
+    private final MeterTypeRepository meterTypeRepository;
+
+    private final UtilityMeterMapper utilityMeterMapper;
 
     /**
      * {@inheritDoc}
@@ -61,7 +62,7 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
                 }
             });
 
-            return UtilityMeterMapper.INSTANCE.toListDomain(utilityMeterEntityList);
+            return utilityMeterMapper.toListDomain(utilityMeterEntityList);
         } else {
             throw new MonthlySubmitLimitException("В этом месяце вы уже подали!");
         }
