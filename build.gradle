@@ -1,11 +1,11 @@
 plugins {
     id 'java'
     id 'war'
-    id "io.freefair.aspectj.post-compile-weaving" version "6.4.1"
 }
 
 ext {
     springVersion = '6.1.4'
+    hikariVersion = '5.1.0'
     lombokVersion = '1.18.30'
     mapstructVersion = '1.5.5.Final'
     lombokMapstructBindingVersion = '0.2.0'
@@ -39,39 +39,20 @@ allprojects {
     }
 }
 
-jar {
-    duplicatesStrategy = 'fail'
-    manifest.attributes('Main-Class': javaMainClass)
-
-    // Exclude META-INF/LICENSE.txt from the jar
-    exclude('META-INF/LICENSE.txt')
-    exclude('META-INF/NOTICE.txt')
-
-    // For di-container module
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
-
-tasks.register('runApplication', JavaExec) {
-    mainClass = javaMainClass
-    classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-
-    systemProperty 'file.encoding', 'UTF-8'
-    jvmArgs('-Dfile.encoding=UTF-8')
-}
-
 dependencies {
     implementation "org.springframework:spring-context:$springVersion"
     implementation "org.springframework:spring-web:$springVersion"
     implementation "org.springframework:spring-webmvc:$springVersion"
+    implementation "org.springframework:spring-aspects:$springVersion"
+//    implementation 'io.springfox:springfox-swagger2:3.0.0'
+//    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+//    implementation 'io.springfox:springfox-oas:3.0.0'
 
     implementation "org.slf4j:slf4j-api:$slf4jVersion"
     implementation "org.slf4j:slf4j-simple:$slf4jVersion"
 
-    implementation "org.aspectj:aspectjrt:$aspectjVersion"
-    implementation "org.aspectj:aspectjweaver:$aspectjVersion"
+    implementation "com.zaxxer:HikariCP:$hikariVersion"
+    implementation "org.springframework:spring-jdbc:$springVersion"
 
     implementation "jakarta.servlet:jakarta.servlet-api:$jakartaServletApiVersion"
 

@@ -1,14 +1,13 @@
 package ru.ylab.adapters.out.persistence.repository;
 
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
-import ru.ylab.adapters.util.ConnectionManager;
+import ru.ylab.adapters.out.persistence.rowmapper.MeterTypeRowMapper;
 import ru.ylab.application.out.MeterTypeRepository;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +23,7 @@ import java.util.List;
  * @author Pesternikov Danil
  */
 @Repository
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class MeterTypeRepositoryImpl implements MeterTypeRepository {
 
     /**
@@ -53,33 +52,15 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
             VALUES (?)
             """;
 
-    @Autowired
-    private ConnectionManager connectionManager;
-
-    public MeterTypeRepositoryImpl(ConnectionManager connectionManager) {
-        this.connectionManager = connectionManager;
-    }
+    private final JdbcTemplate jdbcTemplate;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public List<MeterTypeEntity> findAll() {
-        try (var connection = connectionManager.get();
-             var statement = connection.prepareStatement(SQL_SELECT_ALL)) {
-            var resultSet = statement.executeQuery();
-            List<MeterTypeEntity> meterTypeEntities = new ArrayList<>();
-            while (resultSet.next()) {
-                meterTypeEntities.add(
-                        MeterTypeEntity.builder()
-                                .name(resultSet.getString("name"))
-                                .build()
-                );
-            }
-            return meterTypeEntities;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return jdbcTemplate.query(SQL_SELECT_ALL,
+                new MeterTypeRowMapper());
     }
 
     /**
@@ -87,18 +68,7 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
      */
     @Override
     public Boolean isMeterTypeExists(String typeName) {
-        try (var connection = connectionManager.get();
-             var statement = connection.prepareStatement(SQL_SELECT_COUNT_BY_NAME)) {
-            statement.setString(1, typeName);
-            var resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getLong(1) > 0;
-            } else {
-                throw new RuntimeException("isMeterTypeExists error!");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return jdbcTemplate.queryForObject(SQL_SELECT_COUNT_BY_NAME, new Object[]{typeName}, Long.class) > 0;
     }
 
     /**
@@ -106,13 +76,7 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
      */
     @Override
     public MeterTypeEntity save(MeterTypeEntity meterTypeEntity) {
-        try (var connection = connectionManager.get();
-             var statement = connection.prepareStatement(SQL_INSERT)) {
-            statement.setString(1, meterTypeEntity.getName());
-            statement.executeUpdate();
-            return meterTypeEntity;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        jdbcTemplate.update(SQL_INSERT, meterTypeEntity.getName());
+        return meterTypeEntity;
     }
 }

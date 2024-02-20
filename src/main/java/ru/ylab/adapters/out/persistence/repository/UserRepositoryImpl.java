@@ -1,17 +1,19 @@
 package ru.ylab.adapters.out.persistence.repository;
 
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
-import ru.ylab.adapters.util.ConnectionManager;
+import ru.ylab.adapters.out.persistence.rowmapper.UserRowMapper;
 import ru.ylab.application.exception.UserNotFoundException;
 import ru.ylab.application.out.UserRepository;
-import ru.ylab.domain.model.Role;
 
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.sql.Types;
+import java.util.Objects;
 
 /**
  * Класс {@code UserRepositoryImpl} представляет собой реализацию интерфейса {@link UserRepository},
@@ -26,7 +28,7 @@ import java.sql.Types;
  * @author Pesternikov Danil
  */
 @Repository
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
 
     /**
@@ -56,34 +58,21 @@ public class UserRepositoryImpl implements UserRepository {
             WHERE username = ?;
             """;
 
-    @Autowired
-    private ConnectionManager connectionManager;
-
-    public UserRepositoryImpl(ConnectionManager connectionManager) {
-        this.connectionManager = connectionManager;
-    }
+    private final JdbcTemplate jdbcTemplate;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public UserEntity getByUsername(String username) {
-        try (var connection = connectionManager.get();
-             var statement = connection.prepareStatement(SQL_SELECT_USER_BY_USERNAME)) {
-            statement.setString(1, username);
-            var resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return UserEntity.builder()
-                        .id(resultSet.getLong("id"))
-                        .username(resultSet.getString("username"))
-                        .password(resultSet.getString("password"))
-                        .role(Role.valueOf(resultSet.getString("role")))
-                        .build();
-            } else {
-                throw new UserNotFoundException("User Not Found");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        try {
+            return jdbcTemplate.queryForObject(
+                    SQL_SELECT_USER_BY_USERNAME,
+                    new Object[]{username},
+                    new UserRowMapper());
+
+        } catch (Exception e) {
+            throw new UserNotFoundException("User Not Found");
         }
     }
 
@@ -92,19 +81,8 @@ public class UserRepositoryImpl implements UserRepository {
      */
     @Override
     public Boolean isAlreadyExists(String username) {
-        try (var connection = connectionManager.get();
-             var statement = connection.prepareStatement(SQL_SELECT_COUNT_BY_USERNAME)) {
-            statement.setString(1, username);
-            var resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                int count = resultSet.getInt(1);
-                return count > 0; // Если пользователь существует, вернуть true
-            } else {
-                throw new RuntimeException("isAlreadyExists error");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return jdbcTemplate.queryForObject(SQL_SELECT_COUNT_BY_USERNAME, new Object[]{username}, Integer.class) > 0;
+
     }
 
     /**
@@ -112,22 +90,16 @@ public class UserRepositoryImpl implements UserRepository {
      */
     @Override
     public Long save(UserEntity userEntity) {
-        try (var connection = connectionManager.get();
-             var statement = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setString(1, userEntity.getUsername());
-            statement.setString(2, userEntity.getPassword());
-            statement.setObject(3, userEntity.getRole(), Types.OTHER);
-            statement.executeUpdate();
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-            var keys = statement.getGeneratedKeys();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(SQL_INSERT, new String[]{"id"});
+            ps.setString(1, userEntity.getUsername());
+            ps.setString(2, userEntity.getPassword());
+            ps.setObject(3, userEntity.getRole(), Types.OTHER);
+            return ps;
+        }, keyHolder);
 
-            if (keys.next()) {
-                return keys.getLong("id");
-            } else {
-                throw new RuntimeException("save error!");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 }

@@ -1,15 +1,14 @@
 package ru.ylab.adapters.out.persistence.repository;
 
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.ylab.adapters.out.persistence.entity.AuditEntity;
-import ru.ylab.adapters.util.ConnectionManager;
+import ru.ylab.adapters.out.persistence.rowmapper.AuditRowMapper;
 import ru.ylab.application.out.AuditRepository;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,7 +24,7 @@ import java.util.List;
  * @author Pesternikov Danil
  */
 @Repository
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class AuditRepositoryImpl implements AuditRepository {
 
     /**
@@ -47,36 +46,17 @@ public class AuditRepositoryImpl implements AuditRepository {
             VALUES (?, ?, ?)
             """;
 
-    @Autowired
-    private ConnectionManager connectionManager;
-
-    public AuditRepositoryImpl(ConnectionManager connectionManager) {
-        this.connectionManager = connectionManager;
-    }
+    private final JdbcTemplate jdbcTemplate;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public List<AuditEntity> findAll() {
-        try (var connection = connectionManager.get();
-             var statement = connection.prepareStatement(SQL_SELECT_ALL)) {
-            var resultSet = statement.executeQuery();
-            List<AuditEntity> audits = new ArrayList<>();
-            while (resultSet.next()) {
-                audits.add(
-                        AuditEntity.builder()
-                                .id(resultSet.getLong("id"))
-                                .info(resultSet.getString("info"))
-                                .userId(resultSet.getLong("user_id"))
-                                .dateTime(resultSet.getTimestamp("created_at").toLocalDateTime())
-                                .build()
-                );
-            }
-            return audits;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return jdbcTemplate.query(
+                SQL_SELECT_ALL,
+                new AuditRowMapper()
+        );
     }
 
     /**
@@ -84,15 +64,11 @@ public class AuditRepositoryImpl implements AuditRepository {
      */
     @Override
     public void save(AuditEntity auditEntity) {
-        try (var connection = connectionManager.get();
-             var statement = connection.prepareStatement(SQL_INSERT)) {
-            statement.setString(1, auditEntity.getInfo());
-            statement.setTimestamp(2, Timestamp.valueOf(auditEntity.getDateTime()));
-            statement.setLong(3, auditEntity.getUserId());
-
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        jdbcTemplate.update(
+                SQL_INSERT,
+                auditEntity.getInfo(),
+                Timestamp.valueOf(auditEntity.getDateTime()),
+                auditEntity.getUserId()
+        );
     }
 }
