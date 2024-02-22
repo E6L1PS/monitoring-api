@@ -1,11 +1,15 @@
 package ru.ylab.adapters.in.web.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.ylab.adapters.in.web.dto.MeterTypeDto;
 import ru.ylab.application.in.AddNewMeterType;
 import ru.ylab.application.in.GetUtilityMeterTypes;
 import ru.ylab.application.mapper.MeterTypeMapper;
+import ru.ylab.aspect.annotation.Loggable;
 import ru.ylab.domain.model.MeterType;
 
 import java.util.List;
@@ -15,6 +19,7 @@ import java.util.List;
  *
  * @author Pesternikov Danil
  */
+@Loggable
 @RestController
 @RequestMapping("type")
 @RequiredArgsConstructor
@@ -33,9 +38,10 @@ public class MeterTypeController {
         return meterTypesDto;
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
-    public void save(@RequestBody MeterType meterType) {
+    public ResponseEntity<?> save(@RequestBody MeterType meterType) {
         addNewMeterType.execute(meterType);
-        //TODO return status
+        return ResponseEntity.status(HttpStatus.CREATED).body(meterType);
     }
 }

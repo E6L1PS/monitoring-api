@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.ylab.adapters.in.web.dto.AuditDto;
 import ru.ylab.application.in.GetAuditInfo;
 import ru.ylab.application.mapper.AuditMapper;
+import ru.ylab.aspect.annotation.Loggable;
 import ru.ylab.domain.model.Audit;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
  *
  * @author Pesternikov Danil
  */
+@Loggable
 @RestController
 @RequestMapping("audit")
 @RequiredArgsConstructor

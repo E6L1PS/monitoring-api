@@ -1,6 +1,7 @@
 package ru.ylab.application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
 import ru.ylab.application.exception.NotValidUsernameOrPasswordException;
@@ -27,6 +28,8 @@ public class RegisterUserImpl implements RegisterUser {
 
     private final UserMapper userMapper;
 
+    private final PasswordEncoder passwordEncoder;
+
     /**
      * {@inheritDoc}
      *
@@ -37,6 +40,7 @@ public class RegisterUserImpl implements RegisterUser {
     public Long execute(User user) {
         if (!userRepository.isAlreadyExists(user.getUsername())) {
             if (user.usernameIsValid() && user.passwordIsValid()) {
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
                 UserEntity userEntity = userMapper.toEntity(user);
                 return userRepository.save(userEntity);
             } else {
