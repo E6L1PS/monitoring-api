@@ -9,7 +9,7 @@ import ru.ylab.adapters.in.web.dto.MeterTypeDto;
 import ru.ylab.application.in.AddNewMeterType;
 import ru.ylab.application.in.GetUtilityMeterTypes;
 import ru.ylab.application.mapper.MeterTypeMapper;
-import ru.ylab.aspect.annotation.Loggable;
+import ru.ylab.infrastructure.aspect.annotation.Loggable;
 import ru.ylab.domain.model.MeterType;
 
 import java.util.List;
@@ -32,10 +32,10 @@ public class MeterTypeController {
     private final MeterTypeMapper meterTypeMapper;
 
     @GetMapping
-    public List<MeterTypeDto> getAll() {
+    public ResponseEntity<List<MeterTypeDto>> getAll() {
         List<MeterType> meterTypes = getUtilityMeterTypes.execute();
         List<MeterTypeDto> meterTypesDto = meterTypeMapper.toListDto(meterTypes);
-        return meterTypesDto;
+        return ResponseEntity.ok(meterTypesDto);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

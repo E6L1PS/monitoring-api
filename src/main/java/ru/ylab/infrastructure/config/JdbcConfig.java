@@ -1,4 +1,4 @@
-package ru.ylab.config;
+package ru.ylab.infrastructure.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
@@ -17,8 +16,8 @@ import javax.sql.DataSource;
  * @author Pesternikov Danil
  */
 @Slf4j
+//@EnableTransactionManagement
 @Configuration
-@PropertySource("classpath:application.properties")
 public class JdbcConfig {
 
     @Bean
@@ -40,4 +39,5 @@ public class JdbcConfig {
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
+
 }

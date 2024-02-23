@@ -1,4 +1,4 @@
-package ru.ylab.aspect;
+package ru.ylab.infrastructure.aspect;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,9 +6,11 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.ylab.adapters.out.persistence.entity.AuditEntity;
 import ru.ylab.application.out.AuditRepository;
+import ru.ylab.domain.model.User;
 
 import java.time.LocalDateTime;
 
@@ -25,30 +27,20 @@ public class AuditAspect {
 
     private final AuditRepository auditRepository;
 
-    @Pointcut("@within(ru.ylab.aspect.annotation.Auditable) && execution(* *(..))")
+    @Pointcut("@within(ru.ylab.infrastructure.aspect.annotation.Auditable) && execution(* *(..))")
     public void annotatedByAuditable() {
     }
 
     @After("annotatedByAuditable()")
     public void auditing(JoinPoint joinPoint) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String className = joinPoint.getTarget().getClass().getSimpleName();
         var info = generateInfoMessage(className);
-
-        log.info("Start saving audit for " + className);
-
-
-        Object[] args = joinPoint.getArgs();
-        var userId = 1L;
-        for (Object arg : args) {
-            if (arg instanceof Long id) {
-                userId = id;
-                break;
-            }
-        }
+        log.info("Start saving audit for " + className + "; userId: " + user.getId().toString());
         auditRepository.save(AuditEntity.builder()
                 .info(info)
                 .dateTime(LocalDateTime.now())
-                .userId(userId) //TODO Придумать как получать userId
+                .userId(user.getId())
                 .build());
 
         log.info("Audit saved");

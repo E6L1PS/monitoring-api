@@ -6,7 +6,7 @@ plugins {
 ext {
     springVersion = '6.1.4'
     springSecurityVersion = '6.2.2'
-    springfoxVersion = '3.0.0'
+    springdocVersion = '2.3.0'
     jsonwebtokenVersion = '0.12.5'
     hikariVersion = '5.1.0'
     lombokVersion = '1.18.30'
@@ -47,22 +47,20 @@ dependencies {
     implementation "org.springframework:spring-web:$springVersion"
     implementation "org.springframework:spring-webmvc:$springVersion"
     implementation "org.springframework:spring-aspects:$springVersion"
+    implementation "org.springframework:spring-jdbc:$springVersion"
     implementation "org.springframework.security:spring-security-core:$springSecurityVersion"
     implementation "org.springframework.security:spring-security-web:$springSecurityVersion"
     implementation "org.springframework.security:spring-security-config:$springSecurityVersion"
     implementation "io.jsonwebtoken:jjwt-api:$jsonwebtokenVersion"
     implementation "io.jsonwebtoken:jjwt-impl:$jsonwebtokenVersion"
     implementation "io.jsonwebtoken:jjwt-jackson:$jsonwebtokenVersion"
-    implementation "io.springfox:springfox-swagger2:$springfoxVersion"
-    implementation "io.springfox:springfox-swagger-ui:$springfoxVersion"
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0"
-   // implementation 'io.springfox:springfox-oas:3.0.0'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocVersion"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:$springdocVersion"
 
     implementation "org.slf4j:slf4j-api:$slf4jVersion"
     implementation "org.slf4j:slf4j-simple:$slf4jVersion"
 
     implementation "com.zaxxer:HikariCP:$hikariVersion"
-    implementation "org.springframework:spring-jdbc:$springVersion"
 
     implementation "jakarta.servlet:jakarta.servlet-api:$jakartaServletApiVersion"
 

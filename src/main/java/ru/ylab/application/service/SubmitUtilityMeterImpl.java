@@ -2,6 +2,7 @@ package ru.ylab.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
 import ru.ylab.application.exception.MonthlySubmitLimitException;
 import ru.ylab.application.exception.NotValidMeterTypeException;
@@ -9,8 +10,8 @@ import ru.ylab.application.in.SubmitUtilityMeter;
 import ru.ylab.application.mapper.UtilityMeterMapper;
 import ru.ylab.application.out.MeterRepository;
 import ru.ylab.application.out.MeterTypeRepository;
-import ru.ylab.aspect.annotation.Auditable;
-import ru.ylab.aspect.annotation.Loggable;
+import ru.ylab.infrastructure.aspect.annotation.Auditable;
+import ru.ylab.infrastructure.aspect.annotation.Loggable;
 import ru.ylab.domain.model.UtilityMeter;
 
 import java.time.LocalDate;
@@ -26,6 +27,7 @@ import java.util.Map;
 @Auditable
 @Loggable
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
 

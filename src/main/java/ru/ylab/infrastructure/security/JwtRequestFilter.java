@@ -1,4 +1,4 @@
-package ru.ylab.config.security;
+package ru.ylab.infrastructure.security;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;

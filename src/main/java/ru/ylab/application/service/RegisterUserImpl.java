@@ -3,14 +3,15 @@ package ru.ylab.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
 import ru.ylab.application.exception.NotValidUsernameOrPasswordException;
 import ru.ylab.application.exception.UsernameAlreadyExistsException;
 import ru.ylab.application.in.RegisterUser;
 import ru.ylab.application.mapper.UserMapper;
 import ru.ylab.application.out.UserRepository;
-import ru.ylab.aspect.annotation.Auditable;
-import ru.ylab.aspect.annotation.Loggable;
+import ru.ylab.infrastructure.aspect.annotation.Auditable;
+import ru.ylab.infrastructure.aspect.annotation.Loggable;
 import ru.ylab.domain.model.User;
 
 /**
@@ -21,6 +22,7 @@ import ru.ylab.domain.model.User;
 @Auditable
 @Loggable
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class RegisterUserImpl implements RegisterUser {
 

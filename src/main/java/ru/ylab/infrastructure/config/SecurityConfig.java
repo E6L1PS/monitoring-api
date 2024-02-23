@@ -1,4 +1,4 @@
-package ru.ylab.config;
+package ru.ylab.infrastructure.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,8 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.ylab.config.security.JwtRequestFilter;
-import ru.ylab.config.security.UserService;
+import ru.ylab.infrastructure.security.JwtRequestFilter;
+import ru.ylab.infrastructure.security.UserService;
 import ru.ylab.domain.model.Role;
 
 /**

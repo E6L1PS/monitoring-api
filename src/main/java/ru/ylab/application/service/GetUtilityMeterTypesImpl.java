@@ -2,12 +2,13 @@ package ru.ylab.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
 import ru.ylab.application.in.GetUtilityMeterTypes;
 import ru.ylab.application.mapper.MeterTypeMapper;
 import ru.ylab.application.out.MeterTypeRepository;
-import ru.ylab.aspect.annotation.Auditable;
-import ru.ylab.aspect.annotation.Loggable;
+import ru.ylab.infrastructure.aspect.annotation.Auditable;
+import ru.ylab.infrastructure.aspect.annotation.Loggable;
 import ru.ylab.domain.model.MeterType;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.List;
 @Auditable
 @Loggable
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class GetUtilityMeterTypesImpl implements GetUtilityMeterTypes {
 

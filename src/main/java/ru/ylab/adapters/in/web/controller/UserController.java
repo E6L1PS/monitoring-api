@@ -15,9 +15,9 @@ import ru.ylab.adapters.in.web.dto.LoginDto;
 import ru.ylab.adapters.in.web.dto.RegisterDto;
 import ru.ylab.application.in.RegisterUser;
 import ru.ylab.application.mapper.UserMapper;
-import ru.ylab.aspect.annotation.Loggable;
-import ru.ylab.config.security.JwtService;
-import ru.ylab.config.security.UserService;
+import ru.ylab.infrastructure.aspect.annotation.Loggable;
+import ru.ylab.infrastructure.security.JwtService;
+import ru.ylab.infrastructure.security.UserService;
 
 /**
  * Создан: 18.02.2024.
@@ -32,9 +32,13 @@ import ru.ylab.config.security.UserService;
 public class UserController {
 
     private final UserService userService;
+
     private final RegisterUser registerUser;
+
     private final JwtService jwtService;
+
     private final AuthenticationManager authenticationManager;
+
     private final UserMapper userMapper;
 
     @PostMapping("/login")

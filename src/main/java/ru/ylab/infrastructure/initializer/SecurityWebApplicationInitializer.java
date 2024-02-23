@@ -1,4 +1,4 @@
-package ru.ylab.config.initializer;
+package ru.ylab.infrastructure.initializer;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;

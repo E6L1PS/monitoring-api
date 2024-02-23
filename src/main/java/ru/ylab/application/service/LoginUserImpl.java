@@ -8,8 +8,8 @@ import ru.ylab.application.exception.UserNotFoundException;
 import ru.ylab.application.in.LoginUser;
 import ru.ylab.application.mapper.UserMapper;
 import ru.ylab.application.out.UserRepository;
-import ru.ylab.aspect.annotation.Auditable;
-import ru.ylab.aspect.annotation.Loggable;
+import ru.ylab.infrastructure.aspect.annotation.Auditable;
+import ru.ylab.infrastructure.aspect.annotation.Loggable;
 import ru.ylab.domain.model.User;
 
 import java.util.Objects;

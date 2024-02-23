@@ -1,4 +1,4 @@
-package ru.ylab.aspect.annotation;
+package ru.ylab.infrastructure.aspect.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -12,6 +12,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
-public @interface Loggable {
+public @interface Auditable {
 
 }

@@ -1,4 +1,4 @@
-package ru.ylab.aspect;
+package ru.ylab.infrastructure.aspect;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class LoggableAspect {
 
-    @Pointcut("@within(ru.ylab.aspect.annotation.Loggable) && execution(* *(..))")
+    @Pointcut("@within(ru.ylab.infrastructure.aspect.annotation.Loggable) && execution(* *(..))")
     public void annotatedByLoggable() {
     }
 
