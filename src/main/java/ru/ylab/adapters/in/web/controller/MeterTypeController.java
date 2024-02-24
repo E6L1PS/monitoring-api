@@ -1,5 +1,6 @@
 package ru.ylab.adapters.in.web.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.List;
  *
  * @author Pesternikov Danil
  */
+@Tag(name = "MeterTypeController", description = "Контроллер для работы с типом счетчиков")
 @Loggable
 @RestController
 @RequestMapping("type")

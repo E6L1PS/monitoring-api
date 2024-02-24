@@ -97,12 +97,10 @@ class MeterControllerTest {
     @Test
     void save_ReturnsResponseEntity() {
         Map<String, Double> meters = Map.of("asd", 123.0);
-        when(submitUtilityMeter.execute(anyMap(), anyLong())).thenReturn(utilityMeterDtoList);
 
         var responseEntity = meterController.save(meters, user);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(responseEntity.getBody()).isEqualTo(utilityMeterDtoList);
     }
 }

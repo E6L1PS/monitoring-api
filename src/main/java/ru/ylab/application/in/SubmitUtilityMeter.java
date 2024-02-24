@@ -1,8 +1,5 @@
 package ru.ylab.application.in;
 
-import ru.ylab.adapters.in.web.dto.UtilityMeterDto;
-
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,5 +21,5 @@ public interface SubmitUtilityMeter {
      * @param utilityMeters Словарь, содержащий данные счетчиков в формате "название счетчика" -> "значение".
      * @param userId        id пользователя.
      */
-    List<UtilityMeterDto> execute(Map<String, Double> utilityMeters, Long userId);
+    void execute(Map<String, Double> utilityMeters, Long userId);
 }

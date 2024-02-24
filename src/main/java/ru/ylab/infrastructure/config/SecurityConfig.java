@@ -17,9 +17,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import ru.ylab.domain.model.Role;
 import ru.ylab.infrastructure.security.JwtRequestFilter;
 import ru.ylab.infrastructure.security.UserService;
-import ru.ylab.domain.model.Role;
 
 /**
  * Создан: 21.02.2024.
@@ -43,7 +43,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
                                 .requestMatchers("/meter/**").authenticated()
-                                //.requestMatchers("/type/**").hasAuthority(Role.USER.name())
                                 .requestMatchers("/audit/**").hasAuthority(Role.ADMIN.name())
                                 .anyRequest().permitAll()
 

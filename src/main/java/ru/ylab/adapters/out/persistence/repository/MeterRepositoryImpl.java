@@ -2,6 +2,7 @@ package ru.ylab.adapters.out.persistence.repository;
 
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -12,6 +13,7 @@ import ru.ylab.application.out.MeterRepository;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
@@ -168,6 +170,25 @@ public class MeterRepositoryImpl implements MeterRepository {
         utilityMeterEntity.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
 
         return utilityMeterEntity;
+    }
+
+    @Override
+    public void saveAll(List<UtilityMeterEntity> utilityMeterEntities) {
+        jdbcTemplate.batchUpdate(SQL_INSERT, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                UtilityMeterEntity utilityMeterEntity = utilityMeterEntities.get(i);
+                ps.setDouble(1, utilityMeterEntity.getCounter());
+                ps.setDate(2, Date.valueOf(utilityMeterEntity.getReadingsDate()));
+                ps.setLong(3, utilityMeterEntity.getUserId());
+                ps.setString(4, utilityMeterEntity.getType());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return utilityMeterEntities.size();
+            }
+        });
     }
 
 }

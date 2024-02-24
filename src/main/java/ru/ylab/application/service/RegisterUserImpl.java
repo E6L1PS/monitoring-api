@@ -42,17 +42,21 @@ public class RegisterUserImpl implements RegisterUser {
     @Override
     public Long execute(RegisterDto registerDto) {
         User user = userMapper.toDomain(registerDto);
-        if (!userRepository.isAlreadyExists(user.getUsername())) {
-            if (user.usernameIsValid() && user.passwordIsValid()) {
-                user.setPassword(passwordEncoder.encode(user.getPassword()));
-                UserEntity userEntity = userMapper.toEntity(user);
-                return userRepository.save(userEntity);
-            } else {
-                throw new NotValidUsernameOrPasswordException("Not Valid Username Or Password!");
-            }
-        } else {
+
+        if (userRepository.isAlreadyExists(user.getUsername())) {
             throw new UsernameAlreadyExistsException(
-                    "Пользователь с именем: '" + user.getUsername() + "' уже существует!");
+                    "Пользователь с именем: '" + user.getUsername() + "' уже существует!"
+            );
         }
+
+        if (!(user.usernameIsValid() && user.passwordIsValid())) {
+            throw new NotValidUsernameOrPasswordException("Not Valid Username Or Password!");
+        }
+
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+        UserEntity userEntity = userMapper.toEntity(user);
+        return userRepository.save(userEntity);
     }
+
 }

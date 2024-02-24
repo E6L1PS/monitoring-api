@@ -1,5 +1,6 @@
 package ru.ylab.adapters.in.web.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.Map;
  *
  * @author Pesternikov Danil
  */
+@Tag(name = "MeterController", description = "Контроллер для работы с счетчиками")
 @Slf4j
 @Loggable
 @RestController
@@ -44,13 +46,14 @@ public class MeterController {
         return ResponseEntity.ok(utilityMetersDto);
     }
 
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority({'USER', 'ADMIN'})")
     @GetMapping
     public ResponseEntity<List<UtilityMeterDto>> getAllById(@AuthenticationPrincipal User user) {
         List<UtilityMeterDto> utilityMetersDto = getAllUtilityMeterById.execute(user.getId());
         return ResponseEntity.ok(utilityMetersDto);
     }
 
+    @PreAuthorize("hasAnyAuthority({'USER', 'ADMIN'})")
     @GetMapping("/month/{number}")
     public ResponseEntity<List<UtilityMeterDto>> getAllByMonth(
             @PathVariable Integer number,
@@ -60,19 +63,20 @@ public class MeterController {
         return ResponseEntity.ok(utilityMetersDto);
     }
 
+    @PreAuthorize("hasAnyAuthority({'USER', 'ADMIN'})")
     @GetMapping("/last")
     public ResponseEntity<List<UtilityMeterDto>> getLast(@AuthenticationPrincipal User user) {
         List<UtilityMeterDto> utilityMetersDto = getLastUtilityMeter.execute(user.getId());
         return ResponseEntity.ok(utilityMetersDto);
     }
 
+    @PreAuthorize("hasAnyAuthority({'USER', 'ADMIN'})")
     @PostMapping
-    public ResponseEntity<List<UtilityMeterDto>> save(
+    public ResponseEntity<?> save(
             @RequestBody Map<String, Double> meters,
             @AuthenticationPrincipal User user
     ) {
-        //TODO validation meters
-        List<UtilityMeterDto> utilityMetersDto = submitUtilityMeter.execute(meters, user.getId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(utilityMetersDto);
+        submitUtilityMeter.execute(meters, user.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

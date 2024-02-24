@@ -35,6 +35,7 @@ allprojects {
         compileTestJava.options.encoding = 'UTF-8'
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        options.compilerArgs << "-parameters"
     }
 
     repositories {

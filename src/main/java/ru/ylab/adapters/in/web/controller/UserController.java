@@ -1,5 +1,6 @@
 package ru.ylab.adapters.in.web.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ import ru.ylab.infrastructure.security.UserService;
  *
  * @author Pesternikov Danil
  */
+@Tag(name = "UserController", description = "Контроллер для работы с аутентификацией и авторизацией")
 @Loggable
 @Slf4j
 @RestController
@@ -54,7 +56,7 @@ public class UserController {
     }
 
     @PostMapping("/reg")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterDto registerDto) {
+    public ResponseEntity<Long> registerUser(@RequestBody RegisterDto registerDto) {
         Long id = registerUser.execute(registerDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }

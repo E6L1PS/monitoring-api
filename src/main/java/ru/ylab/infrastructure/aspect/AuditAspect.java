@@ -3,7 +3,7 @@ package ru.ylab.infrastructure.aspect;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,10 +31,22 @@ public class AuditAspect {
     public void annotatedByAuditable() {
     }
 
-    @After("annotatedByAuditable()")
-    public void auditing(JoinPoint joinPoint) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    @AfterReturning(pointcut = "annotatedByAuditable()", returning = "returnValue")
+    public void auditing(JoinPoint joinPoint, Object returnValue) {
         String className = joinPoint.getTarget().getClass().getSimpleName();
+        User user = User.builder().build();
+        try {
+            user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } catch (Exception e) {
+            if (className.equals("RegisterUserImpl")) {
+                if (returnValue instanceof Long id) {
+                    user.setId(id);
+                }
+            } else {
+                user.setId(1L);
+            }
+        }
+
         var info = generateInfoMessage(className);
         log.info("Start saving audit for " + className + "; userId: " + user.getId().toString());
         auditRepository.save(AuditEntity.builder()
@@ -57,7 +69,7 @@ public class AuditAspect {
             case "LoginUserImpl" -> "Авторизация выполнена!";
             case "RegisterUserImpl" -> "Новый пользователь зарегистрирован!";
             case "SubmitUtilityMeterImpl" -> "Показания поданы!";
-            default -> "Действие";
+            default -> "Действие: " + className;
         };
     }
 }

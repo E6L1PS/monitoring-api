@@ -3,22 +3,20 @@ package ru.ylab.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.ylab.adapters.in.web.dto.UtilityMeterDto;
+import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
 import ru.ylab.application.exception.MonthlySubmitLimitException;
 import ru.ylab.application.exception.NotValidMeterTypeException;
 import ru.ylab.application.in.SubmitUtilityMeter;
-import ru.ylab.application.mapper.UtilityMeterMapper;
 import ru.ylab.application.out.MeterRepository;
 import ru.ylab.application.out.MeterTypeRepository;
-import ru.ylab.domain.model.UtilityMeter;
 import ru.ylab.infrastructure.aspect.annotation.Auditable;
 import ru.ylab.infrastructure.aspect.annotation.Loggable;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * {@inheritDoc}
@@ -36,8 +34,6 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
 
     private final MeterTypeRepository meterTypeRepository;
 
-    private final UtilityMeterMapper utilityMeterMapper;
-
     /**
      * {@inheritDoc}
      *
@@ -45,31 +41,32 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
      * @throws MonthlySubmitLimitException в случае если пользователь уже подавал показания в текущем месяце
      */
     @Override
-    public List<UtilityMeterDto> execute(Map<String, Double> mapUtilityMeters, Long userId) {
-        List<UtilityMeterEntity> utilityMeterEntityList = new ArrayList<>();
+    public void execute(Map<String, Double> mapUtilityMeters, Long userId) {
 
-        if (!meterRepository.isSubmitted(userId)) {
-            mapUtilityMeters.forEach((type, counter) -> {
-                if (meterTypeRepository.isMeterTypeExists(type)) {
-                    UtilityMeterEntity utilityMeterEntity = meterRepository.save(
-                            UtilityMeterEntity.builder()
-                                    .userId(userId)
-                                    .type(type)
-                                    .counter(counter)
-                                    .readingsDate(LocalDate.now())
-                                    .build()
-                    );
-                    utilityMeterEntityList.add(utilityMeterEntity);
-                } else {
-                    throw new NotValidMeterTypeException("Такой тип не существует!");
-                }
-            });
-            List<UtilityMeter> utilityMeters = utilityMeterMapper.toListDomain(utilityMeterEntityList);
-            //internal business logic with domain model if needed
-            List<UtilityMeterDto> utilityMetersDto = utilityMeterMapper.toListDto(utilityMeters);
-            return utilityMetersDto;
-        } else {
+        if (meterRepository.isSubmitted(userId)) {
             throw new MonthlySubmitLimitException("В этом месяце вы уже подали!");
         }
+
+        if (!isValid(mapUtilityMeters.keySet())) {
+            throw new NotValidMeterTypeException("Такой тип не существует!");
+        }
+
+        List<UtilityMeterEntity> utilityMeterEntities = mapUtilityMeters.entrySet().stream()
+                .map(entry -> UtilityMeterEntity.builder()
+                        .userId(userId)
+                        .type(entry.getKey())
+                        .counter(entry.getValue())
+                        .readingsDate(LocalDate.now())
+                        .build())
+                .toList();
+
+        meterRepository.saveAll(utilityMeterEntities);
+    }
+
+    private Boolean isValid(Set<String> inputMeters) {
+        List<String> meterTypes = meterTypeRepository.findAll().stream()
+                .map(MeterTypeEntity::getName)
+                .toList();
+        return inputMeters.containsAll(meterTypes);
     }
 }

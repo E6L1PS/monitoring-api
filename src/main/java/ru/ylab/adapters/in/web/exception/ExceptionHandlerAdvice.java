@@ -34,7 +34,8 @@ public class ExceptionHandlerAdvice {
 
     @ExceptionHandler({
             NotValidUsernameOrPasswordException.class,
-            UsernameAlreadyExistsException.class
+            UsernameAlreadyExistsException.class,
+            MeterTypeAlreadyExistsException.class
     })
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseError handleConflictException(Exception exception) {
