@@ -3,13 +3,14 @@ package ru.ylab.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.ylab.adapters.in.web.dto.UtilityMeterDto;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
 import ru.ylab.application.in.GetAllUtilityMeterById;
 import ru.ylab.application.mapper.UtilityMeterMapper;
 import ru.ylab.application.out.MeterRepository;
+import ru.ylab.domain.model.UtilityMeter;
 import ru.ylab.infrastructure.aspect.annotation.Auditable;
 import ru.ylab.infrastructure.aspect.annotation.Loggable;
-import ru.ylab.domain.model.UtilityMeter;
 
 import java.util.List;
 
@@ -20,9 +21,9 @@ import java.util.List;
  */
 @Auditable
 @Loggable
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
+@RequiredArgsConstructor
 public class GetAllUtilityMeterByIdImpl implements GetAllUtilityMeterById {
 
     private final MeterRepository meterRepository;
@@ -33,8 +34,11 @@ public class GetAllUtilityMeterByIdImpl implements GetAllUtilityMeterById {
      * {@inheritDoc}
      */
     @Override
-    public List<UtilityMeter> execute(Long userId) {
+    public List<UtilityMeterDto> execute(Long userId) {
         List<UtilityMeterEntity> utilityMeterEntities = meterRepository.findAllByUserId(userId);
-        return utilityMeterMapper.toListDomain(utilityMeterEntities);
+        List<UtilityMeter> utilityMeters = utilityMeterMapper.toListDomain(utilityMeterEntities);
+        //internal business logic with domain model if needed
+        List<UtilityMeterDto> utilityMetersDto = utilityMeterMapper.toListDto(utilityMeters);
+        return utilityMetersDto;
     }
 }

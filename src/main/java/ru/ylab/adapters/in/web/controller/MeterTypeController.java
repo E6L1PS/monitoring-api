@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.ylab.adapters.in.web.dto.MeterTypeDto;
 import ru.ylab.application.in.AddNewMeterType;
 import ru.ylab.application.in.GetUtilityMeterTypes;
-import ru.ylab.application.mapper.MeterTypeMapper;
 import ru.ylab.infrastructure.aspect.annotation.Loggable;
-import ru.ylab.domain.model.MeterType;
 
 import java.util.List;
 
@@ -29,19 +27,16 @@ public class MeterTypeController {
 
     private final AddNewMeterType addNewMeterType;
 
-    private final MeterTypeMapper meterTypeMapper;
-
     @GetMapping
     public ResponseEntity<List<MeterTypeDto>> getAll() {
-        List<MeterType> meterTypes = getUtilityMeterTypes.execute();
-        List<MeterTypeDto> meterTypesDto = meterTypeMapper.toListDto(meterTypes);
+        List<MeterTypeDto> meterTypesDto = getUtilityMeterTypes.execute();
         return ResponseEntity.ok(meterTypesDto);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody MeterType meterType) {
-        addNewMeterType.execute(meterType);
-        return ResponseEntity.status(HttpStatus.CREATED).body(meterType);
+    public ResponseEntity<?> save(@RequestBody MeterTypeDto meterTypeDto) {
+        addNewMeterType.execute(meterTypeDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(meterTypeDto);
     }
 }

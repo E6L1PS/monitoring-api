@@ -3,6 +3,7 @@ package ru.ylab.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.ylab.adapters.in.web.dto.UtilityMeterDto;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
 import ru.ylab.application.exception.MonthlySubmitLimitException;
 import ru.ylab.application.exception.NotValidMeterTypeException;
@@ -10,9 +11,9 @@ import ru.ylab.application.in.SubmitUtilityMeter;
 import ru.ylab.application.mapper.UtilityMeterMapper;
 import ru.ylab.application.out.MeterRepository;
 import ru.ylab.application.out.MeterTypeRepository;
+import ru.ylab.domain.model.UtilityMeter;
 import ru.ylab.infrastructure.aspect.annotation.Auditable;
 import ru.ylab.infrastructure.aspect.annotation.Loggable;
-import ru.ylab.domain.model.UtilityMeter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,9 +27,9 @@ import java.util.Map;
  */
 @Auditable
 @Loggable
-@RequiredArgsConstructor
 @Transactional
 @Service
+@RequiredArgsConstructor
 public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
 
     private final MeterRepository meterRepository;
@@ -44,11 +45,11 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
      * @throws MonthlySubmitLimitException в случае если пользователь уже подавал показания в текущем месяце
      */
     @Override
-    public List<UtilityMeter> execute(Map<String, Double> utilityMeters, Long userId) {
+    public List<UtilityMeterDto> execute(Map<String, Double> mapUtilityMeters, Long userId) {
         List<UtilityMeterEntity> utilityMeterEntityList = new ArrayList<>();
 
         if (!meterRepository.isSubmitted(userId)) {
-            utilityMeters.forEach((type, counter) -> {
+            mapUtilityMeters.forEach((type, counter) -> {
                 if (meterTypeRepository.isMeterTypeExists(type)) {
                     UtilityMeterEntity utilityMeterEntity = meterRepository.save(
                             UtilityMeterEntity.builder()
@@ -63,8 +64,10 @@ public class SubmitUtilityMeterImpl implements SubmitUtilityMeter {
                     throw new NotValidMeterTypeException("Такой тип не существует!");
                 }
             });
-
-            return utilityMeterMapper.toListDomain(utilityMeterEntityList);
+            List<UtilityMeter> utilityMeters = utilityMeterMapper.toListDomain(utilityMeterEntityList);
+            //internal business logic with domain model if needed
+            List<UtilityMeterDto> utilityMetersDto = utilityMeterMapper.toListDto(utilityMeters);
+            return utilityMetersDto;
         } else {
             throw new MonthlySubmitLimitException("В этом месяце вы уже подали!");
         }

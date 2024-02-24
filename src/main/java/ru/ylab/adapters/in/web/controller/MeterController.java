@@ -9,10 +9,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.ylab.adapters.in.web.dto.UtilityMeterDto;
 import ru.ylab.application.in.*;
-import ru.ylab.application.mapper.UtilityMeterMapper;
-import ru.ylab.infrastructure.aspect.annotation.Loggable;
 import ru.ylab.domain.model.User;
-import ru.ylab.domain.model.UtilityMeter;
+import ru.ylab.infrastructure.aspect.annotation.Loggable;
 
 import java.util.List;
 import java.util.Map;
@@ -39,47 +37,42 @@ public class MeterController {
 
     private final SubmitUtilityMeter submitUtilityMeter;
 
-    private final UtilityMeterMapper utilityMeterMapper;
-
-    @PreAuthorize("hasRole(Role.ADMIN.getName())")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<List<UtilityMeterDto>> getAll() {
-        List<UtilityMeter> utilityMeters = getAllUtilityMeter.execute();
-        List<UtilityMeterDto> utilityMetersDto = utilityMeterMapper.toListDto(utilityMeters);
+        List<UtilityMeterDto> utilityMetersDto = getAllUtilityMeter.execute();
         return ResponseEntity.ok(utilityMetersDto);
     }
 
-    @PreAuthorize("hasRole(Role.USER.getName())")
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping
     public ResponseEntity<List<UtilityMeterDto>> getAllById(@AuthenticationPrincipal User user) {
-        List<UtilityMeter> utilityMetersById = getAllUtilityMeterById.execute(user.getId());
-        List<UtilityMeterDto> utilityMetersDto = utilityMeterMapper.toListDto(utilityMetersById);
+        List<UtilityMeterDto> utilityMetersDto = getAllUtilityMeterById.execute(user.getId());
         return ResponseEntity.ok(utilityMetersDto);
     }
 
     @GetMapping("/month/{number}")
-    public ResponseEntity<List<UtilityMeterDto>> getAllByMonth(@PathVariable Integer number,
-                                                               @AuthenticationPrincipal User user
+    public ResponseEntity<List<UtilityMeterDto>> getAllByMonth(
+            @PathVariable Integer number,
+            @AuthenticationPrincipal User user
     ) {
-        List<UtilityMeter> utilityMeters = getUtilityMeterByMonth.execute(number, user.getId());
-        List<UtilityMeterDto> utilityMetersDto = utilityMeterMapper.toListDto(utilityMeters);
+        List<UtilityMeterDto> utilityMetersDto = getUtilityMeterByMonth.execute(number, user.getId());
         return ResponseEntity.ok(utilityMetersDto);
     }
 
     @GetMapping("/last")
     public ResponseEntity<List<UtilityMeterDto>> getLast(@AuthenticationPrincipal User user) {
-        List<UtilityMeter> utilityMeters = getLastUtilityMeter.execute(user.getId());
-        List<UtilityMeterDto> utilityMetersDto = utilityMeterMapper.toListDto(utilityMeters);
+        List<UtilityMeterDto> utilityMetersDto = getLastUtilityMeter.execute(user.getId());
         return ResponseEntity.ok(utilityMetersDto);
     }
 
     @PostMapping
-    public ResponseEntity<List<UtilityMeterDto>> save(@RequestBody Map<String, Double> meters,
-                                                      @AuthenticationPrincipal User user
+    public ResponseEntity<List<UtilityMeterDto>> save(
+            @RequestBody Map<String, Double> meters,
+            @AuthenticationPrincipal User user
     ) {
-        List<UtilityMeter> utilityMeters = submitUtilityMeter.execute(meters, user.getId());
-        //TODO validation
-        List<UtilityMeterDto> utilityMetersDto = utilityMeterMapper.toListDto(utilityMeters);
+        //TODO validation meters
+        List<UtilityMeterDto> utilityMetersDto = submitUtilityMeter.execute(meters, user.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(utilityMetersDto);
     }
 }

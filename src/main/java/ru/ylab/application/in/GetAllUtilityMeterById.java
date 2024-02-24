@@ -1,6 +1,6 @@
 package ru.ylab.application.in;
 
-import ru.ylab.domain.model.UtilityMeter;
+import ru.ylab.adapters.in.web.dto.UtilityMeterDto;
 
 import java.util.List;
 
@@ -22,5 +22,5 @@ public interface GetAllUtilityMeterById {
      *
      * @return Список моделей счетчика коммунальных услуг.
      */
-    List<UtilityMeter> execute(Long userId);
+    List<UtilityMeterDto> execute(Long userId);
 }

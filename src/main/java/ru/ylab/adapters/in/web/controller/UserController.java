@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ylab.adapters.in.web.dto.LoginDto;
 import ru.ylab.adapters.in.web.dto.RegisterDto;
+import ru.ylab.adapters.in.web.dto.TokenDto;
 import ru.ylab.application.in.RegisterUser;
-import ru.ylab.application.mapper.UserMapper;
 import ru.ylab.infrastructure.aspect.annotation.Loggable;
 import ru.ylab.infrastructure.security.JwtService;
 import ru.ylab.infrastructure.security.UserService;
@@ -39,8 +39,6 @@ public class UserController {
 
     private final AuthenticationManager authenticationManager;
 
-    private final UserMapper userMapper;
-
     @PostMapping("/login")
     public ResponseEntity<?> createAuthToken(@RequestBody LoginDto loginDto) {
         authenticationManager.authenticate(
@@ -51,14 +49,13 @@ public class UserController {
         );
 
         UserDetails userDetails = userService.loadUserByUsername(loginDto.username());
-        String token = jwtService.generateToken(userDetails);
-        //TODO DTO jwt token
-        return ResponseEntity.ok(token);
+        TokenDto tokenDto = jwtService.generateToken(userDetails);
+        return ResponseEntity.ok(tokenDto);
     }
 
     @PostMapping("/reg")
     public ResponseEntity<?> registerUser(@RequestBody RegisterDto registerDto) {
-        Long id = registerUser.execute(userMapper.toDomain(registerDto));
+        Long id = registerUser.execute(registerDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 }

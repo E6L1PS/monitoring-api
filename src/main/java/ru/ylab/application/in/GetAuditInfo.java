@@ -1,6 +1,6 @@
 package ru.ylab.application.in;
 
-import ru.ylab.domain.model.Audit;
+import ru.ylab.adapters.in.web.dto.AuditDto;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public interface GetAuditInfo {
     /**
      * Выполняет операцию получения информации об аудите.
      *
-     * @return Список объектов типа AuditEntity, представляющих результаты операции аудита.
+     * @return Список объектов типа AuditDto, представляющих результаты операции аудита.
      */
-    List<Audit> execute();
+    List<AuditDto> execute();
 }

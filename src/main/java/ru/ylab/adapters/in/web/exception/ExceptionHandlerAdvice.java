@@ -20,72 +20,36 @@ import ru.ylab.application.exception.*;
 @RestControllerAdvice
 public class ExceptionHandlerAdvice {
 
-    @ExceptionHandler({UserNotFoundException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseError handleUserNotFoundException(UserNotFoundException exception) {
+    @ExceptionHandler({
+            UserNotFoundException.class,
+            IncorrectPasswordException.class,
+            MonthlySubmitLimitException.class,
+            NotValidMeterTypeException.class
+    })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseError handleBadRequestException(Exception exception) {
         log.error(exception.getMessage(), exception);
-        return new ResponseError(exception.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseError(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({IncorrectPasswordException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseError handleIncorrectPasswordException(IncorrectPasswordException exception) {
+    @ExceptionHandler({
+            NotValidUsernameOrPasswordException.class,
+            UsernameAlreadyExistsException.class
+    })
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseError handleConflictException(Exception exception) {
         log.error(exception.getMessage(), exception);
-        return new ResponseError(exception.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseError(exception.getMessage(), HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler({MonthlySubmitLimitException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseError handleMonthlySubmitLimitException(MonthlySubmitLimitException exception) {
-        log.error(exception.getMessage(), exception);
-        return new ResponseError(exception.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler({NotValidMeterTypeException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseError handleNotValidMeterTypeException(NotValidMeterTypeException exception) {
-        log.error(exception.getMessage(), exception);
-        return new ResponseError(exception.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler({NotValidUsernameOrPasswordException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseError handleNotValidUsernameOrPasswordException(NotValidUsernameOrPasswordException exception) {
-        log.error(exception.getMessage(), exception);
-        return new ResponseError(exception.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler({UsernameAlreadyExistsException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseError handleNotValidUsernameOrPasswordException(UsernameAlreadyExistsException exception) {
-        log.error(exception.getMessage(), exception);
-        return new ResponseError(exception.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler({BadCredentialsException.class})
+    @ExceptionHandler({
+            BadCredentialsException.class,
+            ExpiredJwtException.class,
+            SignatureException.class,
+            JwtException.class
+    })
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseError handleBadCredentialsException(BadCredentialsException exception) {
-        log.error(exception.getMessage(), exception);
-        return new ResponseError(exception.getMessage(), HttpStatus.UNAUTHORIZED);
-    }
-//TODO delete:
-    @ExceptionHandler({ExpiredJwtException.class})
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseError handleExpiredJwtException(ExpiredJwtException exception) {
-        log.error(exception.getMessage(), exception);
-        return new ResponseError(exception.getMessage(), HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler({SignatureException.class})
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseError handleSignatureException(SignatureException exception) {
-        log.error(exception.getMessage(), exception);
-        return new ResponseError(exception.getMessage(), HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler({JwtException.class})
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseError handleJwtException(JwtException exception) {
+    public ResponseError handleUnauthorizedException(Exception exception) {
         log.error(exception.getMessage(), exception);
         return new ResponseError(exception.getMessage(), HttpStatus.UNAUTHORIZED);
     }

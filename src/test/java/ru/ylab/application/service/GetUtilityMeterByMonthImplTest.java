@@ -16,14 +16,22 @@ import ru.ylab.domain.model.UtilityMeter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+/**
+ * Создан: 24.02.2024.
+ *
+ * @author Pesternikov Danil
+ */
 @ExtendWith(MockitoExtension.class)
-class GetLastUtilityMeterImplTest {
+class GetUtilityMeterByMonthImplTest {
 
     static List<UtilityMeterDto> utilityMetersDto;
 
     static List<UtilityMeter> utilityMeters;
+
 
     static List<UtilityMeterEntity> utilityMeterEntities;
 
@@ -34,7 +42,7 @@ class GetLastUtilityMeterImplTest {
     UtilityMeterMapper utilityMeterMapper;
 
     @InjectMocks
-    GetLastUtilityMeterImpl getLastUtilityMeter;
+    GetUtilityMeterByMonthImpl getUtilityMeterByMonth;
 
     @BeforeAll
     static void setUp() {
@@ -46,15 +54,15 @@ class GetLastUtilityMeterImplTest {
 
     @Test
     void execute() {
-        when(meterRepository.findLastByUserId(anyLong())).thenReturn(utilityMeterEntities);
+        when(meterRepository.findByMonthAndUserId(anyInt(), anyLong())).thenReturn(utilityMeterEntities);
         when(utilityMeterMapper.toListDomain(anyList())).thenReturn(utilityMeters);
         when(utilityMeterMapper.toListDto(anyList())).thenReturn(utilityMetersDto);
 
-        List<UtilityMeterDto> utilityMetersDto = getLastUtilityMeter.execute(1L);
+        List<UtilityMeterDto> utilityMetersDto = getUtilityMeterByMonth.execute(1, 1L);
 
         assertThat(utilityMetersDto).hasSize(1);
         assertThat(utilityMetersDto).isNotNull();
-        verify(meterRepository).findLastByUserId(anyLong());
+        verify(meterRepository).findByMonthAndUserId(anyInt(), anyLong());
     }
 
 }

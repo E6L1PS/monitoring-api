@@ -1,6 +1,6 @@
 package ru.ylab.application.in;
 
-import ru.ylab.domain.model.MeterType;
+import ru.ylab.adapters.in.web.dto.MeterTypeDto;
 
 /**
  * интерфейс для добавления нового типа счётчика.
@@ -18,7 +18,7 @@ public interface AddNewMeterType {
     /**
      * Выполняет добавление нового типа счётчика.
      *
-     * @param meterType имя нового типа счётчика.
+     * @param meterTypeDto имя нового типа счётчика.
      */
-    void execute(MeterType meterType);
+    void execute(MeterTypeDto meterTypeDto);
 }

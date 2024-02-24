@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import ru.ylab.adapters.in.web.dto.TokenDto;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
@@ -34,7 +35,7 @@ public class JwtService {
     @Value("${jwt.token.expiration}")
     private Long expirationTime;
 
-    public String generateToken(UserDetails userDetails) {
+    public TokenDto generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         List<String> roleList = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -43,13 +44,15 @@ public class JwtService {
         claims.put("roles", roleList);
         Date issuedDate = new Date();
         Date expiredDate = new Date(issuedDate.getTime() + expirationTime);
-        return Jwts.builder()
+        String subject = Jwts.builder()
                 .claims(claims)
                 .subject(userDetails.getUsername())
                 .issuedAt(issuedDate)
                 .expiration(expiredDate)
                 .signWith(getSignInKey())
                 .compact();
+
+        return new TokenDto(subject, issuedDate, expiredDate, roleList);
     }
 
     public String extractUsername(String token) {

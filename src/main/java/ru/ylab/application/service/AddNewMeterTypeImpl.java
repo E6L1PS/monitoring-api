@@ -3,6 +3,7 @@ package ru.ylab.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.ylab.adapters.in.web.dto.MeterTypeDto;
 import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
 import ru.ylab.application.in.AddNewMeterType;
 import ru.ylab.application.mapper.MeterTypeMapper;
@@ -18,11 +19,10 @@ import ru.ylab.infrastructure.aspect.annotation.Loggable;
  */
 @Auditable
 @Loggable
-@RequiredArgsConstructor
 @Transactional
 @Service
+@RequiredArgsConstructor
 public class AddNewMeterTypeImpl implements AddNewMeterType {
-
 
     private final MeterTypeRepository meterTypeRepository;
 
@@ -32,7 +32,9 @@ public class AddNewMeterTypeImpl implements AddNewMeterType {
      * {@inheritDoc}
      */
     @Override
-    public void execute(MeterType meterType) {
+    public void execute(MeterTypeDto meterTypeDto) {
+        MeterType meterType = meterTypeMapper.toDomain(meterTypeDto);
+        //internal business logic with domain model if needed
         MeterTypeEntity meterTypeEntity = meterTypeMapper.toEntity(meterType);
         meterTypeRepository.save(meterTypeEntity);
     }

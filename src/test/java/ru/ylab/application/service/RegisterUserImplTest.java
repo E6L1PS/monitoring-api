@@ -1,60 +1,95 @@
 package ru.ylab.application.service;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.ylab.adapters.in.web.dto.RegisterDto;
-import ru.ylab.application.out.AuditRepository;
+import ru.ylab.adapters.out.persistence.entity.UserEntity;
+import ru.ylab.application.exception.NotValidUsernameOrPasswordException;
+import ru.ylab.application.exception.UsernameAlreadyExistsException;
+import ru.ylab.application.mapper.UserMapper;
 import ru.ylab.application.out.UserRepository;
+import ru.ylab.domain.model.User;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 class RegisterUserImplTest {
 
-    @Mock
-    private UserRepository userRepository;
+    static RegisterDto validRegisterDto;
+
+    static User userValid;
+
+    static UserEntity userEntityValid;
+
+    static RegisterDto invalidRegisterDto;
+
+    static User userInvalid;
+
+    static UserEntity userEntityInvalid;
 
     @Mock
-    private AuditRepository auditRepository;
+    UserRepository userRepository;
+
+    @Mock
+    PasswordEncoder passwordEncoder;
+
+    @Mock
+    UserMapper userMapper;
 
     @InjectMocks
-    private RegisterUserImpl registerUser;
+    RegisterUserImpl registerUser;
 
-    private RegisterDto validRegisterDto;
+    @BeforeAll
+    static void setUp() {
+        UserMapper mapper = Mappers.getMapper(UserMapper.class);
 
-    private RegisterDto invalidRegisterDto;
+        validRegisterDto = new RegisterDto("testUser", "password");
+        userValid = mapper.toDomain(validRegisterDto);
+        userEntityValid = mapper.toEntity(userValid);
 
-//    @BeforeEach
-//    void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//        validRegisterModel = new RegisterModel("testUser", "password");
-//        invalidRegisterModel = new RegisterModel("21", "password");
-//    }
-//
-//    @Test
-//    void testExecute_SuccessfulRegistration() {
-//        when(userRepository.isAlreadyExists(any())).thenReturn(false);
-//
-//        registerUser.execute(validRegisterModel);
-//
-//        verify(userRepository, times(1)).save(any());
-//        verify(auditRepository, times(1)).save(any());
-//    }
-//
-//    @Test
-//    void testExecute_UsernameAlreadyExists() {
-//        when(userRepository.isAlreadyExists(any())).thenReturn(true);
-//
-//        assertThatThrownBy(() -> registerUser.execute(validRegisterModel))
-//                .isInstanceOf(UsernameAlreadyExistsException.class);
-//
-//        verify(userRepository, never()).save(any());
-//        verify(auditRepository, never()).save(any());
-//    }
-//
-//    @Test
-//    void testExecute_InvalidUsernameOrPassword() {
-//        assertThatThrownBy(() -> registerUser.execute(invalidRegisterModel))
-//                .isInstanceOf(NotValidUsernameOrPasswordException.class);
-//
-//        verify(userRepository, never()).save(any());
-//        verify(auditRepository, never()).save(any());
-//    }
+        invalidRegisterDto = new RegisterDto("21", "password");
+        userInvalid = mapper.toDomain(invalidRegisterDto);
+        userEntityInvalid = mapper.toEntity(userInvalid);
+    }
+
+    @Test
+    void testExecute_SuccessfulRegistration() {
+        when(userMapper.toDomain(any(RegisterDto.class))).thenReturn(userValid);
+        when(userRepository.isAlreadyExists(any())).thenReturn(false);
+        when(passwordEncoder.encode(any())).thenReturn("test");
+
+        registerUser.execute(validRegisterDto);
+
+        verify(userRepository, times(1)).save(any());
+    }
+
+    @Test
+    void testExecute_UsernameAlreadyExists() {
+        when(userMapper.toDomain(any(RegisterDto.class))).thenReturn(userValid);
+        when(userRepository.isAlreadyExists(any())).thenReturn(true);
+
+        assertThatThrownBy(() -> registerUser.execute(validRegisterDto))
+                .isInstanceOf(UsernameAlreadyExistsException.class);
+
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void testExecute_InvalidUsernameOrPassword() {
+        when(userMapper.toDomain(any(RegisterDto.class))).thenReturn(userInvalid);
+
+        assertThatThrownBy(() -> registerUser.execute(invalidRegisterDto))
+                .isInstanceOf(NotValidUsernameOrPasswordException.class);
+
+        verify(userRepository, never()).save(any());
+    }
+
 }
