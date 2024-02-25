@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.ylab.adapters.in.web.dto.MeterTypeDto;
 import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
-import ru.ylab.adapters.out.persistence.repository.AuditRepositoryImpl;
 import ru.ylab.application.mapper.MeterTypeMapper;
 import ru.ylab.application.out.MeterTypeRepository;
 import ru.ylab.domain.model.MeterType;
@@ -21,24 +20,20 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class AddNewMeterTypeImplTest {
 
-    static MeterTypeDto meterTypeDto;
+    private static MeterTypeDto meterTypeDto;
 
-    static MeterType meterType;
+    private static MeterType meterType;
 
-    static MeterTypeEntity meterTypeEntity;
-
-    @Mock
-    MeterTypeRepository meterTypeRepository;
+    private static MeterTypeEntity meterTypeEntity;
 
     @Mock
-    AuditRepositoryImpl auditRepository;
+    private MeterTypeRepository meterTypeRepository;
 
     @Mock
-    MeterTypeMapper meterTypeMapper;
+    private MeterTypeMapper meterTypeMapper;
 
     @InjectMocks
-    AddNewMeterTypeImpl addNewMeterType;
-
+    private AddNewMeterTypeImpl addNewMeterType;
 
     @BeforeAll
     static void setUp() {

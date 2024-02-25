@@ -32,14 +32,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AuditControllerTest {
 
     @Mock
-    GetAuditInfo getAuditInfo;
+    private GetAuditInfo getAuditInfo;
 
     @InjectMocks
-    AuditController auditController;
+    private AuditController auditController;
 
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-    List<AuditDto> audits;
+    private List<AuditDto> audits;
 
     @BeforeEach
     void setUp() {

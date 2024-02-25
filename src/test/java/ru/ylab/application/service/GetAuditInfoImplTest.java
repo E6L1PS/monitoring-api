@@ -29,20 +29,20 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class GetAuditInfoImplTest {
 
-    static List<AuditDto> auditsDto;
+    private static List<AuditDto> auditsDto;
 
-    static List<Audit> audits;
+    private static List<Audit> audits;
 
-    static List<AuditEntity> auditEntities;
-
-    @Mock
-    AuditRepository auditRepository;
+    private static List<AuditEntity> auditEntities;
 
     @Mock
-    AuditMapper auditMapper;
+    private AuditRepository auditRepository;
+
+    @Mock
+    private AuditMapper auditMapper;
 
     @InjectMocks
-    GetAuditInfoImpl getAuditInfo;
+    private GetAuditInfoImpl getAuditInfo;
 
     @BeforeAll
     static void setUp() {

@@ -29,20 +29,20 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class GetAllUtilityMeterByIdImplTest {
 
-    static List<UtilityMeterDto> utilityMetersDto;
+    private static List<UtilityMeterDto> utilityMetersDto;
 
-    static List<UtilityMeter> utilityMeters;
+    private static List<UtilityMeter> utilityMeters;
 
-    static List<UtilityMeterEntity> utilityMeterEntities;
-
-    @Mock
-    MeterRepository meterRepository;
+    private static List<UtilityMeterEntity> utilityMeterEntities;
 
     @Mock
-    UtilityMeterMapper utilityMeterMapper;
+    private MeterRepository meterRepository;
+
+    @Mock
+    private UtilityMeterMapper utilityMeterMapper;
 
     @InjectMocks
-    GetAllUtilityMeterByIdImpl getAllUtilityMeterById;
+    private GetAllUtilityMeterByIdImpl getAllUtilityMeterById;
 
     @BeforeAll
     static void setUp() {

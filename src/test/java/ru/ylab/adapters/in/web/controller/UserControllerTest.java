@@ -41,26 +41,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerTest {
 
     @Mock
-    UserService userService;
+    private UserService userService;
 
     @Mock
-    RegisterUser registerUser;
+    private RegisterUser registerUser;
 
     @Mock
-    JwtService jwtService;
+    private JwtService jwtService;
 
     @Mock
-    AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     @Mock
-    UserDetails userDetails;
+    private UserDetails userDetails;
 
     @InjectMocks
-    UserController userController;
+    private UserController userController;
 
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {

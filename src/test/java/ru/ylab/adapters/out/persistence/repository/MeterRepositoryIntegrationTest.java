@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MeterRepositoryIntegrationTest extends BaseIntegrationTest {
 
-    MeterRepository meterRepository = new MeterRepositoryImpl(jdbcTemplate);
+    private final MeterRepository meterRepository = new MeterRepositoryImpl(jdbcTemplate);
 
     @Test
     @Order(1)

@@ -36,19 +36,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MeterTypeControllerTest {
 
     @Mock
-    GetUtilityMeterTypes getUtilityMeterTypes;
+    private GetUtilityMeterTypes getUtilityMeterTypes;
 
     @Mock
-    AddNewMeterType addNewMeterType;
+    private AddNewMeterType addNewMeterType;
 
     @InjectMocks
-    MeterTypeController meterTypeController;
+    private MeterTypeController meterTypeController;
 
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
-    List<MeterTypeDto> meterTypeDtoList;
+    private List<MeterTypeDto> meterTypeDtoList;
 
     @BeforeEach
     void setUp() {

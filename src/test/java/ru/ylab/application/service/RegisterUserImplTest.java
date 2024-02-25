@@ -23,29 +23,29 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class RegisterUserImplTest {
 
-    static RegisterDto validRegisterDto;
+    private static RegisterDto validRegisterDto;
 
-    static User userValid;
+    private static User userValid;
 
-    static UserEntity userEntityValid;
+    private static UserEntity userEntityValid;
 
-    static RegisterDto invalidRegisterDto;
+    private static RegisterDto invalidRegisterDto;
 
-    static User userInvalid;
+    private static User userInvalid;
 
-    static UserEntity userEntityInvalid;
-
-    @Mock
-    UserRepository userRepository;
+    private static UserEntity userEntityInvalid;
 
     @Mock
-    PasswordEncoder passwordEncoder;
+    private UserRepository userRepository;
 
     @Mock
-    UserMapper userMapper;
+    private  PasswordEncoder passwordEncoder;
+
+    @Mock
+    private UserMapper userMapper;
 
     @InjectMocks
-    RegisterUserImpl registerUser;
+    private RegisterUserImpl registerUser;
 
     @BeforeAll
     static void setUp() {

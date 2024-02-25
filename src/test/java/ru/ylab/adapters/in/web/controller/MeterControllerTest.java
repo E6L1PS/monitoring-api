@@ -36,28 +36,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MeterControllerTest {
 
     @Mock
-    GetAllUtilityMeter getAllUtilityMeter;
+    private GetAllUtilityMeter getAllUtilityMeter;
 
     @Mock
-    GetAllUtilityMeterById getAllUtilityMeterById;
+    private GetAllUtilityMeterById getAllUtilityMeterById;
 
     @Mock
-    GetUtilityMeterByMonth getUtilityMeterByMonth;
+    private GetUtilityMeterByMonth getUtilityMeterByMonth;
 
     @Mock
-    GetLastUtilityMeter getLastUtilityMeter;
+    private GetLastUtilityMeter getLastUtilityMeter;
 
     @Mock
-    SubmitUtilityMeter submitUtilityMeter;
+    private SubmitUtilityMeter submitUtilityMeter;
 
     @InjectMocks
-    MeterController meterController;
+    private MeterController meterController;
 
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
-    List<UtilityMeterDto> utilityMeterDtoList;
+    private List<UtilityMeterDto> utilityMeterDtoList;
 
     @BeforeEach
     void setUp() {

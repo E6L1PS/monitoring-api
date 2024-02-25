@@ -2,7 +2,6 @@ package ru.ylab.application.service;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,15 +10,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.ylab.adapters.in.web.dto.UtilityMeterDto;
+import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
 import ru.ylab.application.exception.MonthlySubmitLimitException;
+import ru.ylab.application.exception.NotValidMeterTypeException;
 import ru.ylab.application.mapper.UtilityMeterMapper;
 import ru.ylab.application.out.MeterRepository;
 import ru.ylab.application.out.MeterTypeRepository;
 import ru.ylab.domain.model.UtilityMeter;
 
-import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,53 +28,51 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class SubmitUtilityMeterImplTest {
 
-    static List<UtilityMeterDto> utilityMetersDto;
+    private static List<UtilityMeterDto> utilityMetersDto;
 
-    static List<UtilityMeter> utilityMeters;
+    private static List<UtilityMeter> utilityMeters;
 
-    static UtilityMeterEntity utilityMeterEntity;
+    private static UtilityMeterEntity utilityMeterEntity;
+
+    private static Map<String, Double> validMeters;
+
+    private static Map<String, Double> notValidMeters;
+
+    private static List<MeterTypeEntity> meterTypes;
+
+    private static Long userId;
 
     @Mock
-    MeterRepository meterRepository;
+    private MeterRepository meterRepository;
 
     @Mock
-    MeterTypeRepository meterTypeRepository;
-
-    @Mock
-    UtilityMeterMapper utilityMeterMapper;
+    private MeterTypeRepository meterTypeRepository;
 
     @InjectMocks
-    SubmitUtilityMeterImpl submitUtilityMeter;
-
-    Map<String, Double> meters;
-
-    Long userId = 1L;
+    private SubmitUtilityMeterImpl submitUtilityMeter;
 
     @BeforeAll
-    static void setup() {
+    static void setUp() {
         UtilityMeterMapper mapper = Mappers.getMapper(UtilityMeterMapper.class);
         utilityMeterEntity = UtilityMeterEntity.builder().build();
         utilityMeters = mapper.toListDomain(List.of(utilityMeterEntity));
         utilityMetersDto = mapper.toListDto(utilityMeters);
-    }
-
-    @BeforeEach
-    void setUp() {
-        meters = new HashMap<>();
-        meters.put("Холодная вода", 100.0);
+        validMeters = Map.of("Холодная вода", 100.0);
+        notValidMeters = Map.of("asdadsadasdа", 100.0);
+        userId = 1L;
+        meterTypes = List.of(MeterTypeEntity.builder().name("Холодная вода").build());
     }
 
     @Test
     @DisplayName("Если в этом месяце еще не подавали показания")
     void testExecuteWhenMonthlyLimitNotExceeded() {
-        int month = LocalDate.now().getMonthValue();
         when(meterRepository.isSubmitted(any())).thenReturn(false);
-        when(meterTypeRepository.isMeterTypeExists(any())).thenReturn(true);
-        when(meterRepository.save(any(UtilityMeterEntity.class))).thenReturn(utilityMeterEntity);
+        when(meterTypeRepository.findAll()).thenReturn(meterTypes);
+        doNothing().when(meterRepository).saveAll(anyList());
 
-        submitUtilityMeter.execute(meters, userId);
+        submitUtilityMeter.execute(validMeters, userId);
 
-        verify(meterRepository, times(1)).save(any());
+        verify(meterRepository, times(1)).saveAll(anyList());
     }
 
     @Test
@@ -83,7 +80,17 @@ class SubmitUtilityMeterImplTest {
     void testExecuteWhenMonthlyLimitExceeded() {
         when(meterRepository.isSubmitted(any())).thenReturn(true);
 
-        Assertions.assertThatThrownBy(() -> submitUtilityMeter.execute(meters, userId))
+        Assertions.assertThatThrownBy(() -> submitUtilityMeter.execute(validMeters, userId))
                 .isInstanceOf(MonthlySubmitLimitException.class);
+    }
+
+    @Test
+    @DisplayName("Если поданы не валидные данные")
+    void testExecuteNotValidMeterTypeException() {
+        when(meterRepository.isSubmitted(any())).thenReturn(false);
+        when(meterTypeRepository.findAll()).thenReturn(meterTypes);
+
+        Assertions.assertThatThrownBy(() -> submitUtilityMeter.execute(notValidMeters, userId))
+                .isInstanceOf(NotValidMeterTypeException.class);
     }
 }
