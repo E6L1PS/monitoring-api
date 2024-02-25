@@ -17,6 +17,7 @@ ext {
     jacksonDatabindVersion = '2.16.1'
     liquibaseVersion = '4.25.1'
     postgresqlVersion = '42.7.1'
+    jaywayJsonpathVersion = '2.9.0'
     aspectjVersion = '1.9.21'
     testcontainersVersion = '1.19.4'
     assertjVersion = '3.25.2'
@@ -79,6 +80,9 @@ dependencies {
 
     annotationProcessor "org.projectlombok:lombok-mapstruct-binding:$lombokMapstructBindingVersion"
 
+    testImplementation "com.jayway.jsonpath:json-path:$jaywayJsonpathVersion"
+    testImplementation "org.springframework.security:spring-security-test:$springSecurityVersion"
+    testImplementation "org.springframework:spring-test:$springVersion"
     testImplementation "org.testcontainers:junit-jupiter:$testcontainersVersion"
     testImplementation "org.testcontainers:postgresql:$testcontainersVersion"
     testImplementation "org.assertj:assertj-core:$assertjVersion"

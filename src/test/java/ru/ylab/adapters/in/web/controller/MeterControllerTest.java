@@ -1,22 +1,30 @@
 package ru.ylab.adapters.in.web.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import ru.ylab.adapters.in.web.dto.UtilityMeterDto;
 import ru.ylab.application.in.*;
-import ru.ylab.domain.model.User;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Создан: 24.02.2024.
@@ -42,65 +50,107 @@ class MeterControllerTest {
     @Mock
     SubmitUtilityMeter submitUtilityMeter;
 
-    @Mock
-    List<UtilityMeterDto> utilityMeterDtoList;
-
-    User user = User.builder().id(1L).build();
-
     @InjectMocks
     MeterController meterController;
 
+    MockMvc mockMvc;
+
+    ObjectMapper objectMapper;
+
+    List<UtilityMeterDto> utilityMeterDtoList;
+
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(meterController).build();
+        objectMapper = new ObjectMapper();
+        utilityMeterDtoList = List.of(
+                new UtilityMeterDto(
+                        1L,
+                        1L,
+                        123.0,
+                        "asd",
+                        LocalDate.of(2001, 10, 10)
+                ));
+    }
+
     @Test
-    void getAll_ReturnsResponseEntity() {
+    void getAll_ReturnsResponseEntity() throws Exception {
         when(getAllUtilityMeter.execute()).thenReturn(utilityMeterDtoList);
 
-        var responseEntity = meterController.getAll();
+        mockMvc.perform(get("/meter/all")
+                        .with(user("username").roles("ADMIN")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].userId").value(1L))
+                .andExpect(jsonPath("$[0].counter").value(123.0))
+                .andExpect(jsonPath("$[0].type").value("asd"))
+                .andExpect(jsonPath("$[0].readingsDate").value("2001-10-10"));
 
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isEqualTo(utilityMeterDtoList);
+        verify(getAllUtilityMeter).execute();
     }
 
     @Test
-    void getAllById_ReturnsResponseEntity() {
-        when(getAllUtilityMeterById.execute(anyLong())).thenReturn(utilityMeterDtoList);
+    void getAllById_ReturnsResponseEntity() throws Exception {
+        when(getAllUtilityMeterById.execute(null)).thenReturn(utilityMeterDtoList);
 
-        var responseEntity = meterController.getAllById(user);
+        mockMvc.perform(get("/meter")
+                        .with(user("username").roles("USER")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].userId").value(1L))
+                .andExpect(jsonPath("$[0].counter").value(123.0))
+                .andExpect(jsonPath("$[0].type").value("asd"))
+                .andExpect(jsonPath("$[0].readingsDate").value("2001-10-10"));
 
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isEqualTo(utilityMeterDtoList);
+        verify(getAllUtilityMeterById).execute(null);
     }
 
     @Test
-    void getAllByMonth_ReturnsResponseEntity() {
-        when(getUtilityMeterByMonth.execute(anyInt(), anyLong())).thenReturn(utilityMeterDtoList);
+    void getAllByMonth_ReturnsResponseEntity() throws Exception {
+        when(getUtilityMeterByMonth.execute(3, null)).thenReturn(utilityMeterDtoList);
 
-        var responseEntity = meterController.getAllByMonth(3, user);
+        mockMvc.perform(get("/meter/month/{number}", 3)
+                        .with(user("username").roles("USER")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].userId").value(1L))
+                .andExpect(jsonPath("$[0].counter").value(123.0))
+                .andExpect(jsonPath("$[0].type").value("asd"))
+                .andExpect(jsonPath("$[0].readingsDate").value("2001-10-10"));
 
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isEqualTo(utilityMeterDtoList);
+        verify(getUtilityMeterByMonth).execute(3, null);
     }
 
     @Test
-    void getLast_ReturnsResponseEntity() {
-        when(getLastUtilityMeter.execute(anyLong())).thenReturn(utilityMeterDtoList);
+    void getLast_ReturnsResponseEntity() throws Exception {
+        when(getLastUtilityMeter.execute(null)).thenReturn(utilityMeterDtoList);
 
-        var responseEntity = meterController.getLast(user);
+        mockMvc.perform(get("/meter/last")
+                        .with(user("username").roles("USER")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].userId").value(1L))
+                .andExpect(jsonPath("$[0].counter").value(123.0))
+                .andExpect(jsonPath("$[0].type").value("asd"))
+                .andExpect(jsonPath("$[0].readingsDate").value("2001-10-10"));
 
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isEqualTo(utilityMeterDtoList);
+        verify(getLastUtilityMeter).execute(null);
     }
 
     @Test
-    void save_ReturnsResponseEntity() {
+    void save_ReturnsResponseEntity() throws Exception {
         Map<String, Double> meters = Map.of("asd", 123.0);
+        String s = objectMapper.writeValueAsString(meters);
 
-        var responseEntity = meterController.save(meters, user);
+        mockMvc.perform(post("/meter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(s))
+                .andExpect(status().isCreated());
 
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        verify(submitUtilityMeter).execute(meters, null);
     }
 }
