@@ -8,12 +8,12 @@ COPY src ./src
 
 RUN gradle build --refresh-dependencies -x test
 
-FROM tomcat:jre17
+FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-COPY --from=build /app/build/libs/*war /usr/local/tomcat/webapps/app.war
+COPY --from=build /app/build/libs/*.jar app.jar
 
 EXPOSE 8080
 
-CMD ["catalina.sh", "run"]
+CMD ["java", "-jar", "app.jar"]

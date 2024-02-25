@@ -20,10 +20,6 @@ services:
     <<: [ *api-config ]
     ports:
       - '8080:8080'
-    stdin_open: true
-    tty: true
-    environment:
-      - TZ=Europe/Moscow
 
   postgres-node-1:
     image: 'postgres:16.1'
@@ -37,6 +33,7 @@ services:
       - ./data/postgres-node-1-data:/var/lib/postgresql/data
       - ./src/main/resources/init-schema.sql:/docker-entrypoint-initdb.d/init.sql
 
+#todo delete
   liquibase:
     image: 'liquibase/liquibase:4.25.1'
     container_name: liquibase
