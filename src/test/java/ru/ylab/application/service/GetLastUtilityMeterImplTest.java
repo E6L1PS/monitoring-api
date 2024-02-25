@@ -1,74 +1,60 @@
 package ru.ylab.application.service;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ru.ylab.adapters.in.web.dto.UtilityMeterDto;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
-import ru.ylab.application.out.AuditRepository;
+import ru.ylab.application.mapper.UtilityMeterMapper;
 import ru.ylab.application.out.MeterRepository;
 import ru.ylab.domain.model.UtilityMeter;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class GetLastUtilityMeterImplTest {
+
+    private static List<UtilityMeterDto> utilityMetersDto;
+
+    private static List<UtilityMeter> utilityMeters;
+
+    private static List<UtilityMeterEntity> utilityMeterEntities;
 
     @Mock
     private MeterRepository meterRepository;
 
     @Mock
-    private AuditRepository auditRepository;
+    private UtilityMeterMapper utilityMeterMapper;
 
     @InjectMocks
-    private GetLastUtilityMeterImpl getUtilityMeter;
+    private GetLastUtilityMeterImpl getLastUtilityMeter;
 
-    private List<UtilityMeterEntity> entityList;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        LocalDate date1 = LocalDate.of(2024, 1, 4);
-        LocalDate date2 = LocalDate.of(2024, 2, 4);
-        entityList = Arrays.asList(
-                UtilityMeterEntity.builder().userId(1L).readingsDate(date1).build(),
-                UtilityMeterEntity.builder().userId(1L).readingsDate(date1).build(),
-                UtilityMeterEntity.builder().userId(1L).readingsDate(date1).build(),
-                UtilityMeterEntity.builder().userId(1L).readingsDate(date2).build(),
-                UtilityMeterEntity.builder().userId(1L).readingsDate(date2).build(),
-                UtilityMeterEntity.builder().userId(1L).readingsDate(date2).build(),
-                UtilityMeterEntity.builder().userId(2L).readingsDate(date1).build(),
-                UtilityMeterEntity.builder().userId(2L).readingsDate(date1).build(),
-                UtilityMeterEntity.builder().userId(2L).readingsDate(date1).build(),
-                UtilityMeterEntity.builder().userId(2L).readingsDate(date2).build(),
-                UtilityMeterEntity.builder().userId(2L).readingsDate(date2).build(),
-                UtilityMeterEntity.builder().userId(2L).readingsDate(date2).build()
-        );
+    @BeforeAll
+    static void setUp() {
+        utilityMeterEntities = List.of(UtilityMeterEntity.builder().build());
+        UtilityMeterMapper mapper = Mappers.getMapper(UtilityMeterMapper.class);
+        utilityMeters = mapper.toListDomain(utilityMeterEntities);
+        utilityMetersDto = mapper.toListDto(utilityMeters);
     }
 
     @Test
-    void testExecute() {
-        Long userId = 1L;
-        var date = entityList.stream()
-                .min(Comparator.comparing(UtilityMeterEntity::getReadingsDate))
-                .get()
-                .getReadingsDate();
-        var list = entityList.stream()
-                .filter(meter -> meter.getUserId().equals(userId) && meter.getReadingsDate() == date)
-                .collect(Collectors.toList());
-        when(meterRepository.findLastByUserId(userId)).thenReturn(list);
+    void execute() {
+        when(meterRepository.findLastByUserId(anyLong())).thenReturn(utilityMeterEntities);
+        when(utilityMeterMapper.toListDomain(anyList())).thenReturn(utilityMeters);
+        when(utilityMeterMapper.toListDto(anyList())).thenReturn(utilityMetersDto);
 
-        List<UtilityMeter> result = getUtilityMeter.execute(userId);
+        List<UtilityMeterDto> utilityMetersDto = getLastUtilityMeter.execute(1L);
 
-        verify(auditRepository, times(1)).save(any());
-        assertThat(result).hasSize(3);
+        assertThat(utilityMetersDto).hasSize(1);
+        assertThat(utilityMetersDto).isNotNull();
+        verify(meterRepository).findLastByUserId(anyLong());
     }
+
 }

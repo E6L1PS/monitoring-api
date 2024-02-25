@@ -14,7 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("Интеграционный тест для MeterTypeRepository")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MeterTypeRepositoryIntegrationTest extends BaseIntegrationTest {
-    MeterTypeRepository meterTypeRepository = new MeterTypeRepositoryImpl(connectionManager);
+
+    private final MeterTypeRepository meterTypeRepository = new MeterTypeRepositoryImpl(jdbcTemplate);
 
     @Test
     @Order(1)

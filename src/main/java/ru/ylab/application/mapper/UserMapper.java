@@ -2,16 +2,13 @@ package ru.ylab.application.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import ru.ylab.adapters.in.web.dto.LoginDto;
 import ru.ylab.adapters.in.web.dto.RegisterDto;
 import ru.ylab.adapters.out.persistence.entity.UserEntity;
 import ru.ylab.domain.model.User;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UserMapper {
-
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     User toDomain(UserEntity userEntity);
 

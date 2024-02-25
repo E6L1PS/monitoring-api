@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AuditRepositoryIntegrationTest extends BaseIntegrationTest {
 
-    AuditRepository auditRepository = new AuditRepositoryImpl(connectionManager);
+    private final AuditRepository auditRepository = new AuditRepositoryImpl(jdbcTemplate);
 
     @Test
     @Order(1)

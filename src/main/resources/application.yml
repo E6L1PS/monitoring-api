@@ -1,0 +1,9 @@
+jdbc:
+    url: jdbc:postgresql://postgres-node-1/monitoring_db
+    username: test123
+    password: test123
+    poolsize: 10
+jwt:
+    secret: 6D597133743677397A24432646294A404E635166546A576E5A72347537782141
+    token:
+        expiration: 3600000

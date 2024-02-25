@@ -53,6 +53,13 @@ public interface MeterRepository {
     UtilityMeterEntity save(UtilityMeterEntity utilityMeterEntity);
 
     /**
+     * Создает счетчики коммунальных услуг.
+     *
+     * @param utilityMeterEntities Список объектов UtilityMeterEntity, представляющих счетчики коммунальных услуг.
+     */
+    void saveAll(List<UtilityMeterEntity> utilityMeterEntities);
+
+    /**
      * Проверяет поданы ли показания в текущем месяце.
      *
      * @param userId id пользователя

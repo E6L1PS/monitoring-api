@@ -1,6 +1,6 @@
 package ru.ylab.application.in;
 
-import ru.ylab.domain.model.MeterType;
+import ru.ylab.adapters.in.web.dto.MeterTypeDto;
 
 import java.util.List;
 
@@ -22,5 +22,5 @@ public interface GetUtilityMeterTypes {
      *
      * @return Список объектов типа MeterType, представляющих доступные типы счетчиков.
      */
-    List<MeterType> execute();
+    List<MeterTypeDto> execute();
 }

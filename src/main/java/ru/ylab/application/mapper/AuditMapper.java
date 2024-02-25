@@ -1,7 +1,6 @@
 package ru.ylab.application.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 import ru.ylab.adapters.in.web.dto.AuditDto;
 import ru.ylab.adapters.out.persistence.entity.AuditEntity;
 import ru.ylab.domain.model.Audit;
@@ -13,10 +12,8 @@ import java.util.List;
  *
  * @author Pesternikov Danil
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface AuditMapper {
-
-    AuditMapper INSTANCE = Mappers.getMapper(AuditMapper.class);
 
     Audit toDomain(AuditEntity auditEntity);
 

@@ -1,5 +1,7 @@
 package ru.ylab.adapters.out.persistence.repository;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -7,11 +9,12 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.jupiter.api.BeforeAll;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import ru.ylab.adapters.util.ConnectionManager;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 
 /**
@@ -25,7 +28,6 @@ public abstract class BaseIntegrationTest {
     private static final String DB_NAME = "TEST";
     private static final String USERNAME = "TEST";
     private static final String PASSWORD = "TEST";
-    private static final int DEFAULT_POOL_SIZE = 10;
 
     @Container
     private static final PostgreSQLContainer<?> postgres =
@@ -35,17 +37,24 @@ public abstract class BaseIntegrationTest {
                     .withPassword(PASSWORD)
                     .withInitScript("init-schema.sql");
 
-    protected static ConnectionManager connectionManager;
+    protected static JdbcTemplate jdbcTemplate;
 
     @BeforeAll
     static void setupConnectionAndMigration() {
         postgres.start();
-        connectionManager = new ConnectionManager(postgres.getJdbcUrl(), USERNAME, PASSWORD, DEFAULT_POOL_SIZE);
-        liquibaseUpdate();
+
+        HikariConfig config = new HikariConfig();
+        config.setDriverClassName("org.postgresql.Driver");
+        config.setJdbcUrl(postgres.getJdbcUrl());
+        config.setUsername(USERNAME);
+        config.setPassword(PASSWORD);
+        DataSource hikariDataSource = new HikariDataSource(config);
+        liquibaseUpdate(hikariDataSource);
+        jdbcTemplate = new JdbcTemplate(hikariDataSource);
     }
 
-    private static void liquibaseUpdate() {
-        try (var connection = connectionManager.get()) {
+    private static void liquibaseUpdate(DataSource dataSource) {
+        try (var connection = dataSource.getConnection()) {
             Database database = DatabaseFactory.getInstance()
                     .findCorrectDatabaseImplementation(new JdbcConnection(connection));
             database.setDefaultSchemaName("monitoring_schema");

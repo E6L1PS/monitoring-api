@@ -1,63 +1,56 @@
 package ru.ylab.application.service;
 
-import com.github.dockerjava.api.exception.UnauthorizedException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.ylab.ApplicationContext;
-import ru.ylab.adapters.out.persistence.repository.AuditRepositoryImpl;
+import ru.ylab.adapters.in.web.dto.MeterTypeDto;
+import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
+import ru.ylab.application.mapper.MeterTypeMapper;
 import ru.ylab.application.out.MeterTypeRepository;
-import ru.ylab.aspect.AuditAspect;
 import ru.ylab.domain.model.MeterType;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AddNewMeterTypeImplTest {
 
-    @Mock
-    MeterTypeRepository meterTypeRepository;
+    private static MeterTypeDto meterTypeDto;
+
+    private static MeterType meterType;
+
+    private static MeterTypeEntity meterTypeEntity;
 
     @Mock
-    AuditRepositoryImpl auditRepository;
+    private MeterTypeRepository meterTypeRepository;
+
     @Mock
-    ApplicationContext applicationContext;
+    private MeterTypeMapper meterTypeMapper;
+
     @InjectMocks
-    AuditAspect auditAspect;
+    private AddNewMeterTypeImpl addNewMeterType;
 
-    @InjectMocks
-    AddNewMeterTypeImpl addNewMeterType;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    @BeforeAll
+    static void setUp() {
+        meterTypeDto = new MeterTypeDto("Электричество");
+        MeterTypeMapper mapper = Mappers.getMapper(MeterTypeMapper.class);
+        meterType = mapper.toDomain(meterTypeDto);
+        meterTypeEntity = mapper.toEntity(meterType);
     }
 
     @Test
-    void testExecuteWithAdminRole() throws Exception {
-        var type = MeterType.builder().name("Электричество").build();
+    void test() {
+        when(meterTypeMapper.toDomain(any(MeterTypeDto.class))).thenReturn(meterType);
+        when(meterTypeMapper.toEntity(any(MeterType.class))).thenReturn(meterTypeEntity);
 
-        addNewMeterType.execute(type);
+        addNewMeterType.execute(meterTypeDto);
 
-        verify(meterTypeRepository, times(1)).save(any());
-        verify(auditRepository, times(1)).save(any());
+        verify(meterTypeRepository).save(any(MeterTypeEntity.class));
     }
 
-    @Test
-    @DisplayName("Тест выполнения с ролью USER")
-    void testExecuteWithNonAdminRole() {
-        var type = MeterType.builder().name("Электричество").build();
-
-        assertThatThrownBy(() -> addNewMeterType.execute(type))
-                .isInstanceOf(UnauthorizedException.class);
-
-        verify(meterTypeRepository, never()).save(any());
-    }
 }

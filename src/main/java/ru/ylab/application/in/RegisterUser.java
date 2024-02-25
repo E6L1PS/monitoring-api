@@ -1,6 +1,6 @@
 package ru.ylab.application.in;
 
-import ru.ylab.domain.model.User;
+import ru.ylab.adapters.in.web.dto.RegisterDto;
 
 /**
  * Интерфейс RegisterUser предоставляет метод для регистрации нового пользователя.
@@ -18,8 +18,8 @@ public interface RegisterUser {
     /**
      * Выполняет операцию регистрации нового пользователя.
      *
-     * @param user Модель регистрации, содержащая информацию о новом пользователе.
+     * @param registerDto Модель регистрации, содержащая информацию о новом пользователе.
      * @return id созданного пользователя.
      */
-    Long execute(User user);
+    Long execute(RegisterDto registerDto);
 }

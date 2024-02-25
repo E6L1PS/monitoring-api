@@ -1,23 +1,27 @@
 package ru.ylab.adapters.out.persistence.repository;
 
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
-import ru.ylab.adapters.util.ConnectionManager;
-import ru.ylab.annotations.Autowired;
-import ru.ylab.annotations.Singleton;
+import ru.ylab.adapters.out.persistence.rowmapper.UtilityMeteRowMapper;
 import ru.ylab.application.out.MeterRepository;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Класс {@code MeterRepositoryImpl} представляет собой реализацию интерфейса {@link MeterRepository},
  * предоставляя методы для взаимодействия с данными счетчиков в системе мониторинга.
  *
- * <p>Этот класс помечен аннотацией {@link Singleton} для обеспечения использования единственного
+ * <p>Этот класс помечен аннотацией {@link Repository} для обеспечения использования единственного
  * экземпляра на протяжении всего приложения. Также имеет конструктор без аргументов, помеченный
  * аннотацией {@link NoArgsConstructor}.
  *
@@ -25,8 +29,8 @@ import java.util.List;
  *
  * @author Pesternikov Danil
  */
-@Singleton
-@NoArgsConstructor
+@Repository
+@RequiredArgsConstructor
 public class MeterRepositoryImpl implements MeterRepository {
 
     /**
@@ -87,37 +91,17 @@ public class MeterRepositoryImpl implements MeterRepository {
             VALUES (?, ?, ?, ?)
             """;
 
-    @Autowired
-    private ConnectionManager connectionManager;
-
-    public MeterRepositoryImpl(ConnectionManager connectionManager) {
-        this.connectionManager = connectionManager;
-    }
+    private final JdbcTemplate jdbcTemplate;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public List<UtilityMeterEntity> findAll() {
-        try (var connection = connectionManager.get();
-             var statement = connection.prepareStatement(SQL_SELECT_ALL)) {
-            var resultSet = statement.executeQuery();
-            List<UtilityMeterEntity> utilityMeterEntities = new ArrayList<>();
-            while (resultSet.next()) {
-                utilityMeterEntities.add(
-                        UtilityMeterEntity.builder()
-                                .id(resultSet.getLong("id"))
-                                .counter(resultSet.getDouble("counter"))
-                                .readingsDate(resultSet.getDate("readings_date").toLocalDate())
-                                .type(resultSet.getString("type"))
-                                .userId(resultSet.getLong("user_id"))
-                                .build()
-                );
-            }
-            return utilityMeterEntities;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return jdbcTemplate.query(
+                SQL_SELECT_ALL,
+                new UtilityMeteRowMapper()
+        );
     }
 
     /**
@@ -125,27 +109,11 @@ public class MeterRepositoryImpl implements MeterRepository {
      */
     @Override
     public List<UtilityMeterEntity> findAllByUserId(Long userId) {
-        try (var connection = connectionManager.get();
-             var statement = connection.prepareStatement(SQL_SELECT_ALL_BY_USER_ID)) {
-            statement.setLong(1, userId);
-            var resultSet = statement.executeQuery();
-            List<UtilityMeterEntity> utilityMeterEntities = new ArrayList<>();
-            while (resultSet.next()) {
-                utilityMeterEntities.add(
-                        UtilityMeterEntity.builder()
-                                .id(resultSet.getLong("id"))
-                                .counter(resultSet.getDouble("counter"))
-                                .readingsDate(resultSet.getDate("readings_date").toLocalDate())
-                                .userId(resultSet.getLong("user_id"))
-                                .type(resultSet.getString("type"))
-                                .build()
-                );
-            }
-
-            return utilityMeterEntities;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return jdbcTemplate.query(
+                SQL_SELECT_ALL_BY_USER_ID,
+                new Object[]{userId},
+                new UtilityMeteRowMapper()
+        );
     }
 
     /**
@@ -153,26 +121,11 @@ public class MeterRepositoryImpl implements MeterRepository {
      */
     @Override
     public List<UtilityMeterEntity> findLastByUserId(Long userId) {
-        try (var connection = connectionManager.get();
-             var statement = connection.prepareStatement(SQL_SELECT_ALL_BY_USER_ID_LAST)) {
-            statement.setLong(1, userId);
-            var resultSet = statement.executeQuery();
-            List<UtilityMeterEntity> utilityMeterEntities = new ArrayList<>();
-            while (resultSet.next()) {
-                utilityMeterEntities.add(
-                        UtilityMeterEntity.builder()
-                                .id(resultSet.getLong("id"))
-                                .counter(resultSet.getDouble("counter"))
-                                .readingsDate(resultSet.getDate("readings_date").toLocalDate())
-                                .type(resultSet.getString("type"))
-                                .userId(resultSet.getLong("user_id"))
-                                .build()
-                );
-            }
-            return utilityMeterEntities;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return jdbcTemplate.query(
+                SQL_SELECT_ALL_BY_USER_ID_LAST,
+                new Object[]{userId},
+                new UtilityMeteRowMapper()
+        );
     }
 
     /**
@@ -180,29 +133,11 @@ public class MeterRepositoryImpl implements MeterRepository {
      */
     @Override
     public List<UtilityMeterEntity> findByMonthAndUserId(Integer month, Long userId) {
-        try (var connection = connectionManager.get();
-             var statement = connection.prepareStatement(SQL_SELECT_ALL_BY_USER_ID_AND_DATE)) {
-            statement.setLong(1, userId);
-            statement.setLong(2, month);
-
-            var resultSet = statement.executeQuery();
-
-            List<UtilityMeterEntity> utilityMeterEntities = new ArrayList<>();
-            while (resultSet.next()) {
-                utilityMeterEntities.add(
-                        UtilityMeterEntity.builder()
-                                .id(resultSet.getLong("id"))
-                                .counter(resultSet.getDouble("counter"))
-                                .readingsDate(resultSet.getDate("readings_date").toLocalDate())
-                                .type(resultSet.getString("type"))
-                                .userId(resultSet.getLong("user_id"))
-                                .build()
-                );
-            }
-            return utilityMeterEntities;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return jdbcTemplate.query(
+                SQL_SELECT_ALL_BY_USER_ID_AND_DATE,
+                new Object[]{userId, month},
+                new UtilityMeteRowMapper()
+        );
     }
 
     /**
@@ -210,19 +145,10 @@ public class MeterRepositoryImpl implements MeterRepository {
      */
     @Override
     public Boolean isSubmitted(Long userId) {
-        try (var connection = connectionManager.get();
-             var statement = connection.prepareStatement(SQL_SELECT_COUNT_BY_USER_ID_AND_DATE)) {
-            statement.setLong(1, userId);
-            var resultSet = statement.executeQuery();
+        return jdbcTemplate.queryForObject(SQL_SELECT_COUNT_BY_USER_ID_AND_DATE,
+                new Object[]{userId},
+                Long.class) > 0;
 
-            if (resultSet.next()) {
-                return resultSet.getLong(1) > 0;
-            } else {
-                return false;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -230,23 +156,39 @@ public class MeterRepositoryImpl implements MeterRepository {
      */
     @Override
     public UtilityMeterEntity save(UtilityMeterEntity utilityMeterEntity) {
-        try (var connection = connectionManager.get();
-             var statement = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setDouble(1, utilityMeterEntity.getCounter());
-            statement.setDate(2, Date.valueOf(utilityMeterEntity.getReadingsDate()));
-            statement.setLong(3, utilityMeterEntity.getUserId());
-            statement.setString(4, utilityMeterEntity.getType());
-            statement.executeUpdate();
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-            var keys = statement.getGeneratedKeys();
-            if (keys.next()) {
-                Long meterId = keys.getLong("id");
-                utilityMeterEntity.setId(meterId);
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(SQL_INSERT, new String[]{"id"});
+            ps.setDouble(1, utilityMeterEntity.getCounter());
+            ps.setDate(2, Date.valueOf(utilityMeterEntity.getReadingsDate()));
+            ps.setLong(3, utilityMeterEntity.getUserId());
+            ps.setString(4, utilityMeterEntity.getType());
+            return ps;
+        }, keyHolder);
+
+        utilityMeterEntity.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
+
+        return utilityMeterEntity;
+    }
+
+    @Override
+    public void saveAll(List<UtilityMeterEntity> utilityMeterEntities) {
+        jdbcTemplate.batchUpdate(SQL_INSERT, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                UtilityMeterEntity utilityMeterEntity = utilityMeterEntities.get(i);
+                ps.setDouble(1, utilityMeterEntity.getCounter());
+                ps.setDate(2, Date.valueOf(utilityMeterEntity.getReadingsDate()));
+                ps.setLong(3, utilityMeterEntity.getUserId());
+                ps.setString(4, utilityMeterEntity.getType());
             }
 
-            return utilityMeterEntity;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+            @Override
+            public int getBatchSize() {
+                return utilityMeterEntities.size();
+            }
+        });
     }
+
 }
