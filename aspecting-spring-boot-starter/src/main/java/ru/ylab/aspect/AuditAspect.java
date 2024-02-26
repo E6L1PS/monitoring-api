@@ -1,5 +1,6 @@
-package ru.ylab.infrastructure.aspect;
-
+/*
+TODO change
+package ru.ylab.aspect;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -14,11 +15,13 @@ import ru.ylab.domain.model.User;
 
 import java.time.LocalDateTime;
 
+*/
 /**
  * Создан: 11.02.2024.
  *
  * @author Pesternikov Danil
- */
+ *//*
+
 @Slf4j
 @Aspect
 @Component
@@ -27,7 +30,7 @@ public class AuditAspect {
 
     private final AuditRepository auditRepository;
 
-    @Pointcut("@within(ru.ylab.infrastructure.aspect.annotation.Auditable) && execution(* *(..))")
+    @Pointcut("@within(ru.ylab.aspect.annotation.Auditable) && execution(* *(..))")
     public void annotatedByAuditable() {
     }
 
@@ -73,3 +76,4 @@ public class AuditAspect {
         };
     }
 }
+*/

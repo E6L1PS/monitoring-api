@@ -3,15 +3,17 @@ logging:
     root: info
 
 spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${HOST}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   liquibase:
-    enabled: false
+    default-schema: monitoring_schema
+    liquibase-schema: migration_schema
+    change-log: db.changelog/db.changelog-master.xml
   security:
 
-jdbc:
-  url: jdbc:postgresql://postgres-node-1/monitoring_db
-  username: test123
-  password: test123
-  poolsize: 10
 jwt:
   secret: 6D597133743677397A24432646294A404E635166546A576E5A72347537782141
   token:

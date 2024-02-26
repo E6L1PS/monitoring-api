@@ -9,8 +9,7 @@ import ru.ylab.application.in.GetAllUtilityMeter;
 import ru.ylab.application.mapper.UtilityMeterMapper;
 import ru.ylab.application.out.MeterRepository;
 import ru.ylab.domain.model.UtilityMeter;
-import ru.ylab.infrastructure.aspect.annotation.Auditable;
-import ru.ylab.infrastructure.aspect.annotation.Loggable;
+import ru.ylab.aspect.annotation.Loggable;
 
 import java.util.List;
 
@@ -19,7 +18,6 @@ import java.util.List;
  *
  * @author Pesternikov Danil
  */
-@Auditable
 @Loggable
 @Transactional(readOnly = true)
 @Service

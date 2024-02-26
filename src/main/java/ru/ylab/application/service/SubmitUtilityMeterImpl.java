@@ -10,8 +10,7 @@ import ru.ylab.application.exception.NotValidMeterTypeException;
 import ru.ylab.application.in.SubmitUtilityMeter;
 import ru.ylab.application.out.MeterRepository;
 import ru.ylab.application.out.MeterTypeRepository;
-import ru.ylab.infrastructure.aspect.annotation.Auditable;
-import ru.ylab.infrastructure.aspect.annotation.Loggable;
+import ru.ylab.aspect.annotation.Loggable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,7 +22,6 @@ import java.util.Set;
  *
  * @author Pesternikov Danil
  */
-@Auditable
 @Loggable
 @Transactional
 @Service

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.ylab.adapters.in.web.dto.MeterTypeDto;
 import ru.ylab.application.in.AddNewMeterType;
 import ru.ylab.application.in.GetUtilityMeterTypes;
-import ru.ylab.infrastructure.aspect.annotation.Loggable;
+import ru.ylab.aspect.annotation.Loggable;
 
 import java.util.List;
 

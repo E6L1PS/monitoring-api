@@ -1,1 +1,3 @@
 rootProject.name = 'monitoring-api'
+include 'logging-spring-boot-starter'
+include 'aspecting-spring-boot-starter'

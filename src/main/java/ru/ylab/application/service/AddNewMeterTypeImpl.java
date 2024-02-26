@@ -9,16 +9,14 @@ import ru.ylab.application.exception.MeterTypeAlreadyExistsException;
 import ru.ylab.application.in.AddNewMeterType;
 import ru.ylab.application.mapper.MeterTypeMapper;
 import ru.ylab.application.out.MeterTypeRepository;
+import ru.ylab.aspect.annotation.Loggable;
 import ru.ylab.domain.model.MeterType;
-import ru.ylab.infrastructure.aspect.annotation.Auditable;
-import ru.ylab.infrastructure.aspect.annotation.Loggable;
 
 /**
  * {@inheritDoc}
  *
  * @author Pesternikov Danil
  */
-@Auditable
 @Loggable
 @Transactional
 @Service

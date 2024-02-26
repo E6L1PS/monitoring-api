@@ -8,8 +8,7 @@ import ru.ylab.adapters.out.persistence.entity.AuditEntity;
 import ru.ylab.application.in.GetAuditInfo;
 import ru.ylab.application.mapper.AuditMapper;
 import ru.ylab.application.out.AuditRepository;
-import ru.ylab.infrastructure.aspect.annotation.Auditable;
-import ru.ylab.infrastructure.aspect.annotation.Loggable;
+import ru.ylab.aspect.annotation.Loggable;
 import ru.ylab.domain.model.Audit;
 
 import java.util.List;
@@ -19,7 +18,6 @@ import java.util.List;
  *
  * @author Pesternikov Danil
  */
-@Auditable
 @Loggable
 @Transactional(readOnly = true)
 @Service

@@ -16,7 +16,7 @@ import ru.ylab.adapters.in.web.dto.LoginDto;
 import ru.ylab.adapters.in.web.dto.RegisterDto;
 import ru.ylab.adapters.in.web.dto.TokenDto;
 import ru.ylab.application.in.RegisterUser;
-import ru.ylab.infrastructure.aspect.annotation.Loggable;
+import ru.ylab.aspect.annotation.Loggable;
 import ru.ylab.infrastructure.security.JwtService;
 import ru.ylab.infrastructure.security.UserService;
 

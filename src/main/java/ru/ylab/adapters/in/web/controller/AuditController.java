@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ylab.adapters.in.web.dto.AuditDto;
 import ru.ylab.application.in.GetAuditInfo;
-import ru.ylab.infrastructure.aspect.annotation.Loggable;
+import ru.ylab.aspect.annotation.Loggable;
 
 import java.util.List;
 

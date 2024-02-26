@@ -10,8 +10,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.ylab.adapters.in.web.dto.UtilityMeterDto;
 import ru.ylab.application.in.*;
+import ru.ylab.aspect.annotation.Loggable;
 import ru.ylab.domain.model.User;
-import ru.ylab.infrastructure.aspect.annotation.Loggable;
 
 import java.util.List;
 import java.util.Map;
