@@ -1,64 +1,44 @@
-/*
-TODO change
-package ru.ylab.aspect;
+package ru.ylab.application.service;
+
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ylab.adapters.out.persistence.entity.AuditEntity;
+import ru.ylab.application.in.AddAuditInfo;
 import ru.ylab.application.out.AuditRepository;
+import ru.ylab.aspect.annotation.Loggable;
 import ru.ylab.domain.model.User;
 
 import java.time.LocalDateTime;
 
-*/
 /**
- * Создан: 11.02.2024.
+ * Создан: 26.02.2024.
  *
  * @author Pesternikov Danil
- *//*
-
-@Slf4j
-@Aspect
-@Component
+ */
+@Loggable
+@Transactional
+@Service("AddAuditInfoImpl")
 @RequiredArgsConstructor
-public class AuditAspect {
+public class AddAuditInfoImpl implements AddAuditInfo {
 
     private final AuditRepository auditRepository;
 
-    @Pointcut("@within(ru.ylab.aspect.annotation.Auditable) && execution(* *(..))")
-    public void annotatedByAuditable() {
-    }
+    @Override
+    public void save(String className) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = null;
 
-    @AfterReturning(pointcut = "annotatedByAuditable()", returning = "returnValue")
-    public void auditing(JoinPoint joinPoint, Object returnValue) {
-        String className = joinPoint.getTarget().getClass().getSimpleName();
-        User user = User.builder().build();
-        try {
-            user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        } catch (Exception e) {
-            if (className.equals("RegisterUserImpl")) {
-                if (returnValue instanceof Long id) {
-                    user.setId(id);
-                }
-            } else {
-                user.setId(1L);
-            }
+        if (principal instanceof User user) {
+            userId = user.getId();
         }
 
-        var info = generateInfoMessage(className);
-        log.info("Start saving audit for " + className + "; userId: " + user.getId().toString());
         auditRepository.save(AuditEntity.builder()
-                .info(info)
+                .info(generateInfoMessage(className))
                 .dateTime(LocalDateTime.now())
-                .userId(user.getId())
+                .userId(userId)
                 .build());
-
-        log.info("Audit saved");
     }
 
     private String generateInfoMessage(String className) {
@@ -75,5 +55,5 @@ public class AuditAspect {
             default -> "Действие: " + className;
         };
     }
+
 }
-*/

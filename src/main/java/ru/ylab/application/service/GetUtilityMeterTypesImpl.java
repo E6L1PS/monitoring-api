@@ -8,6 +8,7 @@ import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
 import ru.ylab.application.in.GetUtilityMeterTypes;
 import ru.ylab.application.mapper.MeterTypeMapper;
 import ru.ylab.application.out.MeterTypeRepository;
+import ru.ylab.aspect.annotation.Auditable;
 import ru.ylab.domain.model.MeterType;
 import ru.ylab.aspect.annotation.Loggable;
 
@@ -18,8 +19,9 @@ import java.util.List;
  *
  * @author Pesternikov Danil
  */
+@Auditable
 @Loggable
-@Transactional(readOnly = true)
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class GetUtilityMeterTypesImpl implements GetUtilityMeterTypes {

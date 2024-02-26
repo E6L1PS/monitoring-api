@@ -8,12 +8,14 @@
     <changeSet id="2024-02-02-insert-admin-user" author="Pesternikov Danil">
         <insert tableName="user">
             <column name="username" value="admin"/>
-            <column name="password" value="admin"/>
+            <!--encoded bcrypt password: value=admin-->
+            <column name="password" value="$2a$12$tCwfa/Csf41FaHejWjkiiOjzIoZsZmL7EPuTIllM4ME5FeAaCXlta"/>
             <column name="role" value="ADMIN"/>
         </insert>
         <insert tableName="user">
             <column name="username" value="user"/>
-            <column name="password" value="user"/>
+            <!--encoded bcrypt password: value=user-->
+            <column name="password" value="$2a$12$ZFI1Zx4Cm00zELIY1uaDRu1y/2ZCFKYPc4gXtIJCeyNcSvo7p7uSe"/>
             <column name="role" value="USER"/>
         </insert>
     </changeSet>

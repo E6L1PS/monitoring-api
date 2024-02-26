@@ -8,6 +8,7 @@ import ru.ylab.adapters.out.persistence.entity.UtilityMeterEntity;
 import ru.ylab.application.in.GetLastUtilityMeter;
 import ru.ylab.application.mapper.UtilityMeterMapper;
 import ru.ylab.application.out.MeterRepository;
+import ru.ylab.aspect.annotation.Auditable;
 import ru.ylab.aspect.annotation.Loggable;
 import ru.ylab.domain.model.UtilityMeter;
 
@@ -18,8 +19,9 @@ import java.util.List;
  *
  * @author Pesternikov Danil
  */
+@Auditable
 @Loggable
-@Transactional(readOnly = true)
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class GetLastUtilityMeterImpl implements GetLastUtilityMeter {

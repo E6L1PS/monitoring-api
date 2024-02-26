@@ -2,6 +2,9 @@ FROM gradle:7.5.1-jdk17-alpine AS build
 
 WORKDIR /app
 
+COPY auditing-spring-boot-starter/src ./auditing-spring-boot-starter/src/
+COPY auditing-spring-boot-starter/build.gradle ./auditing-spring-boot-starter/
+
 COPY logging-spring-boot-starter/src ./logging-spring-boot-starter/src/
 COPY logging-spring-boot-starter/build.gradle ./logging-spring-boot-starter/
 

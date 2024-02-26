@@ -43,6 +43,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> createAuthToken(@RequestBody LoginDto loginDto) {
+        //TODO Может вынести в отдельный сервис
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.username(),
