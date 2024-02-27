@@ -2,8 +2,8 @@ package ru.ylab.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -16,10 +16,10 @@ import java.time.LocalDateTime;
  *
  * @author Pesternikov Danil
  */
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class Audit {
 
     /**

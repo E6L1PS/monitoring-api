@@ -18,10 +18,10 @@ services:
   api-node-1:
     container_name: api-node-1
     <<: [ *api-config ]
+    env_file:
+      - .env
     ports:
       - '8080:8080'
-    stdin_open: true
-    tty: true
     environment:
       - TZ=Europe/Moscow
 
@@ -36,13 +36,3 @@ services:
     volumes:
       - ./data/postgres-node-1-data:/var/lib/postgresql/data
       - ./src/main/resources/init-schema.sql:/docker-entrypoint-initdb.d/init.sql
-
-  liquibase:
-    image: 'liquibase/liquibase:4.25.1'
-    container_name: liquibase
-    depends_on:
-      postgres-node-1:
-        condition: service_healthy
-    volumes:
-      - ./src/main/resources/db.changelog:/liquibase/changelog
-    command: --defaults-file=/liquibase/changelog/liquibase.properties update

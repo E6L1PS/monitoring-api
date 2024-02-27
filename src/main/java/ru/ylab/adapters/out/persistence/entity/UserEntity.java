@@ -2,8 +2,8 @@ package ru.ylab.adapters.out.persistence.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import ru.ylab.domain.model.Role;
 
 /**
@@ -11,10 +11,10 @@ import ru.ylab.domain.model.Role;
  *
  * @author Pesternikov Danil
  */
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class UserEntity {
 
     /**

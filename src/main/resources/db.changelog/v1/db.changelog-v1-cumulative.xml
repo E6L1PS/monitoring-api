@@ -7,5 +7,6 @@
 
     <include file="2024-02-01-monitoring-system.xml" relativeToChangelogFile="true"/>
     <include file="2024-02-02-init-insert.xml" relativeToChangelogFile="true"/>
+    <include file="2024-02-26-change-column-constraint.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

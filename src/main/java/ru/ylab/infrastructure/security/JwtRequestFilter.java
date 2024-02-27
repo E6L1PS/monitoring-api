@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ru.ylab.application.service.JwtService;
 
 import java.io.IOException;
 
@@ -40,7 +41,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException, JwtException {
         String authHeader = request.getHeader("Authorization");
         String username = null;
-        String jwt = null;
+        String jwt;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);

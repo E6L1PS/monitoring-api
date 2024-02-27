@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.ylab.adapters.in.web.dto.AuditDto;
-import ru.ylab.application.in.GetAuditInfo;
+import ru.ylab.application.in.AuditService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AuditControllerTest {
 
     @Mock
-    private GetAuditInfo getAuditInfo;
+    private AuditService auditService;
 
     @InjectMocks
     private AuditController auditController;
@@ -54,7 +54,7 @@ class AuditControllerTest {
 
     @Test
     void getAll_ReturnsResponseEntity() throws Exception {
-        when(getAuditInfo.execute()).thenReturn(audits);
+        when(auditService.getAll()).thenReturn(audits);
 
         mockMvc.perform(get("/audit")
                         .with(user("username").roles("ADMIN")))
@@ -65,7 +65,7 @@ class AuditControllerTest {
                 .andExpect(jsonPath("$[0].info").value("test"))
                 .andExpect(jsonPath("$[0].dateTime").value("0001-01-01 01:01:00"));
 
-        verify(getAuditInfo).execute();
+        verify(auditService).getAll();
     }
 
 }

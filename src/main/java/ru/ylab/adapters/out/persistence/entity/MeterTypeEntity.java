@@ -2,18 +2,18 @@ package ru.ylab.adapters.out.persistence.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Представляет сущность типа счетчика для бд.
  *
  * @author Pesternikov Danil
  */
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class MeterTypeEntity {
 
     /**

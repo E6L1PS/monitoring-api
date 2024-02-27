@@ -2,18 +2,25 @@ FROM gradle:7.5.1-jdk17-alpine AS build
 
 WORKDIR /app
 
-COPY build.gradle .
-COPY settings.gradle .
+COPY auditing-spring-boot-starter/src ./auditing-spring-boot-starter/src/
+COPY auditing-spring-boot-starter/build.gradle ./auditing-spring-boot-starter/
+
+COPY logging-spring-boot-starter/src ./logging-spring-boot-starter/src/
+COPY logging-spring-boot-starter/build.gradle ./logging-spring-boot-starter/
+
 COPY src ./src
+COPY build.gradle .
 
-RUN gradle build --refresh-dependencies -x test
+COPY settings.gradle .
 
-FROM tomcat:jre17
+RUN gradle build -x test
+
+FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-COPY --from=build /app/build/libs/*war /usr/local/tomcat/webapps/app.war
+COPY --from=build /app/build/libs/monitoring-api-1.0-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
-CMD ["catalina.sh", "run"]
+CMD ["java", "-jar", "app.jar"]

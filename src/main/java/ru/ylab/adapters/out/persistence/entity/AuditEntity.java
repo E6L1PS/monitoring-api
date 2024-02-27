@@ -1,9 +1,10 @@
 package ru.ylab.adapters.out.persistence.entity;
 
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -12,10 +13,10 @@ import java.time.LocalDateTime;
  *
  * @author Pesternikov Danil
  */
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class AuditEntity {
 
     /**
@@ -26,6 +27,7 @@ public class AuditEntity {
     /**
      * Уникальный идентификатор пользователя, выполнившего действие.
      */
+    @Nullable
     private Long userId;
 
     /**
