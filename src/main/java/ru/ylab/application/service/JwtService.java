@@ -1,4 +1,4 @@
-package ru.ylab.infrastructure.security;
+package ru.ylab.application.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;

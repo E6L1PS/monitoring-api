@@ -8,7 +8,7 @@ import ru.ylab.domain.model.UtilityMeter;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface UtilityMeterMapper {
+public interface MeterMapper {
 
     List<UtilityMeterDto> toListDto(List<UtilityMeter> utilityMeters);
 

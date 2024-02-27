@@ -36,19 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MeterControllerTest {
 
     @Mock
-    private GetAllUtilityMeter getAllUtilityMeter;
-
-    @Mock
-    private GetAllUtilityMeterById getAllUtilityMeterById;
-
-    @Mock
-    private GetUtilityMeterByMonth getUtilityMeterByMonth;
-
-    @Mock
-    private GetLastUtilityMeter getLastUtilityMeter;
-
-    @Mock
-    private SubmitUtilityMeter submitUtilityMeter;
+    private MeterService meterService;
 
     @InjectMocks
     private MeterController meterController;
@@ -75,7 +63,7 @@ class MeterControllerTest {
 
     @Test
     void getAll_ReturnsResponseEntity() throws Exception {
-        when(getAllUtilityMeter.execute()).thenReturn(utilityMeterDtoList);
+        when(meterService.getAll()).thenReturn(utilityMeterDtoList);
 
         mockMvc.perform(get("/meter/all")
                         .with(user("username").roles("ADMIN")))
@@ -87,12 +75,12 @@ class MeterControllerTest {
                 .andExpect(jsonPath("$[0].type").value("asd"))
                 .andExpect(jsonPath("$[0].readingsDate").value("2001-10-10"));
 
-        verify(getAllUtilityMeter).execute();
+        verify(meterService).getAll();
     }
 
     @Test
     void getAllById_ReturnsResponseEntity() throws Exception {
-        when(getAllUtilityMeterById.execute(null)).thenReturn(utilityMeterDtoList);
+        when(meterService.getAllById(null)).thenReturn(utilityMeterDtoList);
 
         mockMvc.perform(get("/meter")
                         .with(user("username").roles("USER")))
@@ -104,12 +92,12 @@ class MeterControllerTest {
                 .andExpect(jsonPath("$[0].type").value("asd"))
                 .andExpect(jsonPath("$[0].readingsDate").value("2001-10-10"));
 
-        verify(getAllUtilityMeterById).execute(null);
+        verify(meterService).getAllById(null);
     }
 
     @Test
     void getAllByMonth_ReturnsResponseEntity() throws Exception {
-        when(getUtilityMeterByMonth.execute(3, null)).thenReturn(utilityMeterDtoList);
+        when(meterService.getByMonth(3, null)).thenReturn(utilityMeterDtoList);
 
         mockMvc.perform(get("/meter/month/{number}", 3)
                         .with(user("username").roles("USER")))
@@ -121,12 +109,12 @@ class MeterControllerTest {
                 .andExpect(jsonPath("$[0].type").value("asd"))
                 .andExpect(jsonPath("$[0].readingsDate").value("2001-10-10"));
 
-        verify(getUtilityMeterByMonth).execute(3, null);
+        verify(meterService).getByMonth(3, null);
     }
 
     @Test
     void getLast_ReturnsResponseEntity() throws Exception {
-        when(getLastUtilityMeter.execute(null)).thenReturn(utilityMeterDtoList);
+        when(meterService.getLastById(null)).thenReturn(utilityMeterDtoList);
 
         mockMvc.perform(get("/meter/last")
                         .with(user("username").roles("USER")))
@@ -138,7 +126,7 @@ class MeterControllerTest {
                 .andExpect(jsonPath("$[0].type").value("asd"))
                 .andExpect(jsonPath("$[0].readingsDate").value("2001-10-10"));
 
-        verify(getLastUtilityMeter).execute(null);
+        verify(meterService).getLastById(null);
     }
 
     @Test
@@ -151,6 +139,6 @@ class MeterControllerTest {
                         .content(s))
                 .andExpect(status().isCreated());
 
-        verify(submitUtilityMeter).execute(meters, null);
+        verify(meterService).save(meters, null);
     }
 }

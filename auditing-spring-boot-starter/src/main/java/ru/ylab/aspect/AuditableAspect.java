@@ -29,12 +29,14 @@ public class AuditableAspect {
     @After("annotatedByAuditable()")
     public void auditing(JoinPoint joinPoint) {
         String className = joinPoint.getTarget().getClass().getSimpleName();
-        log.info("Start saving audit for " + className);
-        Object auditRepositoryImpl = applicationContext.getBean("AddAuditInfoImpl");
+        String methodName = joinPoint.getSignature().getName();
+        String signature = className + '.' + methodName;
+        log.info("Start saving audit for: " + signature);
+        Object auditRepositoryImpl = applicationContext.getBean("AuditServiceImpl");
         try {
             Class<?> beanClass = auditRepositoryImpl.getClass();
             Method saveMethod = beanClass.getMethod("save", String.class);
-            saveMethod.invoke(auditRepositoryImpl, className);
+            saveMethod.invoke(auditRepositoryImpl, signature);
         } catch (Exception e) {
             e.printStackTrace();
         }

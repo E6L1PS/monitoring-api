@@ -12,8 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import ru.ylab.adapters.in.web.dto.MeterTypeDto;
-import ru.ylab.application.in.AddNewMeterType;
-import ru.ylab.application.in.GetMeterTypes;
+import ru.ylab.application.in.MeterTypeService;
 
 import java.util.List;
 
@@ -36,10 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MeterTypeControllerTest {
 
     @Mock
-    private GetMeterTypes getMeterTypes;
-
-    @Mock
-    private AddNewMeterType addNewMeterType;
+    private MeterTypeService meterTypeService;
 
     @InjectMocks
     private MeterTypeController meterTypeController;
@@ -63,7 +59,7 @@ class MeterTypeControllerTest {
 
     @Test
     void getAll_ReturnsResponseEntity() throws Exception {
-        when(getMeterTypes.execute()).thenReturn(meterTypeDtoList);
+        when(meterTypeService.getAll()).thenReturn(meterTypeDtoList);
 
         mockMvc.perform(get("/type")
                         .with(user("username").roles("USER")))
@@ -73,7 +69,7 @@ class MeterTypeControllerTest {
                 .andExpect(jsonPath("$[1].name").value("name2"))
                 .andExpect(jsonPath("$[2].name").value("name3"));
 
-        verify(getMeterTypes).execute();
+        verify(meterTypeService).getAll();
     }
 
     @Test
@@ -87,6 +83,6 @@ class MeterTypeControllerTest {
                         .with(user("username").roles("USER")))
                 .andExpect(status().isCreated());
 
-        verify(addNewMeterType).execute(any());
+        verify(meterTypeService).save(any());
     }
 }
