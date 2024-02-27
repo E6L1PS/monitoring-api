@@ -25,14 +25,14 @@ public class UserRepositoryIntegrationTest extends BaseIntegrationTest {
         var expectedWithAdminRole = UserEntity.builder()
                 .id(1L)
                 .username("admin")
-                .password("admin")
+                .password("$2a$12$tCwfa/Csf41FaHejWjkiiOjzIoZsZmL7EPuTIllM4ME5FeAaCXlta")
                 .role(Role.ADMIN)
                 .build();
 
         var expectedWithUserRole = UserEntity.builder()
                 .id(2L)
                 .username("user")
-                .password("user")
+                .password("$2a$12$ZFI1Zx4Cm00zELIY1uaDRu1y/2ZCFKYPc4gXtIJCeyNcSvo7p7uSe")
                 .role(Role.USER)
                 .build();
 

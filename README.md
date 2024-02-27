@@ -2,6 +2,8 @@
 
 # Веб-сервис для подачи показаний счетчиков отопления, горячей и холодной воды
 
+[![codecov](https://codecov.io/gh/E6L1PS/monitoring-api/graph/badge.svg?token=WYOeaS4twP)](https://codecov.io/gh/E6L1PS/monitoring-api)
+
 ## Запуск приложения
 
 1. Клонируйте репозиторий: `git clone https://github.com/E6L1PS/monitoring-api.git`

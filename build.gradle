@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'jacoco'
     id 'org.springframework.boot' version '3.2.0'
     id 'io.spring.dependency-management' version '1.1.4'
 }
@@ -10,8 +11,6 @@ ext {
     lombokVersion = '1.18.30'
     mapstructVersion = '1.5.5.Final'
     lombokMapstructBindingVersion = '0.2.0'
-    liquibaseVersion = '4.25.1'
-    postgresqlVersion = '42.7.1'
     jaywayJsonpathVersion = '2.9.0'
     testcontainersVersion = '1.19.4'
 
@@ -35,6 +34,38 @@ allprojects {
     }
 }
 
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.55
+            }
+        }
+
+        rule {
+            enabled = false
+            element = 'CLASS'
+            includes = ['org.gradle.*']
+
+            limit {
+                counter = 'LINE'
+                value = 'TOTALCOUNT'
+                minimum = 0.6
+            }
+        }
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+check.dependsOn jacocoTestReport
+jacocoTestCoverageVerification.dependsOn jacocoTestReport
+
 dependencies {
     implementation project(':logging-spring-boot-starter')
     implementation project(':auditing-spring-boot-starter')
@@ -50,8 +81,8 @@ dependencies {
     implementation "io.jsonwebtoken:jjwt-impl:$jsonwebtokenVersion"
     implementation "io.jsonwebtoken:jjwt-jackson:$jsonwebtokenVersion"
 
-    implementation "org.liquibase:liquibase-core:$liquibaseVersion"
-    implementation "org.postgresql:postgresql:$postgresqlVersion"
+    implementation 'org.liquibase:liquibase-core'
+    implementation 'org.postgresql:postgresql'
 
     implementation "org.mapstruct:mapstruct:$mapstructVersion"
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
@@ -59,14 +90,15 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
     annotationProcessor "org.projectlombok:lombok-mapstruct-binding:$lombokMapstructBindingVersion"
 
-//    testImplementation "org.springframework.security:spring-security-test:$springSecurityVersion" NEED!
-//    testImplementation "org.testcontainers:junit-jupiter:$testcontainersVersion" NEED!
 
     testImplementation "com.jayway.jsonpath:json-path:$jaywayJsonpathVersion"
     testImplementation "org.testcontainers:postgresql:$testcontainersVersion"
+    testImplementation "org.testcontainers:junit-jupiter:$testcontainersVersion"
+    testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-test {
+tasks.named('test') {
     useJUnitPlatform()
 }
