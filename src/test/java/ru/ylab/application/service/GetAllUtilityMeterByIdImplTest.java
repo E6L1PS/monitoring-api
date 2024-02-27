@@ -63,4 +63,5 @@ class GetAllUtilityMeterByIdImplTest {
         assertThat(utilityMetersDto).isNotNull();
         verify(meterRepository).findAllByUserId(anyLong());
     }
+
 }

@@ -1,6 +1,5 @@
 package ru.ylab.application.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +21,7 @@ import ru.ylab.domain.model.UtilityMeter;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -65,7 +65,7 @@ class SubmitUtilityMeterImplTest {
 
     @Test
     @DisplayName("Если в этом месяце еще не подавали показания")
-    void testExecuteWhenMonthlyLimitNotExceeded() {
+    void execute_Success() {
         when(meterRepository.isSubmitted(any())).thenReturn(false);
         when(meterTypeRepository.findAll()).thenReturn(meterTypes);
         doNothing().when(meterRepository).saveAll(anyList());
@@ -77,20 +77,21 @@ class SubmitUtilityMeterImplTest {
 
     @Test
     @DisplayName("Если в этом месяце уже подавали показания")
-    void testExecuteWhenMonthlyLimitExceeded() {
+    void execute_ThrowsMonthlySubmitLimitException() {
         when(meterRepository.isSubmitted(any())).thenReturn(true);
 
-        Assertions.assertThatThrownBy(() -> submitUtilityMeter.execute(validMeters, userId))
+        assertThatThrownBy(() -> submitUtilityMeter.execute(validMeters, userId))
                 .isInstanceOf(MonthlySubmitLimitException.class);
     }
 
     @Test
     @DisplayName("Если поданы не валидные данные")
-    void testExecuteNotValidMeterTypeException() {
+    void execute_ThrowsNotValidMeterTypeException() {
         when(meterRepository.isSubmitted(any())).thenReturn(false);
         when(meterTypeRepository.findAll()).thenReturn(meterTypes);
 
-        Assertions.assertThatThrownBy(() -> submitUtilityMeter.execute(notValidMeters, userId))
+        assertThatThrownBy(() -> submitUtilityMeter.execute(notValidMeters, userId))
                 .isInstanceOf(NotValidMeterTypeException.class);
     }
+
 }

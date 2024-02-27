@@ -48,7 +48,7 @@ class GetAllUtilityMeterImplTest {
     }
 
     @Test
-    void test() {
+    void execute_Success() {
         when(meterRepository.findAll()).thenReturn(utilityMeterEntities);
         when(utilityMeterMapper.toListDomain(anyList())).thenReturn(utilityMeters);
         when(utilityMeterMapper.toListDto(anyList())).thenReturn(utilityMetersDto);

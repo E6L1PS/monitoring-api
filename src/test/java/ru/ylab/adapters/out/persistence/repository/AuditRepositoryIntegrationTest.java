@@ -23,7 +23,7 @@ public class AuditRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(1)
     @DisplayName("Чтение аудитов после миграции - должен быть пустым")
-    void testFindAllAfterMigration() {
+    void findAllAfterMigration() {
         List<AuditEntity> auditEntities = auditRepository.findAll();
 
         assertThat(auditEntities).isEmpty();
@@ -32,7 +32,7 @@ public class AuditRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(2)
     @DisplayName("Сохранение аудита - должен иметь размер 1 после сохранения")
-    void testSaveAndFindAll() {
+    void saveAndFindAll() {
         auditRepository.save(AuditEntity.builder()
                 .userId(1L)
                 .info("info")

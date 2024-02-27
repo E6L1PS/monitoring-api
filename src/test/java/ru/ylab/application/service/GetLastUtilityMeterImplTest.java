@@ -45,7 +45,7 @@ class GetLastUtilityMeterImplTest {
     }
 
     @Test
-    void execute() {
+    void execute_Success() {
         when(meterRepository.findLastByUserId(anyLong())).thenReturn(utilityMeterEntities);
         when(utilityMeterMapper.toListDomain(anyList())).thenReturn(utilityMeters);
         when(utilityMeterMapper.toListDto(anyList())).thenReturn(utilityMetersDto);

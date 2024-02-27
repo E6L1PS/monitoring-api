@@ -9,11 +9,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.ylab.adapters.in.web.dto.MeterTypeDto;
 import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
+import ru.ylab.application.exception.MeterTypeAlreadyExistsException;
 import ru.ylab.application.mapper.MeterTypeMapper;
 import ru.ylab.application.out.MeterTypeRepository;
 import ru.ylab.domain.model.MeterType;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,13 +47,23 @@ class AddNewMeterTypeImplTest {
     }
 
     @Test
-    void test() {
+    void execute_Success() {
+        when(meterTypeRepository.isMeterTypeExists(anyString())).thenReturn(false);
         when(meterTypeMapper.toDomain(any(MeterTypeDto.class))).thenReturn(meterType);
         when(meterTypeMapper.toEntity(any(MeterType.class))).thenReturn(meterTypeEntity);
 
         addNewMeterType.execute(meterTypeDto);
 
+        verify(meterTypeRepository).isMeterTypeExists(anyString());
         verify(meterTypeRepository).save(any(MeterTypeEntity.class));
+    }
+
+    @Test
+    void execute_ThrowsMeterTypeAlreadyExistsException() {
+        when(meterTypeRepository.isMeterTypeExists(anyString())).thenReturn(true);
+
+        assertThatThrownBy(() -> addNewMeterType.execute(meterTypeDto))
+                .isInstanceOf(MeterTypeAlreadyExistsException.class);
     }
 
 }

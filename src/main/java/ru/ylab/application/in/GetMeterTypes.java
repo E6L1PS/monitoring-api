@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Pesternikov Danil
  */
-public interface GetUtilityMeterTypes {
+public interface GetMeterTypes {
 
     /**
      * Выполняет операцию для получения списка типов счетчика.

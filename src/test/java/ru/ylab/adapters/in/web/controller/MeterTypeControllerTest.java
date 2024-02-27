@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import ru.ylab.adapters.in.web.dto.MeterTypeDto;
 import ru.ylab.application.in.AddNewMeterType;
-import ru.ylab.application.in.GetUtilityMeterTypes;
+import ru.ylab.application.in.GetMeterTypes;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MeterTypeControllerTest {
 
     @Mock
-    private GetUtilityMeterTypes getUtilityMeterTypes;
+    private GetMeterTypes getMeterTypes;
 
     @Mock
     private AddNewMeterType addNewMeterType;
@@ -63,7 +63,7 @@ class MeterTypeControllerTest {
 
     @Test
     void getAll_ReturnsResponseEntity() throws Exception {
-        when(getUtilityMeterTypes.execute()).thenReturn(meterTypeDtoList);
+        when(getMeterTypes.execute()).thenReturn(meterTypeDtoList);
 
         mockMvc.perform(get("/type")
                         .with(user("username").roles("USER")))
@@ -73,7 +73,7 @@ class MeterTypeControllerTest {
                 .andExpect(jsonPath("$[1].name").value("name2"))
                 .andExpect(jsonPath("$[2].name").value("name3"));
 
-        verify(getUtilityMeterTypes).execute();
+        verify(getMeterTypes).execute();
     }
 
     @Test

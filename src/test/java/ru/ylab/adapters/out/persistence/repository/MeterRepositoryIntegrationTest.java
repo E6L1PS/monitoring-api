@@ -22,7 +22,7 @@ public class MeterRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(1)
     @DisplayName("Чтение счетчиков после миграции - должен быть пустым")
-    void testFindAllAfterMigration() {
+    void findAllAfterMigration() {
         var meters = meterRepository.findAll();
 
         assertThat(meters).isEmpty();
@@ -31,7 +31,7 @@ public class MeterRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(2)
     @DisplayName("Сохранение 4-х счетчиков - должен иметь размер 4 после сохранения")
-    void testSave() {
+    void save() {
         meterRepository.save(UtilityMeterEntity.builder()
                 .userId(1L)
                 .type("Горячая вода")
@@ -68,7 +68,7 @@ public class MeterRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(3)
     @DisplayName("Чтение счетчиков по id пользователя - должен иметь размер 1")
-    void testFindAllByUserId() {
+    void findAllByUserId() {
         var meters = meterRepository.findAllByUserId(1L);
 
         assertThat(meters).hasSize(1);
@@ -77,7 +77,7 @@ public class MeterRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(4)
     @DisplayName("Чтение последних показаний по id пользователя - должен иметь размер 2")
-    void testFindLastByUserId() {
+    void findLastByUserId() {
         var meters = meterRepository.findLastByUserId(2L);
 
         assertThat(meters).hasSize(2);
@@ -86,7 +86,7 @@ public class MeterRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(4)
     @DisplayName("Чтение счетчиков по месяцу и id пользователя - должен иметь размер 1")
-    void testFindByMonthAndUserId() {
+    void findByMonthAndUserId() {
         var meters = meterRepository.findByMonthAndUserId(1, 2L);
 
         assertThat(meters).hasSize(1);
@@ -95,7 +95,7 @@ public class MeterRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(5)
     @DisplayName("Показания были отправлены в текущем месяце")
-    void testIsSubmitted() {
+    void isSubmitted() {
         var isSubmitted = meterRepository.isSubmitted(2L);
 
         assertThat(isSubmitted).isTrue();
@@ -104,7 +104,7 @@ public class MeterRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(5)
     @DisplayName("Показания не были отправлены в текущем месяце")
-    void testIsNotSubmitted() {
+    void isNotSubmitted() {
         var isSubmitted = meterRepository.isSubmitted(1L);
 
         assertThat(isSubmitted).isFalse();

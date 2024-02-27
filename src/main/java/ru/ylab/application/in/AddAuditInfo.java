@@ -7,6 +7,6 @@ package ru.ylab.application.in;
  */
 public interface AddAuditInfo {
 
-    void save(String info);
+    void execute(String className);
 
 }

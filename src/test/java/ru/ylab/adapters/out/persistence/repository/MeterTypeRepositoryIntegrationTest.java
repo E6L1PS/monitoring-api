@@ -20,7 +20,7 @@ public class MeterTypeRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(1)
     @DisplayName("Чтение типов после миграции - должен иметь размер 3")
-    void testFindAllAfterMigration() {
+    void findAllAfterMigration() {
         var types = meterTypeRepository.findAll();
 
         assertThat(types.get(0).getName()).hasToString("Холодная вода");
@@ -32,7 +32,7 @@ public class MeterTypeRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(2)
     @DisplayName("Сохранение нового типа счетчика - должен иметь размер 4 после сохранения")
-    void testSaveAndFindAll() {
+    void saveAndFindAll() {
         meterTypeRepository.save(MeterTypeEntity.builder().name("New Type").build());
         var types = meterTypeRepository.findAll();
 
@@ -42,7 +42,7 @@ public class MeterTypeRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(3)
     @DisplayName("Тип существует")
-    void testIsMeterTypeExists() {
+    void isMeterTypeExists() {
         var isExist = meterTypeRepository.isMeterTypeExists("New Type");
 
         assertThat(isExist).isTrue();
@@ -51,7 +51,7 @@ public class MeterTypeRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(4)
     @DisplayName("Тип не существует")
-    void testIsNotMeterTypeExists() {
+    void isNotMeterTypeExists() {
         var isExist = meterTypeRepository.isMeterTypeExists("dhdhyktjr");
 
         assertThat(isExist).isFalse();

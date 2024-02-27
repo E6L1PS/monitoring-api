@@ -61,7 +61,7 @@ class RegisterUserImplTest {
     }
 
     @Test
-    void testExecute_SuccessfulRegistration() {
+    void execute_Success() {
         when(userMapper.toDomain(any(RegisterDto.class))).thenReturn(userValid);
         when(userRepository.isAlreadyExists(any())).thenReturn(false);
         when(passwordEncoder.encode(any())).thenReturn("test");
@@ -72,7 +72,7 @@ class RegisterUserImplTest {
     }
 
     @Test
-    void testExecute_UsernameAlreadyExists() {
+    void execute_ThrowsUsernameAlreadyExistsException() {
         when(userMapper.toDomain(any(RegisterDto.class))).thenReturn(userValid);
         when(userRepository.isAlreadyExists(any())).thenReturn(true);
 
@@ -83,7 +83,7 @@ class RegisterUserImplTest {
     }
 
     @Test
-    void testExecute_InvalidUsernameOrPassword() {
+    void execute_ThrowsInvalidUsernameOrPasswordException() {
         when(userMapper.toDomain(any(RegisterDto.class))).thenReturn(userInvalid);
 
         assertThatThrownBy(() -> registerUser.execute(invalidRegisterDto))

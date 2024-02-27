@@ -32,7 +32,6 @@ class GetUtilityMeterByMonthImplTest {
 
     private static List<UtilityMeter> utilityMeters;
 
-
     private static List<UtilityMeterEntity> utilityMeterEntities;
 
     @Mock
@@ -53,7 +52,7 @@ class GetUtilityMeterByMonthImplTest {
     }
 
     @Test
-    void execute() {
+    void execute_Success() {
         when(meterRepository.findByMonthAndUserId(anyInt(), anyLong())).thenReturn(utilityMeterEntities);
         when(utilityMeterMapper.toListDomain(anyList())).thenReturn(utilityMeters);
         when(utilityMeterMapper.toListDto(anyList())).thenReturn(utilityMetersDto);

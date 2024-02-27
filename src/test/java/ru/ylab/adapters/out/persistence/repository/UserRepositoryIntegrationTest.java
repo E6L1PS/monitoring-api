@@ -21,7 +21,7 @@ public class UserRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(1)
     @DisplayName("Получение пользователей по имени после миграции - ожидается 2 пользователя")
-    void testGetByUsernameAfterMigration() {
+    void getByUsernameAfterMigration() {
         var expectedWithAdminRole = UserEntity.builder()
                 .id(1L)
                 .username("admin")
@@ -50,7 +50,7 @@ public class UserRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(2)
     @DisplayName("Проверка сохранения нового пользователя")
-    void testSave() {
+    void save() {
         var expectedNewUser = UserEntity.builder()
                 .id(3L)
                 .username("newuser")
@@ -70,7 +70,7 @@ public class UserRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(3)
     @DisplayName("Пользователь с таким username уже существует")
-    void testisAlreadyExists() {
+    void alreadyExists() {
         var isAlreadyExists = userRepository.isAlreadyExists("newuser");
         assertThat(isAlreadyExists).isTrue();
 
@@ -79,7 +79,7 @@ public class UserRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(4)
     @DisplayName("Поьзователя с таким username не существует")
-    void testisNotAlreadyExists() {
+    void notAlreadyExists() {
         var isAlreadyExists = userRepository.isAlreadyExists("newuser1");
         assertThat(isAlreadyExists).isFalse();
     }

@@ -8,7 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.ylab.adapters.in.web.dto.MeterTypeDto;
 import ru.ylab.application.in.AddNewMeterType;
-import ru.ylab.application.in.GetUtilityMeterTypes;
+import ru.ylab.application.in.GetMeterTypes;
 import ru.ylab.aspect.annotation.Loggable;
 
 import java.util.List;
@@ -25,13 +25,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MeterTypeController {
 
-    private final GetUtilityMeterTypes getUtilityMeterTypes;
+    private final GetMeterTypes getMeterTypes;
 
     private final AddNewMeterType addNewMeterType;
 
     @GetMapping
     public ResponseEntity<List<MeterTypeDto>> getAll() {
-        List<MeterTypeDto> meterTypesDto = getUtilityMeterTypes.execute();
+        List<MeterTypeDto> meterTypesDto = getMeterTypes.execute();
         return ResponseEntity.ok(meterTypesDto);
     }
 

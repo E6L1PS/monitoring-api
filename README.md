@@ -9,7 +9,7 @@
 1. Клонируйте репозиторий: `git clone https://github.com/E6L1PS/monitoring-api.git`
 2. Перейдите в директорию проекта: `cd monitoring-api`
 3. Чтобы запустить тесты, выполните команду: `./gradlew test`
-4. Если требуется, измените файлы конфигурации `.env`, `application.yml`, `liquibase.properties`.
+4. Если требуется, измените файлы конфигурации `.env`, `application.yml`.
 5. Запустите контейнеры: `docker compose up --build -d`
 6. Приложение будет доступно по адресу `http://localhost:8080/`
 7. Регистрация `http://localhost:8080/auth/reg`
@@ -29,16 +29,18 @@
 - spring-boot-starter-aop
 - spring-boot-starter-jdbc
 - spring-boot-starter-security
+- springdoc-openapi-starter-ui
+- springdoc-openapi-starter-webmvc
 - JsonWebToken
 - Docker
 - PostgreSQL JDBC Driver
-- HikariCP
 - Liquibase
 - MapStruct
 - Lombok
 - Slf4j
 - Тестирование:
     - Testcontainers для PostgreSQL
+    - spring-security-test
     - spring-boot-starter-test
 
 ## Tasks:

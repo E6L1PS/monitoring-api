@@ -26,7 +26,7 @@ public class AddAuditInfoImpl implements AddAuditInfo {
     private final AuditRepository auditRepository;
 
     @Override
-    public void save(String className) {
+    public void execute(String className) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = null;
 
@@ -48,7 +48,7 @@ public class AddAuditInfoImpl implements AddAuditInfo {
             case "GetAuditInfoImpl" -> "Просмотр всех аудитов!";
             case "GetLastUtilityMeterImpl" -> "Просмотр последних показаний!";
             case "GetUtilityMeterByMonthImpl" -> "Просмотр всех показаний за конкретный месяц!";
-            case "GetUtilityMeterTypesImpl" -> "Просмотр всех типов показаний!";
+            case "GetMeterTypesImpl" -> "Просмотр всех типов показаний!";
             case "LoginUserImpl" -> "Авторизация выполнена!";
             case "RegisterUserImpl" -> "Новый пользователь зарегистрирован!";
             case "SubmitUtilityMeterImpl" -> "Показания поданы!";

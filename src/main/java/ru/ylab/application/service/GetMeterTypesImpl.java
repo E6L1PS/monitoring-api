@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ylab.adapters.in.web.dto.MeterTypeDto;
 import ru.ylab.adapters.out.persistence.entity.MeterTypeEntity;
-import ru.ylab.application.in.GetUtilityMeterTypes;
+import ru.ylab.application.in.GetMeterTypes;
 import ru.ylab.application.mapper.MeterTypeMapper;
 import ru.ylab.application.out.MeterTypeRepository;
 import ru.ylab.aspect.annotation.Auditable;
@@ -24,7 +24,7 @@ import java.util.List;
 @Transactional
 @Service
 @RequiredArgsConstructor
-public class GetUtilityMeterTypesImpl implements GetUtilityMeterTypes {
+public class GetMeterTypesImpl implements GetMeterTypes {
 
     private final MeterTypeRepository meterTypeRepository;
 

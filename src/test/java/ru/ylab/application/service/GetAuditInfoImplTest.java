@@ -53,7 +53,7 @@ class GetAuditInfoImplTest {
     }
 
     @Test
-    void execute() {
+    void execute_Success() {
         when(auditRepository.findAll()).thenReturn(auditEntities);
         when(auditMapper.toListDomain(anyList())).thenReturn(audits);
         when(auditMapper.toListDto(anyList())).thenReturn(auditsDto);
@@ -64,4 +64,5 @@ class GetAuditInfoImplTest {
         assertThat(auditsDto).isNotNull();
         verify(auditRepository).findAll();
     }
+
 }
